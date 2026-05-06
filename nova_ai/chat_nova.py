@@ -14,10 +14,9 @@ class NovaInference:
         
         self.tokenizer = Tokenizer.from_file(tokenizer_path)
         
-        self.n_layers = 12
-        self.dim = 576
-        self.n_heads = 9
-        self.n_kv_heads = 3
+        self.n_layers = 30
+        self.dim = 512
+        self.n_heads = 8
         self.head_dim = self.dim // self.n_heads
         self.norm_eps = 1e-5
         
@@ -56,16 +55,12 @@ class NovaInference:
             v = norm_x @ self.weights[f"nova.layer.{i}.v"].T
             
             q = q.reshape(q.shape[0], self.n_heads, self.head_dim)
-            k = k.reshape(k.shape[0], self.n_kv_heads, self.head_dim)
-            v = v.reshape(v.shape[0], self.n_kv_heads, self.head_dim)
+            k = k.reshape(k.shape[0], self.n_heads, self.head_dim)
+            v = v.reshape(v.shape[0], self.n_heads, self.head_dim)
             
             freqs = self.freqs_cis[:tokens.shape[0]]
             q = self.apply_rotary_emb(q, freqs[:, np.newaxis, :])
             k = self.apply_rotary_emb(k, freqs[:, np.newaxis, :])
-            
-            # GQA Repeat
-            k = np.repeat(k, self.n_heads // self.n_kv_heads, axis=1)
-            v = np.repeat(v, self.n_heads // self.n_kv_heads, axis=1)
             
             scores = np.einsum('thd,shd->hts', q, k) / np.sqrt(self.head_dim)
             mask = np.triu(np.ones((q.shape[0], q.shape[0])), k=1) * -1e10
