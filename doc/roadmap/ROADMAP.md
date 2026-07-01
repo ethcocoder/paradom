@@ -58,11 +58,11 @@ PHASE 5: Open Source Launch & Sovereignty
 |---|---|---|---|
 | First model loaded | 1 | Week 1 | ModelLoader works |
 | Architecture auto-detected | 1 | Week 1 | 4 architectures parsed |
-| Same-arch conversion | 1 | Week 1 | ≥80% quality |
-| Full pipeline v0.1 | 1 | Week 1 | `paradom convert` CLI works |
+| Same-arch metric swapping | 1 | Week 1 | ≥80% quality |
+| Streaming conversion v0.1 | 1 | Week 1 | RAM usage <16GB for 7B |
 | **Phase 1 Validation** | 1 | Week 1 | ≥70% retention, end-to-end |
-| Transformer→Mamba mapping | 2 | Week 2 | Implementation complete |
-| First cross-arch benchmark | 2 | Week 2 | ≥50% retention |
+| Spectral mirroring mapping | 2 | Week 2 | Implementation complete |
+| Functional equivalence test | 2 | Week 2 | $3=4-1$ mapping works |
 | 4+ conversion paths | 2 | Week 2 | Registry with 4 mappers |
 | **Phase 2 Validation** | 2 | Week 2 | LLaMA→Mamba ≥50% |
 | Zero-shot calibration | 3 | Week 3 | +15% quality gain |
@@ -79,21 +79,15 @@ PHASE 5: Open Source Launch & Sovereignty
 
 ---
 
-## Technology Stack Decision
-
 | Component | Decision | Rationale |
 |---|---|---|
 | Language | Python 3.11 | Industry standard for ML |
 | Tensor Library | PyTorch 2.3+ | Most ML frameworks are PyTorch-native |
+| Storage Mode | **Streaming (mmap)** | Enables large-model conversion on standard RAM |
 | Weight Format | SafeTensors | Fast, safe, universal for HF models |
 | Math | SciPy + PyTorch linalg | Best SVD/eigendecomp support |
 | CLI | Typer + Rich | Modern, pretty, type-safe |
 | API | FastAPI | Async, fast, OpenAPI docs auto-generated |
-| Testing | pytest | Standard |
-| Docs | MkDocs + Material | Beautiful, markdown-native |
-| CI/CD | GitHub Actions | Free, widely used |
-| Package | PyPI | Standard distribution |
-| Container | Docker | Reproducible environments |
 
 ---
 
@@ -110,13 +104,12 @@ PHASE 5: Open Source Launch & Sovereignty
 
 ### Compute Requirements
 
-| Phase | Minimum | Recommended |
+| Phase | Minimum (Streaming) | Recommended (In-RAM) |
 |---|---|---|
-| Phase 1 | 1× server, 64GB RAM | 1× server, 128GB RAM |
-| Phase 2 | Same + 1× A100 for calibration | 2× A100 |
-| Phase 3 | 2–4× A100 for benchmarking | 8× A100 |
-| Phase 4 | HPC access for 70B testing | Cloud burst (GCP/AWS) |
-| Phase 5 | Hosting for API service | Scalable cloud |
+| Phase 1 | 1× server, 16GB RAM | 1× server, 64GB RAM |
+| Phase 2 | 1× server, 24GB RAM | 1× server, 128GB RAM |
+| Phase 3 | Same + 1× RTX 3090 | 2× A100 |
+| Phase 4 | Consumer GPU (24GB VRAM) | 8× A100 |
 
 ### Funding Path
 
@@ -130,17 +123,12 @@ PHASE 5: Open Source Launch & Sovereignty
 
 ---
 
-## Risk Register
-
 | Risk | Probability | Impact | Mitigation | Owner |
 |---|---|---|---|---|
-| Core hypothesis fails (weights can't transfer cross-arch) | Medium | Critical | Start with same-arch; iterate; publish null results | Research lead |
+| Core hypothesis fails (Spectral loss) | Medium | Critical | Start with same-arch; iterate; publish null results | Research lead |
 | Key person dependency | High | High | Document everything; open-source early | Project lead |
-| HuggingFace API changes break loader | Medium | Medium | Abstract loader; version-pin; test against multiple HF versions | ML engineer |
-| SVD too slow for 70B | High | Medium | Randomized SVD; blocked SVD; parallelism | ML engineer |
-| Legal issues with model weights | Low | High | Use only Apache 2.0 / permissive licensed source models | Project lead |
-| Compute costs exceed budget | Medium | Medium | Start small (7B); use free tiers; seek grants | Project lead |
-| Academic competition publishes similar work first | Medium | Low | Publish blog posts early to establish priority | Research lead |
+| Streaming latency | Low | Low | Optimized mmap implementation | ML engineer |
+| Functional approximation loss | High | Medium | Robust calibration (Phase 3) | research lead |
 
 ---
 
