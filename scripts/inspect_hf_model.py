@@ -2,7 +2,7 @@ from safetensors.numpy import load_file
 import numpy as np
 
 print("STARTING: Real-World Model Inspection (SmolLM-135M) - FINAL...")
-weights = load_file("models/hf_source/model.safetensors")
+weights = load_file("models/nova_source/model.safetensors")
 
 # Count total layers
 layer_indices = set()

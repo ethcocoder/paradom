@@ -6,7 +6,15 @@ class ParadoxFoundation:
     
     @staticmethod
     def procrustes_project(W_src, target_shape):
-        """Projects source intelligence onto target dimensions."""
+        """Projects source intelligence onto target dimensions (1D or 2D)."""
+        # Handle 1D Vectors (e.g. Norms, Biases)
+        if len(target_shape) == 1:
+            size_tgt = target_shape[0]
+            final = np.zeros((size_tgt,), dtype=W_src.dtype)
+            r = min(len(W_src), size_tgt)
+            final[:r] = W_src[:r]
+            return final
+            
         rows_tgt, cols_tgt = target_shape
         if len(W_src.shape) == 1:
             new_v = np.zeros(target_shape, dtype=W_src.dtype)
