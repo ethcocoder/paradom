@@ -62,11 +62,70 @@ def discover(
     console.print(f"RAM Usage: [blue]Optimized Streaming Mode (Peak < 2GB)[/blue]")
 
 @app.command()
-def info():
-    """Shows Paradom framework status."""
-    console.print("[bold blue]Paradom v0.1.0[/bold]")
-    console.print("Research: Functional Equivalence ($3 = 4 - 1$)")
-    console.print("Engine: Low-Resource Streaming Swapper")
+def swap(
+    source: str = typer.Argument(..., help="Path to source model weights"),
+    target_config: str = typer.Argument(..., help="Path to target configuration YAML"),
+    output: str = typer.Argument(..., help="Path to save redressed model"),
+    paradigm: str = typer.Option("llm", help="AI paradigm")
+):
+    """
+    Executes the weight equivalence swap (redressing).
+    Surgical transfer of intelligence from source to target.
+    """
+    import yaml
+    from paradom.core.loader import ModelLoader
+    from paradom.core.equivalence import EquivalenceIdentifier
+    from paradom.core.swap_engine import SwapEngine
+    from paradom.core.writer import BufferedMmapWriter, StreamingSwapper
 
-if __name__ == "__main__":
-    app()
+    with open(target_config, 'r') as f:
+        config = yaml.safe_load(f)
+    
+    config["paradigm"] = paradigm
+
+    console.print(f"🚀 [bold blue]Starting Redressing Operation[/bold]")
+    console.print(f"Source: {source}")
+    console.print(f"Output: {output}\n")
+
+    loader = ModelLoader(source)
+    identifier = EquivalenceIdentifier()
+    engine = SwapEngine()
+    writer = BufferedMmapWriter(output)
+    
+    swapper = StreamingSwapper(loader, identifier, engine, writer)
+    
+    with console.status("[bold green]Executing swaps..."):
+        count = swapper.run(config)
+
+    console.print(f"\n✅ [bold]Swap Complete.[/bold]")
+    console.print(f"Total weights redressed: {count}")
+    console.print(f"Result saved to: [cyan]{output}[/cyan]")
+
+@app.command()
+def validate(
+    source: str = typer.Argument(..., help="Path to original source model"),
+    swapped: str = typer.Argument(..., help="Path to redressed model"),
+):
+    """
+    Validates redressed model quality and produces a Quality Report.
+    """
+    from paradom.core.validator import Validator
+
+    console.print(f"⚖️ [bold]Validating Model Integrity...[/bold]")
+    
+    validator = Validator(source, swapped)
+    report = validator.run_validation()
+    
+    table = Table(title="Paradom Quality Report")
+    table.add_column("Metric", style="cyan")
+    table.add_column("Result", style="green")
+    
+    table.add_row("Mean CKA Similarity", f"{report['mean_cka']:.4f}")
+    table.add_row("Quality Tier", report["overall_quality"])
+    
+    console.print(table)
+    
+    if report["overall_quality"] in ["EXCELLENT", "GOOD"]:
+        console.print("\n✨ [bold green]Model verified for Sovereign AI Deployment.[/bold]")
+    else:
+        console.print("\n⚠️ [bold yellow]Model quality may require fine-tuning for production use.[/bold]")
