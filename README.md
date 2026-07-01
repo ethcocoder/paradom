@@ -1,57 +1,124 @@
-# AWFE — Adaptive Weight Fusion Engine
+# Paradom — Universal Weight Equivalence Framework
 
-> **"Convert any open-source model weights to any target architecture — without retraining."**
+> **"3 can be expressed as 1+2, or 4-1, or 6/2, or √9. A neural network weight is just a number. Paradom finds every equivalent path."**
 
 [![Status](https://img.shields.io/badge/status-pre--alpha-orange)]()
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue)]()
-[![Architecture](https://img.shields.io/badge/arch-multi--target-green)]()
+[![Paradigms](https://img.shields.io/badge/paradigms-all--ML%2FDL-green)]()
 
 ---
 
-## What is AWFE?
+## What is Paradom?
 
-**AWFE (Adaptive Weight Fusion Engine)** is an open-source framework that enables mathematical mapping of neural network weights from one architecture to another — preserving learned intelligence without the cost of full retraining.
+**Paradom** is an open-source framework built on a single, powerful principle:
 
-Instead of training a model from scratch (which costs millions of dollars and weeks of compute), AWFE allows engineers and researchers to:
+> Every learned parameter in every neural network is just a real number. That number was produced by one mathematical path during training. But infinite other mathematical paths could produce the same number — or a close enough approximation that the intelligence is preserved.
 
-1. **Download** free pre-trained weights from Hugging Face / Kaggle
-2. **Run** them through AWFE's conversion pipeline
-3. **Output** weights fitted to a custom or sovereign architecture
+Paradom **identifies, maps, and swaps** these equivalent numerical products across architectures, learning paradigms, and model families — without retraining.
 
-This is analogous to a **currency converter for neural networks** — same value, different representation.
+This is not weight recalculation. This is **weight equivalence translation.**
 
 ---
 
-## Vision
-
-> Democratize AI by allowing any nation, organization, or developer to build sovereign AI systems using the world's best open-source models as a foundation — without requiring billions of dollars of compute infrastructure.
-
-Ethiopia 🇪🇹, and countries like it, deserve the ability to build, own, and operate AI systems that reflect their languages, cultures, and sovereign needs. AWFE is the technical bridge to make that possible.
-
----
-
-## Core Capabilities (Target)
-
-| Capability | Description |
-|---|---|
-| Weight Remapping | Reshape and translate parameter tensors between architectures |
-| Architecture Bridging | Map equivalent functional layers (Attention → SSM, MoE, etc.) |
-| Knowledge Preservation | Maintain model intelligence through mathematical projection |
-| Validation Suite | Benchmark converted models against source baselines |
-| CLI + Python API | Simple interface for engineers and researchers |
-| Sovereignty Mode | Output optimized for deployment on consumer/edge hardware |
-
----
-
-## Supported Conversion Paths (Roadmap)
+## The Founding Insight
 
 ```
-Transformer (GPT/LLaMA/Mistral)  →  Custom Transformer
-Transformer                       →  Mamba (SSM)
-Transformer                       →  MoE (Mixture of Experts)
-Mistral                           →  Custom Sliding Window Architecture
-LLaMA                             →  Compressed/Quantized Custom Arch
+The number 3 exists independently of how you arrived at it:
+
+    1 + 2 = 3
+    4 - 1 = 3
+    6 / 2 = 3
+    √9    = 3
+    15 - 12 = 3
+    1000 - 997 = 3
+    ... infinite representations
+
+A weight value of 0.473 in a LLaMA attention matrix
+is the same number as 0.473 in a Mamba state matrix.
+
+The architectures are different mathematical paths.
+The learned knowledge is the same number.
+
+Paradom's job: find which numbers correspond,
+               and swap them.
 ```
+
+---
+
+## What Makes Paradom Different
+
+| Existing Approach | What It Does | Limitation |
+|---|---|---|
+| Knowledge Distillation | Trains student to mimic teacher | Needs training data + compute |
+| Model Merging | Blends weights within same architecture | Same architecture only |
+| Quantization | Re-expresses weights in smaller number format | Same architecture only |
+| Fine-tuning | Adjusts weights on new data | Needs data + GPU time |
+| **Paradom** | **Swaps equivalent weight products across ANY architecture or paradigm** | **Novel — no direct equivalent exists** |
+
+---
+
+## Scope: Every ML/DL Scenario
+
+Paradom targets weight translation across **all major learning paradigms:**
+
+```
+SUPERVISED LEARNING
+  CNN ←────────────────────────────→ Vision Transformer (ViT)
+  ResNet ──────────────────────────→ MLP-Mixer
+
+LARGE LANGUAGE MODELS  
+  Transformer (LLaMA/Mistral) ─────→ Mamba SSM
+  Dense Transformer ───────────────→ Mixture of Experts (MoE)
+  Large Architecture ──────────────→ Compressed Sovereign Arch
+
+REINFORCEMENT LEARNING
+  DQN ─────────────────────────────→ PPO Policy Network
+  Actor-Critic ────────────────────→ Transformer Policy
+
+GENERATIVE MODELS
+  Diffusion Model ─────────────────→ Flow Matching
+  GAN Discriminator ───────────────→ Classifier equivalent
+
+GRAPH LEARNING
+  GNN Node Embeddings ─────────────→ Transformer Token Embeddings
+
+MULTIMODAL
+  CLIP Vision Encoder ─────────────→ Custom Vision Architecture
+```
+
+---
+
+## Core Philosophy: Swap, Don't Recalculate
+
+The key design decision that makes Paradom practical:
+
+```
+❌ OLD APPROACH (Heavy):
+   Load entire model → Run full mathematical reconstruction
+   → Recalculate all weights → Output new model
+   Requires: High RAM, long compute time, complex math pipeline
+
+✅ PARADOM APPROACH (Surgical):
+   Identify which weights are "equivalent products" →
+   Locate them in source → Locate equivalent positions in target →
+   Swap only those → Validate
+   Requires: Minimal RAM, minutes not hours, targeted operations
+```
+
+---
+
+## Scientific Foundation
+
+Paradom is grounded in three pillars of recent research:
+
+**1. The Platonic Representation Hypothesis (MIT, 2024)**
+> All large models, regardless of architecture or modality, converge toward the same internal representation of reality. Different mathematical paths, same learned numbers.
+
+**2. Linear Mode Connectivity**
+> Smooth, navigable paths exist between different weight solutions in weight space. Weights can be moved and translated without catastrophic quality loss.
+
+**3. The Lottery Ticket Hypothesis**
+> Inside every large model is a small subnetwork ("winning ticket") that carries most of the intelligence. Paradom swaps these tickets, not the whole model.
 
 ---
 
@@ -59,36 +126,29 @@ LLaMA                             →  Compressed/Quantized Custom Arch
 
 | Document | Description |
 |---|---|
-| [Research Foundation](./research/RESEARCH.md) | Scientific basis, prior art, feasibility analysis |
-| [Architecture Design](./architecture/ARCHITECTURE.md) | System design, components, data flow |
-| [Technical Specifications](./specs/SPECIFICATIONS.md) | Detailed technical specs for each module |
-| [Phase 1 Plan](./phases/PHASE_1.md) | Foundation & Prototype (Months 1–3) |
-| [Phase 2 Plan](./phases/PHASE_2.md) | Core Engine Development (Months 4–6) |
-| [Phase 3 Plan](./phases/PHASE_3.md) | Validation & Intelligence Preservation (Months 7–9) |
-| [Phase 4 Plan](./phases/PHASE_4.md) | Scale & Production (Months 10–12) |
-| [Phase 5 Plan](./phases/PHASE_5.md) | Open Source & Sovereignty Release (Month 13+) |
-| [Master Roadmap](./roadmap/ROADMAP.md) | Full timeline, milestones, and KPIs |
-| [Diagrams](./diagrams/DIAGRAMS.md) | System diagrams and visual architecture |
+| [Research Foundation](./doc/research/RESEARCH.md) | Scientific basis, prior art, all ML/DL paradigm analysis |
+| [Architecture Design](./doc/architecture/ARCHITECTURE.md) | System design, swap engine, equivalence identifier |
+| [Technical Specifications](./doc/specs/SPECIFICATIONS.md) | Detailed specs for every module and paradigm |
+| [Phase 1 (Day 1)](./doc/phases/PHASE_1.md) | Streaming Engine & Discovery |
+| [Phase 2 (Day 2)](./doc/phases/PHASE_2.md) | Universal Paradigm Handlers |
+| [Phase 3 (Day 3)](./doc/phases/PHASE_3.md) | Intelligence Mapping & Hardening |
+| [Phase 4 (Day 4)](./doc/phases/PHASE_4.md) | Production Scaling & 70B Support |
+| [Phase 5 (Day 5)](./doc/phases/PHASE_5.md) | Launch & Sovereign Deployment |
+| [Master Roadmap](./doc/roadmap/ROADMAP.md) | Full timeline, milestones, KPIs |
+| [Diagrams](./doc/diagrams/DIAGRAMS.md) | Visual architecture and equivalence maps |
 
 ---
 
-## The Founding Insight
+## Vision
 
-> **1 + 2 = 3** and **4 - 1 = 3** arrive at the same result through different operations.
+> A world where intelligence flows freely between architectures — where a nation can take the world's best open model, swap its weights into a sovereign architecture optimized for their language and hardware, and deploy it in hours instead of months.
 
-Neural architectures are the same: LLaMA and Mistral encode the same *knowledge* through different mathematical structures. If we can find the mathematical bridge between those structures, we can transfer knowledge without re-learning it.
+> Where a researcher can move a policy learned in DQN into a Transformer policy without retraining the agent from scratch.
 
-This is the core hypothesis of AWFE.
-
----
-
-## Contributors
-
-- **Founder / Lead Researcher:** [Your Name]
-- **Status:** Seeking collaborators and compute resources
+> Where the mathematical products of human knowledge are not locked inside one architectural prison.
 
 ---
 
 ## License
 
-Apache 2.0 — free to use, modify, and distribute.
+Apache 2.0 — free to use, modify, and build upon.

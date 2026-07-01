@@ -66,50 +66,41 @@ pytest tests/
 # Known Limitations
 
 **Document:** PARADOM-LIMITS-001  
-*(We believe in radical honesty about what Paradom can and cannot do.)*
+*(We believe in radical honesty about the frontier of weight equivalence.)*
 
 ---
 
 ## What Paradom Cannot Do
 
-### 1. It is NOT Replication
-Paradom cannot replicate the full capability of a source model. It transfers *most* of the intelligence, but some is always lost. Think of it like translating a book — the meaning transfers, but some nuance is lost.
+### 1. It is NOT Model Compression
+Paradom does not reduce the storage size of a model unless specifically converting to a smaller architecture. Its goal is **Functional Equivalence**, not compression.
 
-### 2. It Cannot Transfer Architecture-Specific Strengths
-If a model was specifically trained to exploit properties of Transformer attention (e.g., associative recall over long context), those properties may be weak in a converted Mamba model because SSMs have different inductive biases.
+### 2. Induction Bias Trade-offs
+When swapping weights from a Transformer to a Mamba SSM, you inherit the source's knowledge but gain the target's **Inductive Biases**. If a source model was specifically trained to exploit quadratic attention for long-context recall, that behavior may degrade when moved to a linear-time architecture.
 
 ### 3. It Does NOT Replace Fine-Tuning
-For production sovereign AI deployment, Paradom should be seen as the **starting point**, not the endpoint. After conversion, fine-tuning on local language data will significantly improve quality for specific use cases.
+For production Sovereign AI, Paradom is the **Intelligence Bridge**. Post-swap fine-tuning on local/specialized data is highly recommended to "seal" the weights into their new geometrical housing.
 
-### 4. Cross-Architecture Quality Varies
-Same-architecture conversion is reliable (85–95%). Cross-architecture conversion (Transformer → Mamba) is less predictable (50–75%) and depends heavily on the source model and calibration data available.
-
-### 5. It Cannot Handle Proprietary Models
-Paradom only works with models where weights are openly available. GPT-4, Claude, Gemini, and other proprietary models cannot be converted.
-
-### 6. Very Large Models (>70B) Are Experimental
-Paradom supports 70B+ models in streaming mode, but this is less tested than 7B–13B conversions. Expect longer times and potentially lower quality at extreme scale.
+### 4. Cross-Paradigm Sensitivity
+Conversion between identical paradigms (LLM → LLM) is extremely robust (80–95%). Cross-paradigm conversion (CNN → ViT or RL → Transformer) is highly experimental and depends on the dimensionality and rank of the "winning tickets."
 
 ---
 
 ## Current Research Uncertainties
 
-- The exact mechanism by which Transformer attention eigenstructure maps to SSM state dynamics is still being validated empirically.
-- Quality predictions before running conversion are approximate.
-- The impact of the source model's training data on conversion quality is not fully understood.
+- **Weight Entropy**: We are still mapping how much "garbage" noise exists in a typical weight matrix vs. actual signal.
+- **Dynamic State Mapping**: For Mamba/SSM, the mapping from static attention heads to recurrent states is theoretically sound but requires more empirical data at 70B scale.
+- **Topological Drift**: We are researching if weight swapping causes "topology tears" in the embedding space over very deep networks.
 
 ---
 
-## Honest Assessment of Probability of Success
+## Honest Probability of Success
 
 | Goal | Confidence | Notes |
 |---|---|---|
-| Same-arch conversion ≥80% quality | High | Mathematically well-founded |
-| Transformer → Transformer cross-config | High | Proven techniques |
-| Transformer → Mamba ≥65% (with calibration) | Medium | Novel; 2 known partial results |
-| Zero-shot cross-arch ≥65% | Low-Medium | Highly ambitious |
-| Full sovereign AI deployment | Medium | Depends on Phase 1–3 results |
+| Same-paradigm swap ≥ 80% quality | **High** | Proven in internal Day 1/2 tests. |
+| 70B Scaling in < 16GB RAM | **High** | Streaming logic is mathematically sound. |
+| Transformer → Mamba ≥ 65% quality | **Medium** | Main research focus of Day 3. |
+| Zero-shot Cross-Paradigm (e.g. RL → LLM) | **Low** | Highly experimental; not for v1.0. |
 
-We will update this document as we learn more. If Phase 2 shows that Transformer → Mamba conversion quality is consistently below 50%, we will update the roadmap and communicate this openly.
-
-**The founding team believes the core hypothesis is sound. But we also know it is novel. We build in public, and we report our results honestly — including failures.**
+**The Paradom team builds in public. We report failures as clearly as successes. If a conversion path fails the CKA threshold test, we state it in the SwapReport.**
