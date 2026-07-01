@@ -1,6 +1,6 @@
 # Research Foundation: Cross-Architecture Weight Transfer
 
-**Document:** AWFE-RESEARCH-001  
+**Document:** PARADOM-RESEARCH-001  
 **Version:** 1.0.0  
 **Date:** 2026-06-30  
 **Classification:** Public
@@ -44,11 +44,11 @@ Nations and organizations that wish to:
 
 ...currently have no viable path unless they can afford to train from scratch.
 
-### 1.3 The AWFE Hypothesis
+### 1.3 The Paradom Hypothesis
 
 > If two neural networks performing equivalent functions on equivalent data differ only in their architectural parameterization, then a mathematical mapping should exist between their weight spaces that preserves functional equivalence.
 
-This is the foundational claim AWFE is built to prove and operationalize.
+This is the foundational claim Paradom is built to prove and operationalize.
 
 ---
 
@@ -58,14 +58,14 @@ This is the foundational claim AWFE is built to prove and operationalize.
 
 **What it does:** Trains a smaller "student" model to mimic a larger "teacher" model's output distributions.
 
-**How it relates:** AWFE is inspired by distillation but fundamentally different. Distillation requires:
+**How it relates:** Paradom is inspired by distillation but fundamentally different. Distillation requires:
 - A training dataset
 - Forward passes through the teacher
 - Gradient-based optimization of the student
 
-AWFE targets **direct weight transformation without training data or gradient steps.**
+Paradom targets **direct weight transformation without training data or gradient steps.**
 
-**Key difference:** Distillation transfers *behavior*. AWFE targets *parameter-level structure.*
+**Key difference:** Distillation transfers *behavior*. Paradom targets *parameter-level structure.*
 
 ---
 
@@ -73,9 +73,9 @@ AWFE targets **direct weight transformation without training data or gradient st
 
 **What it does:** Averages weights of multiple fine-tuned models with the **same architecture** to produce a better-performing merged model.
 
-**How it relates:** Proves that weight-space interpolation preserves functional quality — a key premise for AWFE.
+**How it relates:** Proves that weight-space interpolation preserves functional quality — a key premise for Paradom.
 
-**Key difference:** Model Soups works only within identical architectures. AWFE crosses architecture boundaries.
+**Key difference:** Model Soups works only within identical architectures. Paradom crosses architecture boundaries.
 
 ---
 
@@ -83,7 +83,7 @@ AWFE targets **direct weight transformation without training data or gradient st
 
 **What it does:** Spherical interpolation between model weights along geodesics in weight space.
 
-**Key finding:** There exist continuous paths through weight space where all intermediate models retain functional quality. This implies weight space has meaningful geometric structure — which AWFE exploits.
+**Key finding:** There exist continuous paths through weight space where all intermediate models retain functional quality. This implies weight space has meaningful geometric structure — which Paradom exploits.
 
 ---
 
@@ -91,7 +91,7 @@ AWFE targets **direct weight transformation without training data or gradient st
 
 **What it does:** Decomposes large weight matrices into low-rank approximations for efficient fine-tuning.
 
-**How it relates:** Demonstrates that large weight matrices contain redundant structure that can be compressed without significant loss of intelligence. AWFE uses similar decomposition techniques during weight translation.
+**How it relates:** Demonstrates that large weight matrices contain redundant structure that can be compressed without significant loss of intelligence. Paradom uses similar decomposition techniques during weight translation.
 
 ---
 
@@ -99,7 +99,7 @@ AWFE targets **direct weight transformation without training data or gradient st
 
 **What it does:** Measures how similar the internal representations of two different neural networks are, even when their weights are unrelated.
 
-**Key finding:** Different architectures trained on the same data develop **convergent internal representations**. This is the scientific cornerstone of AWFE — if representations converge, weights can potentially be mapped.
+**Key finding:** Different architectures trained on the same data develop **convergent internal representations**. This is the scientific cornerstone of Paradom — if representations converge, weights can potentially be mapped.
 
 ---
 
@@ -118,7 +118,7 @@ Emerging research from DeepMind, Meta AI, and academic groups has begun explorin
 - Mapping between dense transformer layers and MoE (Mixture of Experts) routing
 - "Architecture-agnostic" representations using canonical functional forms
 
-**AWFE sits at the intersection of all this work** and proposes the first general-purpose engineering framework to operationalize it.
+**Paradom sits at the intersection of all this work** and proposes the first general-purpose engineering framework to operationalize it.
 
 ---
 
@@ -167,9 +167,9 @@ where:
   N = state dimension
 ```
 
-### 4.3 AWFE Bridge — The Core Mathematical Operation
+### 4.3 Paradom Bridge — The Core Mathematical Operation
 
-The AWFE weight translation for Transformer → Mamba:
+The Paradom weight translation for Transformer → Mamba:
 
 **Step 1: Decompose Attention Weights via SVD**
 ```
@@ -273,7 +273,7 @@ If d_model_source < d_model_target:
 
 ### 5.4 Conservative Projections
 
-Based on feasibility analysis, AWFE should be able to achieve:
+Based on feasibility analysis, Paradom should be able to achieve:
 
 | Scenario | Expected Quality vs Original | Likelihood |
 |---|---|---|
@@ -325,7 +325,7 @@ Based on feasibility analysis, AWFE should be able to achieve:
 
 ## 7. Research Gaps We Fill
 
-AWFE addresses the following gaps in current literature:
+Paradom addresses the following gaps in current literature:
 
 1. **No general-purpose cross-architecture weight translator exists** — all existing tools operate within single architecture families
 

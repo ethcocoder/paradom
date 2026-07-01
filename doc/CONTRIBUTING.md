@@ -1,6 +1,6 @@
-# Contributing to AWFE
+# Contributing to Paradom
 
-Welcome to AWFE! We're building the world's first general-purpose cross-architecture neural network weight converter. Every contribution matters.
+Welcome to Paradom! We're building the world's first general-purpose cross-architecture neural network weight converter. Every contribution matters.
 
 ---
 
@@ -20,11 +20,11 @@ model:
   ...
 ```
 
-Then add a parser in `awfe/architectures/my_arch.py`.
+Then add a parser in `paradom/architectures/my_arch.py`.
 
 ### 2. Add a New Mapping Strategy
 
-Subclass `BaseMapper` in `awfe/mappings/`:
+Subclass `BaseMapper` in `paradom/mappings/`:
 
 ```python
 class MySourceToMyTargetMapper(BaseMapper):
@@ -35,19 +35,19 @@ class MySourceToMyTargetMapper(BaseMapper):
     def map_head(self, source): ...
 ```
 
-Register in `awfe/mappings/registry.py`.
+Register in `paradom/mappings/registry.py`.
 
 ### 3. Report Conversion Quality
 
-If you've run AWFE and have benchmark results, share them! Open a PR adding your results to `BENCHMARK_RESULTS.md`.
+If you've run Paradom and have benchmark results, share them! Open a PR adding your results to `BENCHMARK_RESULTS.md`.
 
 ---
 
 ## Development Setup
 
 ```bash
-git clone https://github.com/your-org/awfe
-cd awfe
+git clone https://github.com/ethcocoder/paradom
+cd paradom
 pip install -e ".[dev]"
 pytest tests/
 ```
@@ -65,30 +65,30 @@ pytest tests/
 
 # Known Limitations
 
-**Document:** AWFE-LIMITS-001  
-*(We believe in radical honesty about what AWFE can and cannot do.)*
+**Document:** PARADOM-LIMITS-001  
+*(We believe in radical honesty about what Paradom can and cannot do.)*
 
 ---
 
-## What AWFE Cannot Do
+## What Paradom Cannot Do
 
 ### 1. It is NOT Replication
-AWFE cannot replicate the full capability of a source model. It transfers *most* of the intelligence, but some is always lost. Think of it like translating a book — the meaning transfers, but some nuance is lost.
+Paradom cannot replicate the full capability of a source model. It transfers *most* of the intelligence, but some is always lost. Think of it like translating a book — the meaning transfers, but some nuance is lost.
 
 ### 2. It Cannot Transfer Architecture-Specific Strengths
 If a model was specifically trained to exploit properties of Transformer attention (e.g., associative recall over long context), those properties may be weak in a converted Mamba model because SSMs have different inductive biases.
 
 ### 3. It Does NOT Replace Fine-Tuning
-For production sovereign AI deployment, AWFE should be seen as the **starting point**, not the endpoint. After conversion, fine-tuning on local language data will significantly improve quality for specific use cases.
+For production sovereign AI deployment, Paradom should be seen as the **starting point**, not the endpoint. After conversion, fine-tuning on local language data will significantly improve quality for specific use cases.
 
 ### 4. Cross-Architecture Quality Varies
 Same-architecture conversion is reliable (85–95%). Cross-architecture conversion (Transformer → Mamba) is less predictable (50–75%) and depends heavily on the source model and calibration data available.
 
 ### 5. It Cannot Handle Proprietary Models
-AWFE only works with models where weights are openly available. GPT-4, Claude, Gemini, and other proprietary models cannot be converted.
+Paradom only works with models where weights are openly available. GPT-4, Claude, Gemini, and other proprietary models cannot be converted.
 
 ### 6. Very Large Models (>70B) Are Experimental
-AWFE supports 70B+ models in streaming mode, but this is less tested than 7B–13B conversions. Expect longer times and potentially lower quality at extreme scale.
+Paradom supports 70B+ models in streaming mode, but this is less tested than 7B–13B conversions. Expect longer times and potentially lower quality at extreme scale.
 
 ---
 

@@ -1,6 +1,6 @@
-# System Architecture: AWFE Framework
+# System Architecture: Paradom Framework
 
-**Document:** AWFE-ARCH-001  
+**Document:** PARADOM-ARCH-001  
 **Version:** 1.0.0  
 **Date:** 2026-06-30
 
@@ -22,10 +22,10 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────┐
-│                        AWFE FRAMEWORK                               │
+│                        PARADOM FRAMEWORK                            │
 │                                                                     │
 │  ┌─────────────┐    ┌──────────────┐    ┌────────────────────────┐ │
-│  │  SOURCE      │    │    AWFE      │    │  TARGET                │ │
+│  │  SOURCE      │    │    PARADOM   │    │  TARGET                │ │
 │  │  MODEL       │───▶│    ENGINE    │───▶│  ARCHITECTURE          │ │
 │  │             │    │              │    │                        │ │
 │  │ HuggingFace │    │ 1. Parse     │    │  Custom Arch           │ │
@@ -52,7 +52,7 @@
 ### 2.1 Component Map
 
 ```
-awfe/
+paradom/
 ├── core/
 │   ├── loader.py           # Model weight loader (HF, GGUF, SafeTensors)
 │   ├── parser.py           # Architecture parser & config extractor
@@ -81,10 +81,10 @@ awfe/
 │   └── metrics.py          # Calibration quality metrics
 │
 ├── cli/
-│   └── awfe_cli.py         # Command-line interface
+│   └── paradom_cli.py      # Command-line interface
 │
 ├── api/
-│   └── awfe_api.py         # Python API
+│   └── paradom_api.py      # Python API
 │
 └── benchmarks/
     ├── perplexity.py        # Language modeling quality
@@ -381,14 +381,14 @@ Tier 4 (Degraded):    <55% performance retention → recommend calibration
 
 ```bash
 # Basic conversion
-awfe convert \
+paradom convert \
   --source meta-llama/Llama-3-8B \
   --target-arch mamba \
   --target-config configs/mamba_1.4b.yaml \
   --output ./output/llama3_as_mamba
 
 # With calibration
-awfe convert \
+paradom convert \
   --source mistralai/Mistral-7B-v0.3 \
   --target-arch custom \
   --target-config configs/my_arch.yaml \
@@ -397,23 +397,23 @@ awfe convert \
   --output ./output/my_sovereign_model
 
 # Validate existing conversion
-awfe validate \
+paradom validate \
   --source ./models/original \
   --converted ./output/my_sovereign_model \
   --benchmark perplexity,task_bench \
   --report ./reports/conversion_quality.json
 
 # List supported conversions
-awfe list-mappings
+paradom list-mappings
 
 # Inspect model architecture
-awfe inspect meta-llama/Llama-3-70B
+paradom inspect meta-llama/Llama-3-70B
 ```
 
 ### 5.2 Python API
 
 ```python
-from awfe import AWFE, ArchitectureSpec, ConversionConfig
+from paradom import Paradom, ArchitectureSpec, ConversionConfig
 
 # Define target architecture
 target = ArchitectureSpec.from_yaml("configs/my_arch.yaml")
@@ -428,7 +428,7 @@ config = ConversionConfig(
 )
 
 # Run conversion
-engine = AWFE()
+engine = Paradom()
 result = engine.convert(
     source="meta-llama/Llama-3-8B",
     target=target,
@@ -454,7 +454,7 @@ output = model.generate("Hello, world!")
 
 During conversion, AWFE stores:
 ```
-/tmp/awfe_workspace/
+/tmp/paradom_workspace/
 ├── source_snapshot.pkl       # Parsed source model
 ├── decomposed/
 │   ├── layer_0_attn.npz     # SVD factors per layer
@@ -474,7 +474,7 @@ During conversion, AWFE stores:
 ├── model.safetensors         # Converted weights (or shards)
 ├── tokenizer/                # Tokenizer (copied from source)
 ├── conversion_report.json    # Quality metrics
-└── awfe_metadata.json        # Conversion provenance
+├── paradom_metadata.json        # Conversion provenance
 ```
 
 ---
@@ -487,9 +487,9 @@ During conversion, AWFE stores:
 ┌────────────────────────────────┐
 │         Developer Machine      │
 │                                │
-│  awfe convert ...              │
+│  paradom convert ...           │
 │       ↓                        │
-│  [AWFE Process]                │
+│  [Paradom Process]             │
 │   - CPU: SVD computations      │
 │   - GPU: Forward passes (opt.) │
 │   - RAM: ~2× model size        │
@@ -533,11 +533,11 @@ Layer-parallel conversion reduces wall time by N_workers
 For models too large to fit in RAM:
 ```python
 # Stream conversion layer by layer
-engine = AWFE(mode="streaming")
+engine = Paradom(mode="streaming")
 engine.convert_streaming(
     source="meta-llama/Llama-3-70B",
     target=target,
     output="./output/",
-    max_ram_gb=24  # AWFE manages memory within this budget
+    max_ram_gb=24  # Paradom manages memory within this budget
 )
 ```

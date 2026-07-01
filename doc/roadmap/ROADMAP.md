@@ -1,6 +1,6 @@
-# Master Roadmap: AWFE Framework
+# Master Roadmap: Paradom Framework
 
-**Document:** AWFE-ROADMAP-001  
+**Document:** PARADOM-ROADMAP-001  
 **Version:** 1.0.0  
 **Date:** 2026-06-30
 
@@ -8,74 +8,74 @@
 
 ## Executive Summary
 
-AWFE (Adaptive Weight Fusion Engine) will be developed over 13+ months in 5 phases, moving from a minimal research prototype to a production-grade open-source framework that enables sovereign AI deployment worldwide.
+Paradom will be developed over 5 weeks in 5 phases, moving from a minimal research prototype to a production-grade open-source framework that enables sovereign AI deployment worldwide.
 
 ---
 
 ## Full Timeline
 
 ```
-2026                                    2027
+2026
 ─────────────────────────────────────────────────────────────────────
-Month:  1   2   3   4   5   6   7   8   9   10  11  12  13  14  15
+Week:   1       2       3       4       5
 
 PHASE 1: Foundation & Prototype
-        ████████████
-        |           |
-      START       Phase 1
-                 Complete
+        ████████
+        |      |
+      START  Phase 1
+             Complete
 
 PHASE 2: Core Engine (Cross-Architecture)
-                    ████████████
-                    |           |
-                  Start       Phase 2
-                             Complete
+                ████████
+                |      |
+              Start  Phase 2
+                     Complete
 
 PHASE 3: Calibration & Quality
-                                ████████████
-                                |           |
-                              Start       Phase 3
-                                         Complete
+                        ████████
+                        |      |
+                      Start  Phase 3
+                             Complete
 
 PHASE 4: Scale & Production
-                                            ████████████
-                                            |           |
-                                          Start       Phase 4
-                                                     Complete
+                                ████████
+                                |      |
+                              Start  Phase 4
+                                     Complete
 
 PHASE 5: Open Source Launch & Sovereignty
-                                                        ████████████▶
-                                                        |
-                                                      PUBLIC
-                                                      LAUNCH
+                                        ████████▶
+                                        |
+                                      PUBLIC
+                                      LAUNCH
 ```
 
 ---
 
 ## Milestone Table
 
-| Milestone | Phase | Target Month | KPI |
+| Milestone | Phase | Target Week | KPI |
 |---|---|---|---|
-| First model loaded | 1 | Month 1 | ModelLoader works |
-| Architecture auto-detected | 1 | Month 1 | 4 architectures parsed |
-| Same-arch conversion | 1 | Month 2 | ≥80% quality |
-| Full pipeline v0.1 | 1 | Month 3 | `awfe convert` CLI works |
-| **Phase 1 Validation** | 1 | Month 3 | ≥70% retention, end-to-end |
-| Transformer→Mamba mapping | 2 | Month 4 | Implementation complete |
-| First cross-arch benchmark | 2 | Month 5 | ≥50% retention |
-| 4+ conversion paths | 2 | Month 6 | Registry with 4 mappers |
-| **Phase 2 Validation** | 2 | Month 6 | LLaMA→Mamba ≥50% |
-| Zero-shot calibration | 3 | Month 7 | +15% quality gain |
-| Full benchmark suite | 3 | Month 8 | HellaSwag, ARC, MMLU |
-| **Phase 3 Validation** | 3 | Month 9 | Transformer→Mamba ≥65% |
-| 70B model support | 4 | Month 10 | Streaming + parallel |
-| REST API | 4 | Month 11 | API server running |
-| PyPI release v1.0 | 4 | Month 12 | `pip install awfe` |
-| **Phase 4 Validation** | 4 | Month 12 | First external users |
-| Public GitHub launch | 5 | Month 13 | Open source |
-| 500 GitHub stars | 5 | Month 15 | Community traction |
-| First sovereign deployment | 5 | Month 15–18 | Real-world impact |
-| Academic paper submitted | 5 | Month 18 | NeurIPS / ICLR |
+| First model loaded | 1 | Week 1 | ModelLoader works |
+| Architecture auto-detected | 1 | Week 1 | 4 architectures parsed |
+| Same-arch conversion | 1 | Week 1 | ≥80% quality |
+| Full pipeline v0.1 | 1 | Week 1 | `paradom convert` CLI works |
+| **Phase 1 Validation** | 1 | Week 1 | ≥70% retention, end-to-end |
+| Transformer→Mamba mapping | 2 | Week 2 | Implementation complete |
+| First cross-arch benchmark | 2 | Week 2 | ≥50% retention |
+| 4+ conversion paths | 2 | Week 2 | Registry with 4 mappers |
+| **Phase 2 Validation** | 2 | Week 2 | LLaMA→Mamba ≥50% |
+| Zero-shot calibration | 3 | Week 3 | +15% quality gain |
+| Full benchmark suite | 3 | Week 3 | HellaSwag, ARC, MMLU |
+| **Phase 3 Validation** | 3 | Week 3 | Transformer→Mamba ≥65% |
+| 70B model support | 4 | Week 4 | Streaming + parallel |
+| REST API | 4 | Week 4 | API server running |
+| PyPI release v1.0 | 4 | Week 4 | `pip install paradom` |
+| **Phase 4 Validation** | 4 | Week 4 | First external users |
+| Public GitHub launch | 5 | Week 5 | Open source |
+| 500 GitHub stars | 5 | Week 6 | Community traction |
+| First sovereign deployment | 5 | Week 7 | Real-world impact |
+| Academic paper submitted | 5 | Week 8 | NeurIPS / ICLR |
 
 ---
 
@@ -144,7 +144,7 @@ PHASE 5: Open Source Launch & Sovereignty
 
 ---
 
-## KPI Dashboard (Check Monthly)
+## KPI Dashboard (Check Weekly)
 
 ### Technical KPIs
 
@@ -160,7 +160,7 @@ PHASE 5: Open Source Launch & Sovereignty
 
 ### Community KPIs (Phase 5+)
 
-| KPI | 3 Months Post-Launch | 6 Months | 12 Months |
+| KPI | 3 Weeks Post-Launch | 6 Weeks | 12 Weeks |
 |---|---|---|---|
 | GitHub stars | 500 | 1,500 | 5,000 |
 | PyPI downloads / month | 1,000 | 5,000 | 20,000 |
@@ -174,27 +174,27 @@ PHASE 5: Open Source Launch & Sovereignty
 
 ### Internal (During Development)
 
-- Weekly: brief progress log in `CHANGELOG.md`
-- Monthly: phase review document
+- Daily: progress log in `CHANGELOG.md`
+- Weekly: phase review document
 - Per-milestone: benchmark report
 
 ### External (From Phase 4+)
 
-- Month 12: Blog post — "Why We're Building AWFE"
-- Month 13: Launch post — "AWFE v1.0: Convert Any Model to Any Architecture"
-- Month 15: Technical deep-dive — "The Mathematics of Weight Transfer"
-- Month 18: Sovereignty case study — "How AWFE Powers Ethiopia's First Sovereign AI"
-- Month 18: Academic paper submission
+- Week 4: Blog post — "Why We're Building Paradom"
+- Week 5: Launch post — "Paradom v1.0: Convert Any Model to Any Architecture"
+- Week 6: Technical deep-dive — "The Mathematics of Weight Transfer"
+- Week 7: Sovereignty case study — "How Paradom Powers Ethiopia's First Sovereign AI"
+- Week 8: Academic paper submission
 
 ---
 
 ## Definition of Project Success
 
 **Minimum Viable Success (Phase 3):**
-> AWFE demonstrably transfers meaningful intelligence from transformer models to at least one different architecture, with ≥65% quality retention and no training data required.
+> Paradom demonstrably transfers meaningful intelligence from transformer models to at least one different architecture, with ≥65% quality retention and no training data required.
 
 **Full Success (Phase 5):**
-> AWFE is a widely-used open-source framework. At least one sovereign AI system has been built using AWFE. An academic paper is under review. The framework has a vibrant contributor community.
+> Paradom is a widely-used open-source framework. At least one sovereign AI system has been built using Paradom. An academic paper is under review. The framework has a vibrant contributor community.
 
 **Transformative Success (Long-term):**
-> Cross-architecture weight conversion becomes standard practice, the way transfer learning is today. AWFE is cited as a foundational tool. Nations that previously had no path to sovereign AI have used AWFE to build their own models.
+> Cross-architecture weight conversion becomes standard practice, the way transfer learning is today. Paradom is cited as a foundational tool. Nations that previously had no path to sovereign AI have used Paradom to build their own models.

@@ -1,6 +1,6 @@
-# System Diagrams: AWFE Framework
+# System Diagrams: Paradom Framework
 
-**Document:** AWFE-DIAG-001  
+**Document:** PARADOM-DIAG-001  
 **Version:** 1.0.0
 
 ---
@@ -9,7 +9,7 @@
 
 ```
 ╔══════════════════════════════════════════════════════════════════╗
-║                     THE AWFE CONCEPT                            ║
+║                    THE PARADOM CONCEPT                           ║
 ║                                                                  ║
 ║   "Same knowledge, different mathematical representation"        ║
 ║                                                                  ║
@@ -26,7 +26,7 @@
                                 │
                                 ▼
          ┌─────────────────────────────────────────────┐
-         │              AWFE ENGINE                    │
+         │             PARADOM ENGINE                  │
          │                                             │
          │  Parse → Decompose → Map → Construct        │
          │                                             │
@@ -159,7 +159,7 @@ OUTPUT: ./output/<model>/
   ├── model.safetensors
   ├── tokenizer/
   ├── conversion_report.json
-  └── awfe_metadata.json
+  └── paradom_metadata.json
 ```
 
 ---
@@ -182,7 +182,7 @@ Output = Attn @ W_O                      y_t = C·h_t
 Key pattern matrix:                      
 P = W_Q @ W_K^T ∈ ℝ^(d × d)           
                                          
-         AWFE BRIDGE
+         PARADOM BRIDGE
          ──────────
                                          
 Eigendecompose P:                        
@@ -223,7 +223,7 @@ CONVERSION QUALITY SPECTRUM
   │                                         (calibrate!)
   0%
 
-EXPECTED AWFE QUALITY BY CONVERSION TYPE:
+EXPECTED PARADOM QUALITY BY CONVERSION TYPE:
   Same-arch (Phase 1):          ████████████████████  85–95% EXCELLENT
   Cross-arch + calibration:     ████████████████      70–85% GOOD
   Transformer → Mamba:          ████████████          60–75% GOOD/ACCEPTABLE
@@ -235,7 +235,7 @@ EXPECTED AWFE QUALITY BY CONVERSION TYPE:
 ## Diagram 5: Sovereignty Architecture
 
 ```
-THE SOVEREIGN AI STACK (Powered by AWFE)
+THE SOVEREIGN AI STACK (Powered by Paradom)
 ──────────────────────────────────────────
 
   GLOBAL COMMONS (Open Source Weights)
@@ -243,12 +243,12 @@ THE SOVEREIGN AI STACK (Powered by AWFE)
   │   LLaMA 3    Mistral    Falcon    Gemma    Qwen    ...   │
   │   (Apache 2.0 / permissive licenses)                     │
   └──────────────────────────┬───────────────────────────────┘
-                             │  AWFE converts weights
+                             │  Paradom converts weights
                              ▼
   SOVEREIGN CUSTOMIZATION LAYER
   ┌──────────────────────────────────────────────────────────┐
   │                                                          │
-  │   AWFE Engine                                            │
+  │   Paradom Engine                                         │
   │   ├── Convert to sovereign architecture                  │
   │   ├── Optimize for local hardware                        │
   │   └── Preserve 65-85% of source intelligence            │
@@ -273,7 +273,7 @@ THE SOVEREIGN AI STACK (Powered by AWFE)
 TOTAL COST COMPARISON:
   Train from scratch:   $2M–$100M     ❌ Inaccessible
   Fine-tune only:       $10K–$500K    ⚠️  Dependency on source arch
-  AWFE + fine-tune:     $1K–$50K      ✅ Affordable, fully sovereign
+  Paradom + fine-tune:  $1K–$50K      ✅ Affordable, fully sovereign
 ```
 
 ---
@@ -283,16 +283,16 @@ TOTAL COST COMPARISON:
 ```
                     ┌─────────────┐
                     │    CLI      │
-                    │  (awfe_cli) │
+                    │(paradom_cli)│
                     └──────┬──────┘
                            │
                     ┌──────▼──────┐
                     │  Python API │
-                    │  (awfe_api) │
+                    │(paradom_api)│
                     └──────┬──────┘
                            │
               ┌────────────▼────────────┐
-              │       AWFE Core         │
+              │      Paradom Core       │
               │   (pipeline.py)         │
               └─┬──────┬───────┬────────┘
                 │      │       │

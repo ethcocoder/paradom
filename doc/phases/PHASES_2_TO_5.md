@@ -1,7 +1,7 @@
 # Phase 2: Core Engine Development
 
-**Document:** AWFE-PHASE-002  
-**Duration:** Months 4–6  
+**Document:** PARADOM-PHASE-002  
+**Duration:** Week 2  
 **Prerequisites:** Phase 1 complete, ≥70% quality retention demonstrated  
 **Goal:** Build and validate the first true cross-architecture conversion (Transformer → Mamba SSM).
 
@@ -9,7 +9,7 @@
 
 ## Phase 2 Objective
 
-> Implement and validate the TransformerToMambaMapper — the first genuine cross-architecture weight transfer in AWFE. This is the scientifically novel contribution.
+> Implement and validate the TransformerToMambaMapper — the first genuine cross-architecture weight transfer in Paradom. This is the scientifically novel contribution.
 
 ---
 
@@ -24,7 +24,7 @@
 
 ---
 
-## Month 4: Transformer → Mamba Mapping
+## Week 2: Transformer → Mamba Mapping
 
 ### Core Implementation
 
@@ -78,7 +78,7 @@ class TransformerToMambaMapper(BaseMapper):
 
 ---
 
-## Month 5: Streaming Mode & MoE Mapping
+## Week 2: Streaming Mode & MoE Mapping
 
 ### Streaming Conversion (Week 5–6)
 
@@ -123,7 +123,7 @@ class StreamingConverter:
 
 ---
 
-## Month 6: Mapping Registry & Quality Hardening
+## Week 2: Mapping Registry & Quality Hardening
 
 **Tasks:**
 - Implement `MappingRegistry` with all 4+ conversion paths
@@ -156,8 +156,8 @@ LLaMA 3 8B → MoE-7B (custom):
 
 # Phase 3: Validation & Intelligence Preservation
 
-**Document:** AWFE-PHASE-003  
-**Duration:** Months 7–9  
+**Document:** PARADOM-PHASE-003  
+**Duration:** Week 3  
 **Goal:** Maximize quality of converted models through calibration and bias correction.
 
 ---
@@ -178,7 +178,7 @@ LLaMA 3 8B → MoE-7B (custom):
 
 ---
 
-## Month 7: Zero-Shot Calibration
+## Week 3: Zero-Shot Calibration
 
 ### Activation Matching
 
@@ -228,7 +228,7 @@ class ZeroShotCalibrator:
 
 ---
 
-## Month 8: Few-Shot Calibration & Benchmarking
+## Week 3: Few-Shot Calibration & Benchmarking
 
 ### Few-Shot Calibration Pipeline
 
@@ -257,7 +257,7 @@ Publish results on project website to establish public credibility.
 
 ---
 
-## Month 9: Quality Hardening & Public Report
+## Week 3: Quality Hardening & Public Report
 
 **Tasks:**
 - Identify and fix top 5 failure modes in conversion quality
@@ -272,15 +272,15 @@ Publish results on project website to establish public credibility.
 
 # Phase 4: Scale & Production
 
-**Document:** AWFE-PHASE-004  
-**Duration:** Months 10–12  
-**Goal:** Make AWFE production-ready, scalable, and accessible to real users.
+**Document:** PARADOM-PHASE-004  
+**Duration:** Week 4  
+**Goal:** Make Paradom production-ready, scalable, and accessible to real users.
 
 ---
 
 ## Phase 4 Objective
 
-> Transform AWFE from a research tool into a production-grade framework that real engineers can use to convert 70B+ models in organizational/cloud settings.
+> Transform Paradom from a research tool into a production-grade framework that real engineers can use to convert 70B+ models in organizational/cloud settings.
 
 ---
 
@@ -295,7 +295,7 @@ Publish results on project website to establish public credibility.
 
 ---
 
-## Month 10: Scale & Performance
+## Week 4: Scale & Performance
 
 ### 70B Model Support
 
@@ -330,7 +330,7 @@ class ParallelConverter:
 
 ---
 
-## Month 11: REST API & Web UI
+## Week 4: REST API & Web UI
 
 ### Conversion API Server
 
@@ -368,7 +368,7 @@ A minimal web interface so researchers without CLI experience can:
 
 ---
 
-## Month 12: Polish, PyPI Release & First External Users
+## Week 4: Polish, PyPI Release & First External Users
 
 **Tasks:**
 - Full documentation website (Sphinx or MkDocs)
@@ -385,36 +385,36 @@ A minimal web interface so researchers without CLI experience can:
 
 # Phase 5: Open Source & Sovereignty Release
 
-**Document:** AWFE-PHASE-005  
-**Duration:** Month 13+  
-**Goal:** Establish AWFE as the global standard for cross-architecture model conversion, with a specific focus on enabling sovereign AI.
+**Document:** PARADOM-PHASE-005  
+**Duration:** Week 5+  
+**Goal:** Establish Paradom as the global standard for cross-architecture model conversion, with a specific focus on enabling sovereign AI.
 
 ---
 
 ## Phase 5 Objective
 
-> Launch AWFE publicly, build the community, and demonstrate real-world impact by helping at least one organization build a sovereign AI system using AWFE.
+> Launch Paradom publicly, build the community, and demonstrate real-world impact by helping at least one organization build a sovereign AI system using Paradom.
 
 ---
 
 ## Success Criteria
 
 - [ ] GitHub repository reaches 500+ stars within 3 months of launch
-- [ ] At least 1 sovereign AI project (national/regional) uses AWFE
+- [ ] At least 1 sovereign AI project (national/regional) uses Paradom
 - [ ] Academic paper submitted to peer-reviewed venue
 - [ ] 5+ community-contributed architecture definitions
-- [ ] AWFE cited in at least 3 external research projects
+- [ ] Paradom cited in at least 3 external research projects
 
 ---
 
 ## Sovereign AI Initiative
 
-AWFE's mission includes enabling sovereign AI — the ability for nations and communities to own and control their AI infrastructure.
+Paradom's mission includes enabling sovereign AI — the ability for nations and communities to own and control their AI infrastructure.
 
 ### Sovereign Deployment Guide
 
 ```markdown
-# Sovereign AI with AWFE: A Practical Guide
+# Sovereign AI with Paradom: A Practical Guide
 
 Step 1: Choose your base model
   → Select an open-source model that performs well on your language/domain
@@ -425,12 +425,12 @@ Step 2: Design your architecture
   → Define your architecture YAML
 
 Step 3: Convert with AWFE
-  → awfe convert --source <chosen-model> --target-arch custom \
+  → Paradom convert --source <chosen-model> --target-arch custom \
       --target-config ./my_country_arch.yaml
 
 Step 4: Fine-tune on local data (optional but recommended)
   → Use standard LoRA fine-tuning with local language data
-  → AWFE gives you the starting point; fine-tuning makes it yours
+  → Paradom gives you the starting point; fine-tuning makes it yours
 
 Step 5: Deploy on sovereign infrastructure
   → Your model, your hardware, your control
@@ -465,13 +465,13 @@ Target venues:
 
 ---
 
-## Long-Term Vision (Year 2+)
+## Long-Term Vision (Week 6+)
 
 | Milestone | Target Date |
 |---|---|
-| Support for 10+ source architectures | Month 18 |
-| Automated architecture design ("what target arch fits my hardware?") | Month 20 |
-| AWFE-powered national AI launch (first sovereign deployment) | Month 24 |
-| 5000+ GitHub stars | Month 24 |
-| Academic paper accepted | Month 18 |
-| Commercial hosted service (optional) | Month 30 |
+| Support for 10+ source architectures | Week 8 |
+| Automated architecture design ("what target arch fits my hardware?") | Week 10 |
+| Paradom-powered national AI launch (first sovereign deployment) | Week 12 |
+| 5000+ GitHub stars | Week 12 |
+| Academic paper accepted | Week 10 |
+| Commercial hosted service (optional) | Week 16 |

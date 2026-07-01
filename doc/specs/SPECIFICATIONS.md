@@ -1,6 +1,6 @@
-# Technical Specifications: AWFE Framework
+# Technical Specifications: Paradom Framework
 
-**Document:** AWFE-SPEC-001  
+**Document:** PARADOM-SPEC-001  
 **Version:** 1.0.0  
 **Date:** 2026-06-30
 
@@ -132,7 +132,7 @@ class TransformerToTransformerMapper(BaseMapper):
 
 **Use case:** Converting transformer (LLaMA/Mistral) to Mamba SSM
 
-**This is the most novel mapping in AWFE.**
+**This is the most novel mapping in Paradom.**
 
 ```python
 class TransformerToMambaMapper(BaseMapper):
@@ -435,7 +435,7 @@ Peak RAM during conversion ≈ 2.5 × source_model_size_on_disk
 
 Example:
   Mistral 7B (fp16) on disk: ~14GB
-  Peak AWFE RAM usage: ~35GB
+  Peak Paradom RAM usage: ~35GB
 
 Streaming mode peak: ≈ 1.2 × source_model_size (layer-by-layer)
 ```
@@ -445,21 +445,21 @@ Streaming mode peak: ≈ 1.2 × source_model_size (layer-by-layer)
 ## 7. Error Handling Specifications
 
 ```python
-class AWFEException(Exception): pass
+class ParadomException(Exception): pass
 
-class UnsupportedMappingError(AWFEException):
+class UnsupportedMappingError(ParadomException):
     """Raised when no mapping exists for the source→target pair."""
 
-class DimensionMismatchError(AWFEException):
+class DimensionMismatchError(ParadomException):
     """Raised when dimensions cannot be resolved with any strategy."""
 
-class QualityBelowThresholdError(AWFEException):
+class QualityBelowThresholdError(ParadomException):
     """Raised when conversion quality falls below minimum acceptable tier."""
     def __init__(self, tier: str, metrics: ValidationReport):
         self.tier = tier
         self.metrics = metrics
 
-class InsufficientMemoryError(AWFEException):
+class InsufficientMemoryError(ParadomException):
     """Raised when system RAM is insufficient; suggests streaming mode."""
 ```
 
@@ -468,7 +468,7 @@ class InsufficientMemoryError(AWFEException):
 ## 8. Configuration File Specification
 
 ```yaml
-# awfe_config.yaml — Global AWFE configuration
+# paradom_config.yaml — Global Paradom configuration
 
 conversion:
   default_dtype: "bfloat16"

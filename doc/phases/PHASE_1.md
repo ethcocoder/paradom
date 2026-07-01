@@ -1,7 +1,7 @@
 # Phase 1: Foundation & Prototype
 
-**Document:** AWFE-PHASE-001  
-**Duration:** Months 1–3  
+**Document:** PARADOM-PHASE-001  
+**Duration:** Week 1  
 **Status:** NOT STARTED  
 **Goal:** Prove the core hypothesis with a working minimal prototype.
 
@@ -23,9 +23,9 @@
 
 ---
 
-## Month 1: Setup & Core Infrastructure
+## Week 1: Setup & Core Infrastructure
 
-### Week 1–2: Project Bootstrap
+### Days 1–2: Project Bootstrap
 
 **Tasks:**
 - Set up Python package structure (`awfe/`)
@@ -54,7 +54,7 @@ class ModelLoader:
 
 ---
 
-### Week 3–4: Architecture Parser
+### Days 3–4: Architecture Parser
 
 **Tasks:**
 - Implement `ArchitectureParser.detect_architecture()`
@@ -76,9 +76,9 @@ class ModelLoader:
 
 ---
 
-## Month 2: Mathematical Core
+## Week 1: Mathematical Core
 
-### Week 5–6: Decomposition Engine
+### Days 5–6: Decomposition Engine
 
 **Tasks:**
 - Implement `WeightDecomposer.svd_decompose()` with energy thresholding
@@ -101,7 +101,7 @@ assert reconstruction_error < 0.01  # <1% reconstruction error
 
 ---
 
-### Week 7–8: First Mapper — Same-Family Transformer
+### Days 7: First Mapper — Same-Family Transformer
 
 **Tasks:**
 - Implement `TransformerToTransformerMapper`
@@ -123,9 +123,9 @@ for layer_name, weights in result.layers.items():
 
 ---
 
-## Month 3: Validation & First Prototype
+## Week 1: Validation & First Prototype
 
-### Week 9–10: Validation Suite
+### Days 7: Validation Suite
 
 **Tasks:**
 - Implement `perplexity_delta()` using WikiText-2 test set
@@ -146,7 +146,7 @@ awfe validate \
 
 ---
 
-### Week 11–12: End-to-End Integration & Documentation
+### Days 7: End-to-End Integration & Documentation
 
 **Tasks:**
 - Wire all modules into `AWFE.convert()` main pipeline
