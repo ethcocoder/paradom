@@ -1,9 +1,0 @@
-# Target Architecture: Sovereign-2L (Our First New Model)
-paradigm: "llm"
-layers:
-  sovereign.layer_0.q_projection: {role: "CONTEXT_QUERY", shape: [768, 768]}
-  sovereign.layer_0.k_projection: {role: "CONTEXT_KEY", shape: [768, 768]}
-  sovereign.layer_0.v_projection: {role: "CONTEXT_VALUE", shape: [768, 768]}
-  sovereign.layer_1.q_projection: {role: "CONTEXT_QUERY", shape: [768, 768]}
-  sovereign.layer_1.k_projection: {role: "CONTEXT_KEY", shape: [768, 768]}
-  sovereign.layer_1.v_projection: {role: "CONTEXT_VALUE", shape: [768, 768]}

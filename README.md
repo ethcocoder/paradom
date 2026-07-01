@@ -126,16 +126,16 @@ Paradom is grounded in three pillars of recent research:
 
 | Document | Description |
 |---|---|
-| [Research Foundation](./doc/research/RESEARCH.md) | Scientific basis, prior art, all ML/DL paradigm analysis |
-| [Architecture Design](./doc/architecture/ARCHITECTURE.md) | System design, swap engine, equivalence identifier |
-| [Technical Specifications](./doc/specs/SPECIFICATIONS.md) | Detailed specs for every module and paradigm |
-| [Phase 1 (Day 1)](./doc/phases/PHASE_1.md) | Streaming Engine & Discovery |
-| [Phase 2 (Day 2)](./doc/phases/PHASE_2.md) | Universal Paradigm Handlers |
-| [Phase 3 (Day 3)](./doc/phases/PHASE_3.md) | Intelligence Mapping & Hardening |
-| [Phase 4 (Day 4)](./doc/phases/PHASE_4.md) | Production Scaling & 70B Support |
-| [Phase 5 (Day 5)](./doc/phases/PHASE_5.md) | Launch & Sovereign Deployment |
-| [Master Roadmap](./doc/roadmap/ROADMAP.md) | Full timeline, milestones, KPIs |
-| [Diagrams](./doc/diagrams/DIAGRAMS.md) | Visual architecture and equivalence maps |
+| [Research Foundation](./research/RESEARCH.md) | Scientific basis, prior art, all ML/DL paradigm analysis |
+| [Architecture Design](./architecture/ARCHITECTURE.md) | System design, swap engine, equivalence identifier |
+| [Technical Specifications](./specs/SPECIFICATIONS.md) | Detailed specs for every module and paradigm |
+| [Phase 1](./phases/PHASE_1.md) | Proof of Concept — number equivalence on tiny models |
+| [Phase 2](./phases/PHASE_2.md) | Swap Engine — LLM paradigm first |
+| [Phase 3](./phases/PHASE_3.md) | Multi-Paradigm Expansion |
+| [Phase 4](./phases/PHASE_4.md) | Scale & Production |
+| [Phase 5](./phases/PHASE_5.md) | Open Source & Sovereign AI Launch |
+| [Master Roadmap](./roadmap/ROADMAP.md) | Full timeline, milestones, KPIs |
+| [Diagrams](./diagrams/DIAGRAMS.md) | Visual architecture and equivalence maps |
 
 ---
 
