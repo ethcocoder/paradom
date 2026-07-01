@@ -6,7 +6,16 @@ class ParadoxFoundation:
     
     @staticmethod
     def procrustes_project(W_src, target_shape):
-        """Projects source intelligence onto target dimensions (1D or 2D)."""
+        """Projects source intelligence onto target dimensions (1D or 2D).
+        
+        CRITICAL: When source and target shapes match, we perform a DIRECT SWAP.
+        This is the core Paradom principle — identical numerical products need 
+        no mathematical transformation. Only mismatched dimensions require SVD projection.
+        """
+        # FAST PATH: Direct Equivalence Swap (shapes match exactly)
+        if W_src.shape == target_shape:
+            return W_src.copy()
+        
         # Handle 1D Vectors (e.g. Norms, Biases)
         if len(target_shape) == 1:
             size_tgt = target_shape[0]

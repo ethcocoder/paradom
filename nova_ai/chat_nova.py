@@ -74,6 +74,7 @@ class NovaInference:
             probs = np.exp(scores - np.max(scores, axis=-1, keepdims=True))
             probs /= np.sum(probs, axis=-1, keepdims=True)
             
+            # Attn Out: (h, t, d)
             attn_out = np.einsum('hts,shd->thd', probs, v).reshape(tokens.shape[0], self.dim)
             h = h + attn_out @ self.weights[f"nova.layer.{i}.o"].T
             
@@ -124,8 +125,12 @@ def main():
     while True:
         user_input = input("You: ")
         if user_input.lower() in ["exit", "quit"]: break
+        
+        # SmolLM Chat Template
+        full_prompt = f"<|im_start|>user\n{user_input}<|im_end|>\n<|im_start|>assistant\n"
+        
         print("Nova: ", end="", flush=True)
-        for chunk in nova.generate(user_input):
+        for chunk in nova.generate(full_prompt, temp=0.2): # Consistency
             print(chunk, end="", flush=True)
         print("\n")
 
