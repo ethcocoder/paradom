@@ -2,13 +2,13 @@
   "experiment": "001",
   "swap_fraction": 0.2,
   "perplexity": {
-    "transformer_source": 7902.18,
-    "mamba_trained": 31871.23,
-    "mamba_random": 63929.52,
-    "mamba_swapped": 43502.61
+    "transformer_source": 17.21,
+    "mamba_trained": 23.86,
+    "mamba_random": 59318.8,
+    "mamba_swapped": 67782.72
   },
-  "intelligence_retention": 0.6372,
-  "mean_cka": 0.0138,
+  "intelligence_retention": -0.1427,
+  "mean_cka": 0.1671,
   "quality_tier": "degraded",
   "weights_swapped": 21,
   "swap_type_distribution": {
@@ -16,5 +16,5 @@
     "projected": 0.38095238095238093,
     "derived": 0.2857142857142857
   },
-  "status": "PARTIAL SUCCESS"
+  "status": "FAILURE"
 }

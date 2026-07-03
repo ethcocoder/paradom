@@ -1,54 +1,54 @@
 {
-  "baseline_trained": 32195.576171875,
-  "baseline_random": 67746.9765625,
+  "baseline_trained": 22.464662551879883,
+  "baseline_random": 49020.4375,
   "sweep": [
     {
       "ratio": 0.05,
-      "perplexity": 48511.33,
-      "retention": 0.5411,
+      "perplexity": 59858.95,
+      "retention": -0.2212,
       "within_20pct_of_trained": false
     },
     {
       "ratio": 0.1,
-      "perplexity": 44220.52,
-      "retention": 0.6618,
+      "perplexity": 97921.97,
+      "retention": -0.998,
       "within_20pct_of_trained": false
     },
     {
       "ratio": 0.2,
-      "perplexity": 43971.27,
-      "retention": 0.6688,
+      "perplexity": 42336.31,
+      "retention": 0.1364,
       "within_20pct_of_trained": false
     },
     {
       "ratio": 0.35,
-      "perplexity": 49619.71,
-      "retention": 0.5099,
+      "perplexity": 42426.36,
+      "retention": 0.1346,
       "within_20pct_of_trained": false
     },
     {
       "ratio": 0.5,
-      "perplexity": 53852.44,
-      "retention": 0.3908,
+      "perplexity": 29053.46,
+      "retention": 0.4075,
       "within_20pct_of_trained": false
     },
     {
       "ratio": 0.75,
-      "perplexity": 52541.87,
-      "retention": 0.4277,
+      "perplexity": 24200.57,
+      "retention": 0.5065,
       "within_20pct_of_trained": false
     },
     {
       "ratio": 1.0,
-      "perplexity": 47659.82,
-      "retention": 0.565,
+      "perplexity": 19041.26,
+      "retention": 0.6118,
       "within_20pct_of_trained": false
     }
   ],
   "best": {
-    "ratio": 0.2,
-    "perplexity": 43971.27,
-    "retention": 0.6688,
+    "ratio": 1.0,
+    "perplexity": 19041.26,
+    "retention": 0.6118,
     "within_20pct_of_trained": false
   }
 }
