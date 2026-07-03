@@ -1,0 +1,54 @@
+{
+  "baseline_trained": 32195.576171875,
+  "baseline_random": 67746.9765625,
+  "sweep": [
+    {
+      "ratio": 0.05,
+      "perplexity": 48511.33,
+      "retention": 0.5411,
+      "within_20pct_of_trained": false
+    },
+    {
+      "ratio": 0.1,
+      "perplexity": 44220.52,
+      "retention": 0.6618,
+      "within_20pct_of_trained": false
+    },
+    {
+      "ratio": 0.2,
+      "perplexity": 43971.27,
+      "retention": 0.6688,
+      "within_20pct_of_trained": false
+    },
+    {
+      "ratio": 0.35,
+      "perplexity": 49619.71,
+      "retention": 0.5099,
+      "within_20pct_of_trained": false
+    },
+    {
+      "ratio": 0.5,
+      "perplexity": 53852.44,
+      "retention": 0.3908,
+      "within_20pct_of_trained": false
+    },
+    {
+      "ratio": 0.75,
+      "perplexity": 52541.87,
+      "retention": 0.4277,
+      "within_20pct_of_trained": false
+    },
+    {
+      "ratio": 1.0,
+      "perplexity": 47659.82,
+      "retention": 0.565,
+      "within_20pct_of_trained": false
+    }
+  ],
+  "best": {
+    "ratio": 0.2,
+    "perplexity": 43971.27,
+    "retention": 0.6688,
+    "within_20pct_of_trained": false
+  }
+}

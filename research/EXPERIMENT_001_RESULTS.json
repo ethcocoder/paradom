@@ -1,0 +1,20 @@
+{
+  "experiment": "001",
+  "swap_fraction": 0.2,
+  "perplexity": {
+    "transformer_source": 7902.18,
+    "mamba_trained": 31871.23,
+    "mamba_random": 63929.52,
+    "mamba_swapped": 43502.61
+  },
+  "intelligence_retention": 0.6372,
+  "mean_cka": 0.0138,
+  "quality_tier": "degraded",
+  "weights_swapped": 21,
+  "swap_type_distribution": {
+    "direct": 0.23809523809523808,
+    "projected": 0.38095238095238093,
+    "derived": 0.2857142857142857
+  },
+  "status": "PARTIAL SUCCESS"
+}
