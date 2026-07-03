@@ -9,10 +9,10 @@ from paradom.models.tiny_mamba import TinyMamba
 from scripts.data_utils import get_wikitext_subset, CausalDataset
 
 SEED = 42
-NUM_SAMPLES = 2000
-EPOCHS = 2
+NUM_SAMPLES = 10000
+EPOCHS = 5
 BATCH_SIZE = 16
-LR = 1e-4
+LR = 5e-4
 
 
 def set_seed(seed: int = SEED) -> None:

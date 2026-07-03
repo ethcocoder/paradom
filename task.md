@@ -1,11 +1,11 @@
 # Task List: Paradom Phase 1 Core Experiment
 
-- [x] Create tiny model architectures
+- [x] Upgrade `TinyMamba` architecture with functional SSM scan
     - [x] `paradom/models/tiny_transformer.py`
     - [x] `paradom/models/tiny_mamba.py`
 - [x] Implement training infrastructure & Fixes
     - [x] `scripts/data_utils.py` (WikiText subset)
-    - [x] `scripts/train_poc.py` (checkpoints, seed, 2000 samples, 2 epochs)
+    - [x] `scripts/train_poc.py` (checkpoints, seed, 10,000 samples, 5 epochs)
     - [x] `scripts/experiment_001.py` (directory creation, full report)
 - [x] Refine Paradom Core for PoC
     - [x] Extend `FunctionalRoleMatcher` roles

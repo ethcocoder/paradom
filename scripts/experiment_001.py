@@ -76,7 +76,7 @@ def main():
     os.makedirs("research", exist_ok=True)
     os.makedirs("output", exist_ok=True)
 
-    tokenized, _ = get_wikitext_subset(num_samples=500)
+    tokenized, _ = get_wikitext_subset(num_samples=1000)
     dataset = CausalDataset(tokenized)
     loader = DataLoader(dataset, batch_size=32)
 

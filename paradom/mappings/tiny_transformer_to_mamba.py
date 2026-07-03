@@ -68,24 +68,25 @@ class TinyTransformerToMambaMapper:
             q = source[f"{prefix}q_proj.weight"]
             k = source[f"{prefix}k_proj.weight"]
             v = source[f"{prefix}v_proj.weight"]
-
-            in_first = torch.cat([q, k], dim=0)
-            in_second = torch.cat([v, v], dim=0)
-            in_proj = torch.cat([in_first, in_second], dim=0)
+            # Content (v) -> SSM branch (x)
+            # Selection (q, k) -> Gating branch (z)
+            in_first = torch.cat([v, v], dim=0) # (512, 256) -> d_inner
+            in_second = torch.cat([q, k], dim=0) # (512, 256) -> d_inner
+            in_proj = torch.cat([in_first, in_second], dim=0) # (1024, 256) -> 2*d_inner
+            
             in_proj = self._apply_fraction(in_proj, swap_fraction)
             target[f"{prefix}in_proj.weight"] = in_proj
             pairs.append(self._pair(
-                f"{prefix}q_proj+k_proj+v_proj",
+                f"{prefix}v_proj+q_proj+k_proj",
                 f"{prefix}in_proj.weight",
                 in_proj.shape,
-                q,
+                torch.cat([v, q, k], dim=0),
                 in_proj,
                 SwapType.PROJECTED,
             ))
             cka_scores[f"{prefix}in_proj.weight"] = weight_cka(
-                torch.cat([q, k, v], dim=0), in_proj
+                torch.cat([v, q, k], dim=0), in_proj
             )
-
             o = source[f"{prefix}o_proj.weight"]
             out_proj = self._projected(
                 o, (self.D_MODEL, self.D_INNER), swap_fraction
