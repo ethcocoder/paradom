@@ -11,6 +11,7 @@
     - [x] Extend `FunctionalRoleMatcher` roles
     - [x] `TinyTransformerToMambaMapper` with SSM derivation (A_log, D, conv1d)
     - [x] Real CKA scoring + explicit layer map per SPEC §5.1
+    - [x] Fix package structure (missing `__init__.py` files)
 - [x] Execute Experiment (WSL Ubuntu)
     - [x] WSL Ubuntu environment
     - [x] Train Transformer (Source) — checkpoints in `checkpoints/`

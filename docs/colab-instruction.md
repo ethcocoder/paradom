@@ -25,6 +25,7 @@ You can run the full Phase 1 pipeline (Training -> Swap -> Evaluation) with a si
 
 ```python
 # Force retraining with the updated architecture and 10k samples
+# (Path detection is now dynamic, works in /content/paradom)
 !rm -rf checkpoints/*
 !bash scripts/run_phase1_wsl.sh
 ```

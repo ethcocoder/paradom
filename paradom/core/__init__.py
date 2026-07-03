@@ -1,0 +1,1 @@
+# paradom.core
