@@ -45,7 +45,7 @@ pytest.log
 
 # --- PARADOM SPECIFIC ---
 # Exclude heavy model binaries
-models/
+
 *.safetensors
 *.bin
 *.pt
