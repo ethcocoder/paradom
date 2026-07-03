@@ -48,7 +48,6 @@ pytest.log
 
 *.safetensors
 *.bin
-*.pt
 *.ckpt
 
 # Temporary data
