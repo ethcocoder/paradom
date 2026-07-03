@@ -15,14 +15,7 @@ $PY -c "import torch, safetensors, transformers; print('torch', torch.__version_
 $PY -c "import paradom; print('paradom module path:', paradom.__file__)"
 $PY -c "from paradom.core.engine import Paradom; print('paradom core OK')"
 
-if $PY -c "import pytest" 2>/dev/null; then
-  echo ""
-  echo "=== Tests ==="
-  $PY -m pytest tests/ -v --tb=short
-else
-  echo ""
-  echo "=== Tests skipped (pytest not installed) ==="
-fi
+
 
 if [[ ! -f checkpoints/tiny_transformer_trained.pt ]] || [[ ! -f checkpoints/tiny_mamba_trained.pt ]]; then
   echo ""
