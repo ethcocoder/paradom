@@ -255,7 +255,7 @@ class TinyTransformerToMambaMapper:
         mask = self.scorer.score_svd_spectrum(tensor, top_k_fraction=swap_fraction)
         if mask.shape != tensor.shape:
             return tensor
-        init = self.swap_engine._xavier_init(tensor.shape, tensor.dtype)
+        init = self.swap_engine._xavier_init(tensor.shape, tensor.dtype, tensor.device)
         init[mask] = tensor[mask]
         return init
 

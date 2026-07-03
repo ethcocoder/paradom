@@ -35,7 +35,7 @@ def derive_A_log_from_attention(
 
     channel_scale = channel_scale / channel_scale.mean().clamp(min=1e-6)
     A_log = A_log_base.unsqueeze(0) * channel_scale.unsqueeze(1)
-    return A_log.to(W_q.dtype)
+    return A_log.to(device=W_q.device, dtype=W_q.dtype)
 
 
 def derive_D_from_value_proj(W_v: Tensor, d_inner: int) -> Tensor:
@@ -51,7 +51,7 @@ def derive_D_from_value_proj(W_v: Tensor, d_inner: int) -> Tensor:
     else:
         D = row_energy
     D = D / D.mean().clamp(min=1e-6)
-    return D.to(W_v.dtype)
+    return D.to(device=W_v.device, dtype=W_v.dtype)
 
 
 def derive_conv1d_from_attention(
@@ -75,6 +75,6 @@ def derive_conv1d_from_attention(
         channel_energy = row_energy
 
     channel_energy = channel_energy / channel_energy.sum().clamp(min=1e-6)
-    kernel = torch.full((d_inner, 1, d_conv), 1.0 / d_conv)
+    kernel = torch.full((d_inner, 1, d_conv), 1.0 / d_conv, device=W_v.device, dtype=W_v.dtype)
     kernel = kernel * channel_energy.view(d_inner, 1, 1)
-    return kernel.to(W_v.dtype)
+    return kernel

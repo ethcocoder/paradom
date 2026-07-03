@@ -39,7 +39,7 @@ class SwapEngine:
             return W_src.clone().detach()
 
         # Only swap masked elements, initialize rest with Xavier
-        W_target = self._xavier_init(target_shape, W_src.dtype)
+        W_target = self._xavier_init(target_shape, W_src.dtype, W_src.device)
         
         # Ensure mask and weights are on same device/dtype
         mask = mask.to(W_src.device)
@@ -75,7 +75,7 @@ class SwapEngine:
         W_reconstructed = (U_r * S_r.unsqueeze(0)) @ Vh_r
         
         # Reshape to target actual shape
-        W_target_2d = torch.zeros((d_out_tgt, d_in_tgt), dtype=torch.float32)
+        W_target_2d = torch.zeros((d_out_tgt, d_in_tgt), dtype=torch.float32, device=W_src.device)
         r_out = min(d_out_tgt, W_reconstructed.shape[0])
         r_in = min(d_in_tgt, W_reconstructed.shape[1])
         W_target_2d[:r_out, :r_in] = W_reconstructed[:r_out, :r_in]
@@ -85,18 +85,15 @@ class SwapEngine:
         if mask is not None:
             # If a mask is provided, we only keep the projected weights 
             # where the mask indicates importance. 
-            # Note: Mask should ideally be in target shape if provided for projected swap.
-            # For Phase 1 simplification, we'll assume mask is for source or same-arch.
-            # If shape mismatch, we skip masking for now or re-project the mask.
             if mask.shape == target_shape:
-                W_final = self._xavier_init(target_shape, W_src.dtype)
+                W_final = self._xavier_init(target_shape, W_src.dtype, W_src.device)
                 W_final[mask] = W_target[mask]
                 return W_final
         
         return W_target
 
-    def _xavier_init(self, shape: tuple, dtype: torch.dtype) -> Tensor:
-        W = torch.empty(shape, dtype=dtype)
+    def _xavier_init(self, shape: tuple, dtype: torch.dtype, device: torch.device = torch.device("cpu")) -> Tensor:
+        W = torch.empty(shape, dtype=dtype, device=device)
         if len(shape) >= 2:
             torch.nn.init.xavier_uniform_(W)
         else:
