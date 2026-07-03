@@ -9,8 +9,11 @@ PY=python3
 
 echo "=== Environment ==="
 $PY --version
+# Force editable install to refresh package structure in the current environment
+$PY -m pip install -e . --quiet
 $PY -c "import torch, safetensors, transformers; print('torch', torch.__version__); print('deps OK')"
-$PY -c "from paradom.core.engine import Paradom; print('paradom OK')"
+$PY -c "import paradom; print('paradom module path:', paradom.__file__)"
+$PY -c "from paradom.core.engine import Paradom; print('paradom core OK')"
 
 if $PY -c "import pytest" 2>/dev/null; then
   echo ""
