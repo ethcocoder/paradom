@@ -6,6 +6,9 @@ Runs baselines, Paradom swap with strengthened mapping, and writes a full report
 
 import json
 import os
+import sys
+print(f"DEBUG: sys.path is {sys.path}")
+print(f"DEBUG: CWD is {os.getcwd()}")
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader

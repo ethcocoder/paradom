@@ -1,4 +1,14 @@
 import os
+import sys
+# Debug PYTHONPATH for Colab troubleshooting
+print(f"DEBUG: sys.path is {sys.path}")
+print(f"DEBUG: CWD is {os.getcwd()}")
+try:
+    import paradom
+    print(f"DEBUG: paradom found at {paradom.__file__}")
+except ImportError as e:
+    print(f"DEBUG: paradom NOT found: {e}")
+
 import random
 import torch
 import torch.nn as nn
