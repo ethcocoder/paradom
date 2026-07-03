@@ -1,39 +1,22 @@
-# Task List: Paradom Phase 1 Core Experiment
+# Paradom Development Roadmap
 
-- [x] Upgrade `TinyMamba` architecture with functional SSM scan
-    - [x] `paradom/models/tiny_transformer.py`
-    - [x] `paradom/models/tiny_mamba.py`
-- [x] Implement training infrastructure & Fixes
-    - [x] `scripts/data_utils.py` (WikiText subset)
-    - [x] `scripts/train_poc.py` (checkpoints, seed, 10,000 samples, 5 epochs)
-    - [x] `scripts/experiment_001.py` (directory creation, full report)
-- [x] Refine Paradom Core for PoC
-    - [x] Extend `FunctionalRoleMatcher` roles
-    - [x] `TinyTransformerToMambaMapper` with SSM derivation (A_log, D, conv1d)
-    - [x] Real CKA scoring + explicit layer map per SPEC §5.1
-    - [x] Fix package structure (missing `__init__.py` files)
-- [x] Execute Experiment (WSL Ubuntu)
-    - [x] WSL Ubuntu environment
-    - [x] Train Transformer (Source) — checkpoints in `checkpoints/`
-    - [x] Train Mamba (Target baseline)
-    - [x] Run Paradom swap
-    - [x] Evaluate results — `research/EXPERIMENT_001_RESULTS.md`
-    - [x] Ratio sweep — `research/EXPERIMENT_002_RATIO_SWEEP.md`
+## Phase 1: Number Equivalence (ARCHIVED ✅)
+*Proof of concept successfully demonstrated >100% relative retention (19.04 ppl vs 22.46 baseline).*
 
-## WSL quick run (deps already installed)
+## Phase 2: Swap Engine — LLM Paradigm (IN PROGRESS [/])
 
-```bash
-cd /mnt/c/Users/Latera/Desktop/AWFE_Documentation/AWFE
-export PYTHONPATH="$PWD"
-bash scripts/run_phase1_wsl.sh
-```
+### Month 4: Infrastructure & 7B Scale
+- [x] Implement Optimized SVD (Randomized)
+- [x] Implement Metadata Streaming in Loader
+- [x] Implement `StreamingSwapper` for 70B support
+- [x] Create LLaMA 3 8B → Mamba 7B mapping spec
+- [ ] Benchmark Randomized SVD vs Exact SVD speed [/]
 
-## Phase 1 verdict (WSL run 2026-07-03)
+### Month 5: MoE & Generic Mappers
+- [ ] Implement `DenseToMoEMapper` (FFN → Experts)
+- [ ] Implement `TransformerToTransformerMapper` (Arch-morphing)
+- [ ] Expand `MAPPING_REGISTRY`
 
-| Metric | Value |
-|---|---|
-| Best swap fraction | **20%** |
-| Swapped perplexity | **43,971** |
-| Intelligence retention | **~67%** |
-| vs random init | Pass |
-| vs trained Mamba (within 20%) | Not yet — needs Phase 2 scale |
+### Month 6: Public Benchmarks
+- [ ] Validation suite for HellaSwag & ARC
+- [ ] Technical Report: Scaling Weight Force Equivalence

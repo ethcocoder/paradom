@@ -1,3 +1,9 @@
 from .tiny_transformer_to_mamba import TinyTransformerToMambaMapper
+from .transformer_to_mamba import TransformerToMambaMapper
 
-__all__ = ["TinyTransformerToMambaMapper"]
+MAPPING_REGISTRY = {
+    ("tinytransformer", "tinymamba"): TinyTransformerToMambaMapper,
+    ("llama", "mamba"): TransformerToMambaMapper,
+    ("mistral", "mamba"): TransformerToMambaMapper,
+    ("transformer", "mamba"): TransformerToMambaMapper,
+}

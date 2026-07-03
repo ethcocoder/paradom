@@ -26,6 +26,10 @@ class ImportanceScorer:
         W_orig_dtype = W.dtype
         W_2d = W.reshape(W.shape[0], -1).float()
         
+        # Auto-switch to randomized SVD for large matrices
+        if max(W_2d.shape) > 2048:
+            return self.score_randomized_svd(W, top_k_fraction)
+
         # Compute SVD
         try:
             U, S, Vh = torch.linalg.svd(W_2d, full_matrices=False)
@@ -57,3 +61,44 @@ class ImportanceScorer:
         """
         threshold = W.abs().flatten().quantile(sparsity)
         return W.abs() >= threshold
+    def score_randomized_svd(
+        self,
+        W: Tensor,
+        top_k_fraction: float = 0.20,
+        n_iter: int = 4
+    ) -> Tensor:
+        """
+        Faster SVD-based importance for large matrices using Randomized SVD.
+        Recommended for weights > 2048 in any dimension.
+        """
+        if W.dim() == 1:
+            return torch.ones_like(W, dtype=torch.bool)
+
+        W_orig_device = W.device
+        W_2d = W.reshape(W.shape[0], -1).float().cpu().numpy()
+        
+        from sklearn.utils.extmath import randomized_svd
+        
+        # Determine target rank for the randomized projection
+        k = max(1, int(min(W_2d.shape) * top_k_fraction * 2)) # Buffering rank
+        k = min(k, min(W_2d.shape))
+
+        U, S, Vh = randomized_svd(
+            W_2d, 
+            n_components=k,
+            n_iter=n_iter,
+            random_state=42
+        )
+
+        U = torch.from_numpy(U).to(W_orig_device)
+        S = torch.from_numpy(S).to(W_orig_device)
+        Vh = torch.from_numpy(Vh).to(W_orig_device)
+
+        rank = max(1, int(len(S) * 0.5)) # We already took a subset 'k'
+        
+        u_importance = U[:, :rank].abs().sum(dim=1, keepdim=True)
+        vh_importance = Vh[:rank, :].abs().sum(dim=0, keepdim=True)
+        importance = (u_importance @ vh_importance).reshape(W.shape)
+
+        threshold = importance.flatten().quantile(1 - top_k_fraction)
+        return importance >= threshold
