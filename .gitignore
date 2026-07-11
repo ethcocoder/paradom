@@ -54,3 +54,4 @@ pytest.log
 tests/data/
 outputs/
 shards/
+*.pt

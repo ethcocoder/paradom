@@ -1,0 +1,10 @@
+{
+  "source_model": "meta-llama/Llama-3-8B",
+  "target_architecture": "mamba",
+  "mean_cka": 0.655,
+  "quality_tier": "acceptable",
+  "total_weights": 218,
+  "weights_swapped": 210,
+  "conversion_time_seconds": 245.3,
+  "peak_ram_mb": 14200.5
+}

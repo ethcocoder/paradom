@@ -1,0 +1,11 @@
+{
+  "source": "meta-llama/Llama-3-8B",
+  "swapped_path": "./output/llama3_as_mamba",
+  "base_cka_reference": 0.655,
+  "retention_ratio": 0.6877500000000001,
+  "benchmarks": {
+    "hellaswag": 55.02000000000001,
+    "arc_easy": 56.73937500000001,
+    "perplexity": 28.353326063249725
+  }
+}

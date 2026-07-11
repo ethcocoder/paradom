@@ -6,6 +6,8 @@ class FunctionalRole(Enum):
     EMBEDDING         = "embedding"
     OUTPUT_HEAD       = "output_head"
     NORMALIZATION     = "normalization"
+    POST_NORMALIZATION = "post_normalization"
+    FINAL_NORMALIZATION = "final_normalization"
     BIAS              = "bias"
     # Context / Attention
     CONTEXT_QUERY     = "context_query"
@@ -14,6 +16,7 @@ class FunctionalRole(Enum):
     CONTEXT_OUTPUT    = "context_output"
     # Feed-forward
     FFN_EXPAND        = "ffn_expand"
+    FFN_GATE          = "ffn_gate"
     FFN_CONTRACT      = "ffn_contract"
     # Vision
     SPATIAL_FILTER    = "spatial_filter"
