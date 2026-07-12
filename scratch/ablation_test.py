@@ -232,6 +232,14 @@ def main():
     aligner = LayerAligner(correction_strength=0.3)
     aligner.calibrate(model, tokenizer, PROMPT)
     print("  Aligner calibrated")
+    
+    # ── Train ML ensemble projector ──
+    from paradom.core.ml_projector import EnsembleProjector
+    print("  Training ML ensemble projector...")
+    ml_projector = EnsembleProjector()
+    source_weights_list = [(k, v) for k, v in source_sd.items()]
+    ml_projector.train(source_weights_list, TARGET_B, SOURCE_CONFIG)
+    print(f"  ML projector trained: {ml_projector._trained}")
 
     # Free source model memory
     del model
@@ -262,6 +270,14 @@ def main():
     mapper_both.set_aligner(aligner)
     full_swapped_both, eq_map_both = mapper_both.convert(products, TARGET_B, swap_fraction=1.0)
     print(f"  Projector+Aligner swap done | CKA: {eq_map_both.mean_cka:.4f}")
+    
+    # Also run with ML ensemble projector
+    print(f"\n  Running with ML ensemble projector...")
+    mapper_ml = TransformerToTransformerMapper(force_projected=False, source_config=SOURCE_CONFIG)
+    mapper_ml.set_kv_activations(kv_acts)
+    mapper_ml.set_ml_projector(ml_projector)
+    full_swapped_ml, eq_map_ml = mapper_ml.convert(products, TARGET_B, swap_fraction=1.0)
+    print(f"  ML projector swap done | CKA: {eq_map_ml.mean_cka:.4f}")
 
     # ── Full swap output ──
     print("\n[3/4] Evaluating full swap, projector swap, and ablations...")
@@ -285,6 +301,13 @@ def main():
     _, both_match = eval_variant(target_model, tokenizer, full_swapped_both, device, "projector+aligner", baseline)
     print(f"\n  [PROJECTOR+ALIGNER]  \"{both_output}\"")
     print(f"  Token overlap with baseline: {both_match:.2%}")
+    
+    # Evaluate ML projector swap
+    load_weights(target_model, full_swapped_ml)
+    ml_output = generate(target_model, tokenizer, PROMPT, device=device)
+    _, ml_match = eval_variant(target_model, tokenizer, full_swapped_ml, device, "ml_projector", baseline)
+    print(f"\n  [ML PROJECTOR]  \"{ml_output}\"")
+    print(f"  Token overlap with baseline: {ml_match:.2%}")
 
     # ── Ablation categories ──
     categories = [
@@ -296,6 +319,7 @@ def main():
     results.append(("(full_swap)", full_output, full_match))
     results.append(("(projector)", proj_output, proj_match))
     results.append(("(proj+align)", both_output, both_match))
+    results.append(("(ml_projector)", ml_output, ml_match))
 
     t_start = time.time()
     for cat in categories:
@@ -305,6 +329,17 @@ def main():
         print(f"  [{cat:20s}] overlap={match:.2%}  \"{out[:80]}...\"")
         # Reload full swap for next ablation
         load_weights(target_model, full_swapped)
+
+    # Also run ablations on the best variant (ML projector or projector+aligner)
+    best_variant_sd = full_swapped_ml if ml_match >= both_match else full_swapped_both
+    best_variant_name = "ml_projector" if ml_match >= both_match else "proj+align"
+    print(f"\n  Ablating best variant ({best_variant_name})...")
+    for cat in categories:
+        variant = make_ablation(best_variant_sd, source_sd, TARGET_B, cat)
+        out, match = eval_variant(target_model, tokenizer, variant, device, f"{best_variant_name}/{cat}", baseline)
+        results.append((f"{best_variant_name}/{cat}", out, match))
+        print(f"  [{best_variant_name}/{cat:20s}] overlap={match:.2%}  \"{out[:80]}...\"")
+        load_weights(target_model, best_variant_sd)
 
     elapsed = time.time() - t_start
     print(f"\n  All ablations done in {elapsed:.1f}s")
