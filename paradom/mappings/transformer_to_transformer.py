@@ -13,24 +13,26 @@ class TransformerToTransformerMapper:
     Uses DIRECT swap when shapes are identical for maximum fidelity.
     """
 
-    def __init__(self, swap_engine=None, scorer=None, force_projected=False):
+    def __init__(self, swap_engine=None, scorer=None, force_projected=False, projection_method="svd"):
         from paradom.core.swap_engine import SwapEngine
         from paradom.core.importance import ImportanceScorer
         self.swap_engine = swap_engine or SwapEngine()
         self.scorer      = scorer      or ImportanceScorer()
         self.force_projected = force_projected
+        self.projection_method = projection_method
         self.subspace = SubspaceProjector()
 
     def convert(
         self,
         source_products: List[WeightProduct],
         target_config: Dict[str, Any],
-        swap_fraction: float = 1.0
+        swap_fraction: float = 1.0,
+        calibration_data: Optional[Tensor] = None,
     ) -> Tuple[Dict[str, Tensor], EquivalenceMap]:
         """
         Maps a list of Transformer WeightProducts to another Transformer's state_dict.
         """
-        self.subspace.compute(source_products, target_config)
+        self.subspace.compute(source_products, target_config, method=self.projection_method, calibration_data=calibration_data)
 
         target = {}
         pairs = []
