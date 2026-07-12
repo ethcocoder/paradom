@@ -247,6 +247,81 @@ def generate_candidates(
     except Exception:
         pass
 
+    # ── FFN-SPECIFIC METHODS (for gate_proj, up_proj, down_proj) ──
+    is_ffn = src_heads == 0  # FFN has no head structure
+
+    if is_ffn and m_src > d_out:
+        # Method 7: Row-norm selection (keep highest-norm rows)
+        try:
+            row_norms = W_2d.pow(2).sum(dim=1)
+            _, top_rows = row_norms.topk(d_out)
+            top_rows, _ = top_rows.sort()
+            W_rns = W_2d[top_rows, :][:, :d_in]
+            candidates.append((W_rns.reshape(target_shape), 'row_norm_select'))
+        except Exception:
+            pass
+
+        # Method 8: Center crop (keep middle rows)
+        try:
+            start_row = (m_src - d_out) // 2
+            W_cc = W_2d[start_row:start_row + d_out, :][:, :d_in]
+            candidates.append((W_cc.reshape(target_shape), 'center_crop'))
+        except Exception:
+            pass
+
+        # Method 9: Row-norm + SVD columns
+        try:
+            row_norms = W_2d.pow(2).sum(dim=1)
+            _, top_rows = row_norms.topk(d_out)
+            top_rows, _ = top_rows.sort()
+            W_rns_svd = W_2d[top_rows, :]
+            if W_rns_svd.shape[1] > d_in:
+                U, S, Vh = torch.linalg.svd(W_rns_svd, full_matrices=False)
+                k = min(len(S), d_in)
+                W_rns_svd = (U[:, :k] * S[:k].unsqueeze(0)) @ Vh[:k, :d_in]
+            W_rns_svd = W_rns_svd[:d_out, :d_in]
+            candidates.append((W_rns_svd.reshape(target_shape), 'row_norm_svd'))
+        except Exception:
+            pass
+
+        # Method 10: Column-norm + SVD rows
+        try:
+            col_norms = W_2d.pow(2).sum(dim=0)
+            _, top_cols = col_norms.topk(d_in)
+            top_cols, _ = top_cols.sort()
+            W_cns = W_2d[:, top_cols]
+            if W_cns.shape[0] > d_out:
+                U, S, Vh = torch.linalg.svd(W_cns, full_matrices=False)
+                k = min(len(S), d_out)
+                W_cns = (U[:, :k] * S[:k].unsqueeze(0)) @ Vh[:k, :]
+            W_cns = W_cns[:d_out, :d_in]
+            candidates.append((W_cns.reshape(target_shape), 'col_norm_svd'))
+        except Exception:
+            pass
+
+        # Method 11: Interleaved row selection (every Nth row)
+        try:
+            stride = m_src / d_out
+            indices = [int(i * stride) for i in range(d_out)]
+            W_il = W_2d[indices, :][:, :d_in]
+            candidates.append((W_il.reshape(target_shape), 'interleaved_rows'))
+        except Exception:
+            pass
+
+        # Method 12: Random projection (JL-style)
+        try:
+            torch.manual_seed(42)
+            proj_matrix = torch.randn(d_in, n_src, device=W_2d.device) / (n_src ** 0.5)
+            W_rp = W_2d @ proj_matrix.T
+            # Then pick top rows by norm
+            row_norms = W_rp.pow(2).sum(dim=1)
+            _, top_rows = row_norms.topk(d_out)
+            top_rows, _ = top_rows.sort()
+            W_rp = W_rp[top_rows, :]
+            candidates.append((W_rp[:d_out, :d_in].reshape(target_shape), 'random_proj'))
+        except Exception:
+            pass
+
     return candidates
 
 
@@ -278,7 +353,9 @@ class EnsembleProjector:
         self._trained = False
         self._candidate_methods = [
             'svd_full', 'svd_rank', 'head_boundary', 'head_merge',
-            'truncation', 'svd_energy'
+            'truncation', 'svd_energy',
+            'row_norm_select', 'center_crop', 'row_norm_svd',
+            'col_norm_svd', 'interleaved_rows', 'random_proj'
         ]
 
     def train(
@@ -308,7 +385,29 @@ class EnsembleProjector:
         from paradom.core.cka import weight_cka
 
         if quality_fn is None:
-            quality_fn = lambda w_src, w_tgt: weight_cka(w_src, w_tgt)
+            # Use reconstruction quality instead of broken cross-shape CKA
+            # Measures how well projection preserves spectral structure
+            def quality_fn(w_src, w_proj):
+                src_2d = w_src.float().reshape(w_src.shape[0], -1)
+                proj_2d = w_proj.float().reshape(w_proj.shape[0], -1)
+                # SVD energy preservation ratio
+                try:
+                    _, S_src, _ = torch.linalg.svd(src_2d, full_matrices=False)
+                    _, S_proj, _ = torch.linalg.svd(proj_2d, full_matrices=False)
+                    k = min(len(S_src), len(S_proj))
+                    if k == 0:
+                        return 0.0
+                    # Compare top-k singular value distributions
+                    src_energy = S_src[:k].pow(2).sum()
+                    proj_energy = S_proj[:k].pow(2).sum()
+                    if src_energy == 0:
+                        return 0.0
+                    ratio = proj_energy / src_energy
+                    # Penalize if ratio is too far from ideal (size-proportional)
+                    ideal_ratio = proj_2d.numel() / src_2d.numel()
+                    return 1.0 - abs(ratio - ideal_ratio)
+                except Exception:
+                    return 0.0
 
         src_d = source_config.get("d_model", 576)
         tgt_d = target_config.get("d_model", 512)
