@@ -148,7 +148,7 @@ class ActivationAwareProjector:
                 attn_weighted_v[i, h] = (attn @ V_heads[:, h, :]).mean(dim=0)
 
         kv_importance = attn_weighted_v.abs().sum(dim=(0, 2))
-        q_importance = attn_flat.abs().sum(dim=(1, 2, 3))
+        q_importance = attn_flat.abs().sum(dim=(1, 2))
 
         kv_similarity = torch.zeros(num_kv, num_kv, device=device)
         for h1 in range(num_kv):
