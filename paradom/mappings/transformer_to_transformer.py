@@ -164,22 +164,7 @@ class TransformerToTransformerMapper:
                     wp = l_src[role]
                     is_downscale = wp.tensor.shape[0] > t_shape or (len(wp.tensor.shape) > 1 and wp.tensor.shape[1] > d_model)
                     hs = (src_h, src_head_dim) if is_downscale and (src_h != tgt_h or wp.tensor.shape[0] != t_shape) else None
-
-                    # Use ML projector if available and shapes differ
-                    if self._ml_projector is not None and is_downscale:
-                        out = self._ml_projector.predict_best_candidate(wp.tensor, (t_shape, d_model), role)
-                        cka = weight_cka(wp.tensor, out)
-                        pairs.append(EquivalencePair(wp, f"layers.{i}.self_attn.{t_name}.weight", (t_shape, d_model), cka_score=cka, swap_type=SwapType.PROJECTED, confidence=1.0))
-                        cka_scores[f"layers.{i}.self_attn.{t_name}.weight"] = cka
-                    # Fall back to activation-aware projector if available
-                    elif self._projector is not None and is_downscale:
-                        out = self._projector.project(wp.tensor, (t_shape, d_model), src_i, role)
-                        cka = weight_cka(wp.tensor, out)
-                        pairs.append(EquivalencePair(wp, f"layers.{i}.self_attn.{t_name}.weight", (t_shape, d_model), cka_score=cka, swap_type=SwapType.PROJECTED, confidence=1.0))
-                        cka_scores[f"layers.{i}.self_attn.{t_name}.weight"] = cka
-                    else:
-                        out = self._apply_swap(wp, (t_shape, d_model), swap_fraction, pairs, cka_scores, f"layers.{i}.self_attn.{t_name}.weight", axis_labels=axes, head_structure=hs)
-
+                    out = self._apply_swap(wp, (t_shape, d_model), swap_fraction, pairs, cka_scores, f"layers.{i}.self_attn.{t_name}.weight", axis_labels=axes, head_structure=hs)
                     target[f"layers.{i}.self_attn.{t_name}.weight"] = out
 
             if FunctionalRole.CONTEXT_OUTPUT in l_src:
@@ -187,24 +172,8 @@ class TransformerToTransformerMapper:
                 o_dim = num_heads * head_dim
                 src_o_dim = wp.tensor.shape[1]
                 src_o_heads = src_o_dim // src_head_dim
-                is_downscale_o = wp.tensor.shape[0] > d_model or src_o_dim > o_dim
-                hs_o = (src_o_heads, src_head_dim, True) if is_downscale_o and (src_o_heads != num_heads or wp.tensor.shape != (d_model, o_dim)) else None
-                
-                # Use ML projector if available and shapes differ
-                if self._ml_projector is not None and is_downscale_o:
-                    out = self._ml_projector.predict_best_candidate(wp.tensor, (d_model, o_dim), FunctionalRole.CONTEXT_OUTPUT)
-                    cka = weight_cka(wp.tensor, out)
-                    pairs.append(EquivalencePair(wp, f"layers.{i}.self_attn.o_proj.weight", (d_model, o_dim), cka_score=cka, swap_type=SwapType.PROJECTED, confidence=1.0))
-                    cka_scores[f"layers.{i}.self_attn.o_proj.weight"] = cka
-                # Fall back to activation-aware projector if available
-                elif self._projector is not None and is_downscale_o:
-                    out = self._projector.project(wp.tensor, (d_model, o_dim), src_i, FunctionalRole.CONTEXT_OUTPUT)
-                    cka = weight_cka(wp.tensor, out)
-                    pairs.append(EquivalencePair(wp, f"layers.{i}.self_attn.o_proj.weight", (d_model, o_dim), cka_score=cka, swap_type=SwapType.PROJECTED, confidence=1.0))
-                    cka_scores[f"layers.{i}.self_attn.o_proj.weight"] = cka
-                else:
-                    out = self._apply_swap(wp, (d_model, o_dim), swap_fraction, pairs, cka_scores, f"layers.{i}.self_attn.o_proj.weight", axis_labels=('d_model', 'o_input'), head_structure=hs_o)
-                
+                hs_o = (src_o_heads, src_head_dim, True) if (src_o_heads != num_heads or wp.tensor.shape != (d_model, o_dim)) else None
+                out = self._apply_swap(wp, (d_model, o_dim), swap_fraction, pairs, cka_scores, f"layers.{i}.self_attn.o_proj.weight", axis_labels=('d_model', 'o_input'), head_structure=hs_o)
                 target[f"layers.{i}.self_attn.o_proj.weight"] = out
 
             # FFN — gate_proj, up_proj, down_proj (truncation: preserve original weight ordering)
