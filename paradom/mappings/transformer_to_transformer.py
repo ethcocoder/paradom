@@ -111,13 +111,24 @@ class TransformerToTransformerMapper:
             wp = global_params[FunctionalRole.EMBEDDING]
             v_size = target_config.get("vocab_size", wp.shape[0])
             d_mod = target_config.get("d_model", wp.shape[1])
-            target["embed_tokens.weight"] = self._apply_swap(wp, (v_size, d_mod), swap_fraction, pairs, cka_scores, "embed_tokens.weight", axis_labels=('vocab', 'd_model'))
+            is_downscale_emb = wp.tensor.shape[0] > v_size or wp.tensor.shape[1] > d_mod
+            if is_downscale_emb:
+                out = wp.tensor[:v_size, :d_mod].clone().detach()
+                cka = weight_cka(wp.tensor, out)
+                pairs.append(EquivalencePair(wp, "embed_tokens.weight", (v_size, d_mod), cka_score=cka, swap_type=SwapType.PROJECTED, confidence=1.0))
+                cka_scores["embed_tokens.weight"] = cka
+            else:
+                out = self._apply_swap(wp, (v_size, d_mod), swap_fraction, pairs, cka_scores, "embed_tokens.weight", axis_labels=('vocab', 'd_model'))
+            target["embed_tokens.weight"] = out
         
         if FunctionalRole.OUTPUT_HEAD in global_params:
-            wp = global_params[FunctionalRole.OUTPUT_HEAD]
-            v_size = target_config.get("vocab_size", wp.shape[0])
-            d_mod = target_config.get("d_model", wp.shape[1])
-            target["lm_head.weight"] = self._apply_swap(wp, (v_size, d_mod), swap_fraction, pairs, cka_scores, "lm_head.weight", axis_labels=('vocab', 'd_model'))
+            if "embed_tokens.weight" in target:
+                target["lm_head.weight"] = target["embed_tokens.weight"]
+            else:
+                wp = global_params[FunctionalRole.OUTPUT_HEAD]
+                v_size = target_config.get("vocab_size", wp.shape[0])
+                d_mod = target_config.get("d_model", wp.shape[1])
+                target["lm_head.weight"] = self._apply_swap(wp, (v_size, d_mod), swap_fraction, pairs, cka_scores, "lm_head.weight", axis_labels=('vocab', 'd_model'))
 
         if FunctionalRole.FINAL_NORMALIZATION in global_params:
             wp = global_params[FunctionalRole.FINAL_NORMALIZATION]

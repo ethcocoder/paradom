@@ -164,18 +164,21 @@ def make_ablation(full_swapped, source_sd, target_config, category, layer_idx=No
 
 
 def eval_variant(model, tokenizer, variant_sd, device, variant_name, baseline_text):
-    """Load variant, generate text, return output and token match count."""
+    """Load variant, generate text, return output and Jaccard similarity."""
     load_weights(model, variant_sd)
     output = generate(model, tokenizer, PROMPT, device=device)
 
-    # Token overlap with baseline as a rough quality metric
-    baseline_tokens = baseline_text.split()
-    output_tokens = output.split()
-    if len(baseline_tokens) == 0:
+    # Jaccard similarity (set-based, no duplicates, no length bias)
+    baseline_tokens = set(baseline_text.split())
+    output_tokens = set(output.split())
+    if len(baseline_tokens) == 0 and len(output_tokens) == 0:
+        match_frac = 1.0
+    elif len(baseline_tokens) == 0 or len(output_tokens) == 0:
         match_frac = 0.0
     else:
-        overlap = sum(1 for t in output_tokens if t in baseline_tokens)
-        match_frac = overlap / len(baseline_tokens)
+        intersection = baseline_tokens & output_tokens
+        union = baseline_tokens | output_tokens
+        match_frac = len(intersection) / len(union)
 
     return output, match_frac
 
@@ -267,15 +270,6 @@ def main():
         results.append((cat, out, match))
         print(f"  [{cat:20s}] overlap={match:.2%}  \"{out[:80]}...\"")
         # Reload full swap for next ablation
-        load_weights(target_model, full_swapped)
-
-    # Also run ablations on the full swap
-    print(f"\n  Ablating full swap...")
-    for cat in categories:
-        variant = make_ablation(full_swapped, source_sd, TARGET_B, cat)
-        out, match = eval_variant(target_model, tokenizer, variant, device, cat, baseline)
-        results.append((cat, out, match))
-        print(f"  [{cat:20s}] overlap={match:.2%}  \"{out[:80]}...\"")
         load_weights(target_model, full_swapped)
 
     elapsed = time.time() - t_start
