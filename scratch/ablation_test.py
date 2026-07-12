@@ -225,6 +225,13 @@ def main():
     projector = ActivationAwareProjector(SOURCE_CONFIG, TARGET_B)
     projector.calibrate(model, tokenizer, PROMPT)
     print("  Projector calibrated")
+    
+    # ── Calibrate layer aligner ──
+    from paradom.core.layer_aligner import LayerAligner
+    print("  Calibrating layer aligner...")
+    aligner = LayerAligner(correction_strength=0.3)
+    aligner.calibrate(model, tokenizer, PROMPT)
+    print("  Aligner calibrated")
 
     # Free source model memory
     del model
@@ -246,6 +253,15 @@ def main():
     mapper_proj.set_projector(projector)
     full_swapped_proj, eq_map_proj = mapper_proj.convert(products, TARGET_B, swap_fraction=1.0)
     print(f"  Projector swap done | CKA: {eq_map_proj.mean_cka:.4f}")
+    
+    # Also run with projector + aligner
+    print(f"\n  Running with projector + aligner...")
+    mapper_both = TransformerToTransformerMapper(force_projected=False, source_config=SOURCE_CONFIG)
+    mapper_both.set_kv_activations(kv_acts)
+    mapper_both.set_projector(projector)
+    mapper_both.set_aligner(aligner)
+    full_swapped_both, eq_map_both = mapper_both.convert(products, TARGET_B, swap_fraction=1.0)
+    print(f"  Projector+Aligner swap done | CKA: {eq_map_both.mean_cka:.4f}")
 
     # ── Full swap output ──
     print("\n[3/4] Evaluating full swap, projector swap, and ablations...")
@@ -262,6 +278,13 @@ def main():
     _, proj_match = eval_variant(target_model, tokenizer, full_swapped_proj, device, "projector", baseline)
     print(f"\n  [PROJECTOR]  \"{proj_output}\"")
     print(f"  Token overlap with baseline: {proj_match:.2%}")
+    
+    # Evaluate projector + aligner swap
+    load_weights(target_model, full_swapped_both)
+    both_output = generate(target_model, tokenizer, PROMPT, device=device)
+    _, both_match = eval_variant(target_model, tokenizer, full_swapped_both, device, "projector+aligner", baseline)
+    print(f"\n  [PROJECTOR+ALIGNER]  \"{both_output}\"")
+    print(f"  Token overlap with baseline: {both_match:.2%}")
 
     # ── Ablation categories ──
     categories = [
@@ -272,6 +295,7 @@ def main():
     results.append(("(baseline)", baseline, 1.0))
     results.append(("(full_swap)", full_output, full_match))
     results.append(("(projector)", proj_output, proj_match))
+    results.append(("(proj+align)", both_output, both_match))
 
     t_start = time.time()
     for cat in categories:

@@ -106,7 +106,7 @@ def load_swapped_weights(model, swapped_sd):
     return loaded, skipped, mismatched
 
 
-def run_test(test_name, source_products, target_config, tokenizer, force_projected=False, kv_activations=None, projector=None):
+def run_test(test_name, source_products, target_config, tokenizer, force_projected=False, kv_activations=None, projector=None, aligner=None):
     """Run a single swap test and return the generated text."""
     print(f"\n{'─' * 60}")
     print(f"  {test_name}")
@@ -118,6 +118,8 @@ def run_test(test_name, source_products, target_config, tokenizer, force_project
         mapper.set_kv_activations(kv_activations)
     if projector:
         mapper.set_projector(projector)
+    if aligner:
+        mapper.set_aligner(aligner)
     
     # Swap
     t0 = time.time()
@@ -190,6 +192,13 @@ def main():
     projector.calibrate(model, tokenizer, PROMPT)
     print("  Projector calibrated")
     
+    # Create layer aligner before freeing model
+    from paradom.core.layer_aligner import LayerAligner
+    print("  Calibrating layer aligner...")
+    aligner = LayerAligner(correction_strength=0.3)
+    aligner.calibrate(model, tokenizer, PROMPT)
+    print("  Aligner calibrated")
+    
     # Free original model memory
     del model
 
@@ -202,7 +211,7 @@ def main():
     # ── Test B: Cross-dim DOWNSCALE ──────────────────────────
     run_test(
         "TEST B: Cross-Dimension DOWNSCALE (576→512 hidden)",
-        products, target_b, tokenizer, kv_activations=kv_acts, projector=projector
+        products, target_b, tokenizer, kv_activations=kv_acts, projector=projector, aligner=aligner
     )
 
     # ── Test C: Cross-dim UPSCALE ────────────────────────────

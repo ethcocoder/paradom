@@ -47,6 +47,31 @@ Goal: Swapped model produces coherent text output.
 - **Finding**: PCA on activations removes head structure information
 - **Finding**: PCA optimizes for variance preservation, not attention quality
 
+### 6. Activation-Aware Head Merging (APPLIED ✅)
+- Implemented in `paradom/core/activation_aware_projector.py`
+- Uses calibration data to merge similar heads weighted by importance
+- Greedy merging of most similar pair (optimal for 3→2 kv_heads)
+- Result: CKA=0.9200, overlap=20.83% (vs SVD: CKA=0.9995, overlap=18.75%)
+- **Finding**: Lower CKA but slightly better output — confirms CKA is misleading
+- **Finding**: Marginal improvement — damage is distributed across ALL projections
+
+### 7. Ablation Test Results
+- No single weight category is the bottleneck
+- Replacing ANY category with source originals barely helps
+- Best ablation: layer_1 at 22.9% (+4.2%)
+- **Conclusion**: ALL 273 projections are slightly wrong, errors compound through 30 layers
+- **Conclusion**: Fixing individual weight projections won't solve the problem
+
+### 8. Layer-by-Layer Output Alignment (IMPLEMENTED, NOT YET TESTED)
+- Implemented in `paradom/core/layer_aligner.py`
+- Approach: After weight projection, align each layer's output using Procrustes correction
+- Absorbs correction into o_proj (no extra parameters)
+- Two modes:
+  - `align()`: Source-only calibration (fast, approximate)
+  - `align_with_target()`: Full calibration with target model (slow, accurate)
+- References: THESEUS (ICML 2026), CAST (2025)
+- **Status**: Implemented, needs testing on Colab
+
 ---
 
 ## Root Cause Analysis

@@ -5,6 +5,7 @@ from paradom.core.enums import SwapType, FunctionalRole
 from paradom.core.types import EquivalencePair, EquivalenceMap, WeightProduct
 from paradom.core.cka import weight_cka
 from paradom.core.activation_aware_projector import ActivationAwareProjector
+from paradom.core.layer_aligner import LayerAligner
 
 class TransformerToTransformerMapper:
     """
@@ -20,9 +21,13 @@ class TransformerToTransformerMapper:
     Also integrates ActivationAwareProjector for attention weights:
     - Uses calibration data to merge heads while preserving attention patterns
     - Falls back to SVD for non-attention weights
+    
+    Also integrates LayerAligner for post-projection alignment:
+    - Aligns each layer's output to match source using Procrustes correction
+    - Stops error from compounding across layers
     """
 
-    def __init__(self, swap_engine=None, scorer=None, force_projected=False, source_config=None, projector=None):
+    def __init__(self, swap_engine=None, scorer=None, force_projected=False, source_config=None, projector=None, aligner=None):
         from paradom.core.swap_engine import SwapEngine, MagneticProjector
         from paradom.core.importance import ImportanceScorer
         self.magnetic_projector = MagneticProjector()
@@ -32,6 +37,7 @@ class TransformerToTransformerMapper:
         self._source_config = source_config
         self._kv_activations = {}
         self._projector = projector  # Optional[ActivationAwareProjector]
+        self._aligner = aligner      # Optional[LayerAligner]
 
     def set_kv_activations(self, kv_activations: Dict[int, Dict[str, Tensor]]):
         self._kv_activations = kv_activations
@@ -39,6 +45,10 @@ class TransformerToTransformerMapper:
     def set_projector(self, projector: ActivationAwareProjector):
         """Set the activation-aware projector for attention weights."""
         self._projector = projector
+
+    def set_aligner(self, aligner: LayerAligner):
+        """Set the layer aligner for post-projection alignment."""
+        self._aligner = aligner
 
     def convert(
         self,
@@ -194,6 +204,11 @@ class TransformerToTransformerMapper:
                 target[f"layers.{i}.mlp.down_proj.weight"] = self._apply_swap(wp_down, (d_model, d_inner), swap_fraction, pairs, cka_scores, f"layers.{i}.mlp.down_proj.weight", axis_labels=('d_model', 'd_inner'))
 
         mean_cka = sum(cka_scores.values()) / max(len(cka_scores), 1)
+        
+        # Apply layer alignment if aligner is set
+        if self._aligner is not None and self._source_config is not None:
+            target = self._aligner.align(target, self._source_config, target_config)
+        
         return target, EquivalenceMap(
             source_model="TransformerSource",
             target_architecture="TransformerTarget",
