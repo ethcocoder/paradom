@@ -105,14 +105,16 @@ def load_swapped_weights(model, swapped_sd):
     return loaded, skipped, mismatched
 
 
-def run_test(test_name, source_products, target_config, tokenizer, force_projected=False):
+def run_test(test_name, source_products, target_config, tokenizer, force_projected=False, kv_activations=None):
     """Run a single swap test and return the generated text."""
     print(f"\n{'─' * 60}")
     print(f"  {test_name}")
     print(f"{'─' * 60}")
     
     # Build mapper
-    mapper = TransformerToTransformerMapper(force_projected=force_projected)
+    mapper = TransformerToTransformerMapper(force_projected=force_projected, source_config=SOURCE_CONFIG)
+    if kv_activations:
+        mapper.set_kv_activations(kv_activations)
     
     # Swap
     t0 = time.time()
@@ -153,16 +155,24 @@ def main():
     baseline = generate(model, tokenizer, PROMPT)
     print(f"\n[BASELINE] \"{baseline}\"")
     
-    # Extract weights
+    # Extract weights (model.model.state_dict() misses lm_head.weight)
     full_sd = {}
     for k, v in model.model.state_dict().items():
         full_sd[k] = v.clone()
+    if hasattr(model, 'lm_head'):
+        full_sd['lm_head.weight'] = model.lm_head.weight.data.clone()
     products = state_dict_to_weight_products(full_sd)
     
     roles = {}
     for wp in products:
         roles[wp.functional_role.value] = roles.get(wp.functional_role.value, 0) + 1
     print(f"  {len(products)} tensors | Roles: {roles}")
+    
+    # Collect KV activations before freeing model
+    from paradom.core.swap_engine import collect_kv_activations
+    print("  Collecting KV activations...")
+    kv_acts = collect_kv_activations(model, tokenizer, PROMPT)
+    print(f"  Collected from {len(kv_acts)} layers")
     
     # Free original model memory
     del model
@@ -182,7 +192,7 @@ def main():
     }
     run_test(
         "TEST B: Cross-Dimension DOWNSCALE (576→512 hidden)",
-        products, target_b, tokenizer
+        products, target_b, tokenizer, kv_activations=kv_acts
     )
 
     # ── Test C: Cross-dim UPSCALE ────────────────────────────

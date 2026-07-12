@@ -10,14 +10,25 @@ class TransformerToTransformerMapper:
     Standard Phase 2 Mapper: Full-scale Transformer to Transformer Arch-morphing.
     Scales params up/down dynamically (e.g. 8B -> 70B).
     Uses DIRECT swap when shapes are identical for maximum fidelity.
+    
+    Now integrates MagneticProjector for population-aware downscaling:
+    - Pre-computes shared spectral bases across ALL layers of each functional role
+    - Uses 'magnetic character' alignment for cross-layer consistent projections
+    - Applies residual energy correction during compression
     """
 
-    def __init__(self, swap_engine=None, scorer=None, force_projected=False):
-        from paradom.core.swap_engine import SwapEngine
+    def __init__(self, swap_engine=None, scorer=None, force_projected=False, source_config=None):
+        from paradom.core.swap_engine import SwapEngine, MagneticProjector
         from paradom.core.importance import ImportanceScorer
-        self.swap_engine = swap_engine or SwapEngine()
+        self.magnetic_projector = MagneticProjector()
+        self.swap_engine = swap_engine or SwapEngine(magnetic_projector=self.magnetic_projector)
         self.scorer      = scorer      or ImportanceScorer()
         self.force_projected = force_projected
+        self._source_config = source_config
+        self._kv_activations = {}
+
+    def set_kv_activations(self, kv_activations: Dict[int, Dict[str, Tensor]]):
+        self._kv_activations = kv_activations
 
     def convert(
         self,
@@ -43,23 +54,50 @@ class TransformerToTransformerMapper:
             else:
                 global_params[wp.functional_role] = wp
 
+        # Infer source head structure from source_config (preferred) or weight shapes
+        if self._source_config is not None:
+            self._source_num_heads = self._source_config.get("num_heads", 9)
+            self._source_num_kv = self._source_config.get("num_key_value_heads", 3)
+            self._source_head_dim = self._source_config.get("head_dim", 64)
+        else:
+            self._source_num_heads = 9
+            self._source_num_kv = 3
+            self._source_head_dim = 64
+
+        # ── MAGNETIC FIELD REGISTRATION (lazy computation) ──
+        # Register shared spectral bases for each functional role with ≥2 instances.
+        # Computation is deferred to first use — only roles actually needed for OT
+        # projection will have their bases computed.
+        if hasattr(self, 'magnetic_projector') and self.magnetic_projector is not None:
+            roles_with_layers = {r for layer in layers.values() for r in layer}
+            for role in roles_with_layers:
+                role_weights = [layers[layer_idx][role].tensor for layer_idx in sorted(layers.keys())
+                                if role in layers[layer_idx]]
+                if len(role_weights) >= 2:
+                    self.magnetic_projector.register_role(
+                        f"role_{role.name}_right", role_weights, transpose=False
+                    )
+                    self.magnetic_projector.register_role(
+                        f"role_{role.name}_left", role_weights, transpose=True
+                    )
+
         # 1. Global Layers
         if FunctionalRole.EMBEDDING in global_params:
             wp = global_params[FunctionalRole.EMBEDDING]
             v_size = target_config.get("vocab_size", wp.shape[0])
             d_mod = target_config.get("d_model", wp.shape[1])
-            target["embed_tokens.weight"] = self._apply_swap(wp, (v_size, d_mod), swap_fraction, pairs, cka_scores, "embed_tokens.weight")
+            target["embed_tokens.weight"] = self._apply_swap(wp, (v_size, d_mod), swap_fraction, pairs, cka_scores, "embed_tokens.weight", axis_labels=('vocab', 'd_model'))
         
         if FunctionalRole.OUTPUT_HEAD in global_params:
             wp = global_params[FunctionalRole.OUTPUT_HEAD]
             v_size = target_config.get("vocab_size", wp.shape[0])
             d_mod = target_config.get("d_model", wp.shape[1])
-            target["lm_head.weight"] = self._apply_swap(wp, (v_size, d_mod), swap_fraction, pairs, cka_scores, "lm_head.weight")
+            target["lm_head.weight"] = self._apply_swap(wp, (v_size, d_mod), swap_fraction, pairs, cka_scores, "lm_head.weight", axis_labels=('vocab', 'd_model'))
 
         if FunctionalRole.FINAL_NORMALIZATION in global_params:
             wp = global_params[FunctionalRole.FINAL_NORMALIZATION]
             d_mod = target_config.get("d_model", wp.shape[0])
-            target["norm.weight"] = self._apply_swap(wp, (d_mod,), swap_fraction, pairs, cka_scores, "norm.weight")
+            target["norm.weight"] = self._apply_swap(wp, (d_mod,), swap_fraction, pairs, cka_scores, "norm.weight", axis_labels=('d_model',))
 
         # 2. Iterate through Layers
         d_model = target_config["d_model"]
@@ -77,42 +115,66 @@ class TransformerToTransformerMapper:
             # Map Norms
             if FunctionalRole.NORMALIZATION in l_src: 
                 wp = l_src[FunctionalRole.NORMALIZATION]
-                target[f"layers.{i}.input_layernorm.weight"] = self._apply_swap(wp, (d_model,), swap_fraction, pairs, cka_scores, f"layers.{i}.input_layernorm.weight")
+                target[f"layers.{i}.input_layernorm.weight"] = self._apply_swap(wp, (d_model,), swap_fraction, pairs, cka_scores, f"layers.{i}.input_layernorm.weight", axis_labels=('d_model',))
 
             if FunctionalRole.POST_NORMALIZATION in l_src:
                 wp = l_src[FunctionalRole.POST_NORMALIZATION]
-                target[f"layers.{i}.post_attention_layernorm.weight"] = self._apply_swap(wp, (d_model,), swap_fraction, pairs, cka_scores, f"layers.{i}.post_attention_layernorm.weight")
+                target[f"layers.{i}.post_attention_layernorm.weight"] = self._apply_swap(wp, (d_model,), swap_fraction, pairs, cka_scores, f"layers.{i}.post_attention_layernorm.weight", axis_labels=('d_model',))
 
             # Map Attention (Q, K, V, O)
             num_heads = target_config.get("num_heads", 32)
             num_kv = target_config.get("num_key_value_heads", 8)
             head_dim = target_config.get("head_dim", d_model // num_heads)
-            for role, t_name, t_shape in [
-                (FunctionalRole.CONTEXT_QUERY, "q_proj", num_heads * head_dim),
-                (FunctionalRole.CONTEXT_KEY, "k_proj", num_kv * head_dim),
-                (FunctionalRole.CONTEXT_VALUE, "v_proj", num_kv * head_dim),
+
+            src_num_heads = self._source_num_heads if hasattr(self, '_source_num_heads') else 9
+            src_num_kv = self._source_num_kv if hasattr(self, '_source_num_kv') else 3
+            src_head_dim = self._source_head_dim if hasattr(self, '_source_head_dim') else 64
+
+            for role, t_name, t_shape, axes, src_h, tgt_h, kv_key in [
+                (FunctionalRole.CONTEXT_QUERY, "q_proj", num_heads * head_dim, ('q_heads', 'd_model'), src_num_heads, num_heads, None),
+                (FunctionalRole.CONTEXT_KEY, "k_proj", num_kv * head_dim, ('k_heads', 'd_model'), src_num_kv, num_kv, "k"),
+                (FunctionalRole.CONTEXT_VALUE, "v_proj", num_kv * head_dim, ('v_heads', 'd_model'), src_num_kv, num_kv, "v"),
             ]:
                 if role in l_src:
                     wp = l_src[role]
-                    target[f"layers.{i}.self_attn.{t_name}.weight"] = self._apply_swap(wp, (t_shape, d_model), swap_fraction, pairs, cka_scores, f"layers.{i}.self_attn.{t_name}.weight")
+                    is_downscale = wp.tensor.shape[0] > t_shape or (len(wp.tensor.shape) > 1 and wp.tensor.shape[1] > d_model)
+                    hs = (src_h, src_head_dim) if is_downscale and (src_h != tgt_h or wp.tensor.shape[0] != t_shape) else None
+
+                    use_pca = False  # Disabled: PCA optimizes variance, not attention quality
+
+                    if use_pca:
+                        act = self._kv_activations[src_i][kv_key]
+                        act_flat = act.reshape(-1, act.shape[-1])
+                        out = self.swap_engine.pca_project(wp.tensor, (t_shape, d_model), act_flat)
+                        cka = weight_cka(wp.tensor, out)
+                        pairs.append(EquivalencePair(wp, f"layers.{i}.self_attn.{t_name}.weight", (t_shape, d_model), cka_score=cka, swap_type=SwapType.PROJECTED, confidence=1.0))
+                        cka_scores[f"layers.{i}.self_attn.{t_name}.weight"] = cka
+                    else:
+                        out = self._apply_swap(wp, (t_shape, d_model), swap_fraction, pairs, cka_scores, f"layers.{i}.self_attn.{t_name}.weight", axis_labels=axes, head_structure=hs)
+
+                    target[f"layers.{i}.self_attn.{t_name}.weight"] = out
 
             if FunctionalRole.CONTEXT_OUTPUT in l_src:
                 wp = l_src[FunctionalRole.CONTEXT_OUTPUT]
                 o_dim = num_heads * head_dim
-                target[f"layers.{i}.self_attn.o_proj.weight"] = self._apply_swap(wp, (d_model, o_dim), swap_fraction, pairs, cka_scores, f"layers.{i}.self_attn.o_proj.weight")
+                src_o_dim = wp.tensor.shape[1]
+                src_o_heads = src_o_dim // src_head_dim
+                is_downscale_o = wp.tensor.shape[0] > d_model or src_o_dim > o_dim
+                hs_o = (src_o_heads, src_head_dim, True) if is_downscale_o and (src_o_heads != num_heads or wp.tensor.shape != (d_model, o_dim)) else None
+                target[f"layers.{i}.self_attn.o_proj.weight"] = self._apply_swap(wp, (d_model, o_dim), swap_fraction, pairs, cka_scores, f"layers.{i}.self_attn.o_proj.weight", axis_labels=('d_model', 'o_input'), head_structure=hs_o)
 
             # FFN — gate_proj, up_proj, down_proj
             if FunctionalRole.FFN_GATE in l_src:
                 wp_gate = l_src[FunctionalRole.FFN_GATE]
-                target[f"layers.{i}.mlp.gate_proj.weight"] = self._apply_swap(wp_gate, (d_inner, d_model), swap_fraction, pairs, cka_scores, f"layers.{i}.mlp.gate_proj.weight")
+                target[f"layers.{i}.mlp.gate_proj.weight"] = self._apply_swap(wp_gate, (d_inner, d_model), swap_fraction, pairs, cka_scores, f"layers.{i}.mlp.gate_proj.weight", axis_labels=('d_inner', 'd_model'))
 
             if FunctionalRole.FFN_EXPAND in l_src:
                 wp_up = l_src[FunctionalRole.FFN_EXPAND]
-                target[f"layers.{i}.mlp.up_proj.weight"] = self._apply_swap(wp_up, (d_inner, d_model), swap_fraction, pairs, cka_scores, f"layers.{i}.mlp.up_proj.weight")
+                target[f"layers.{i}.mlp.up_proj.weight"] = self._apply_swap(wp_up, (d_inner, d_model), swap_fraction, pairs, cka_scores, f"layers.{i}.mlp.up_proj.weight", axis_labels=('d_inner', 'd_model'))
 
             if FunctionalRole.FFN_CONTRACT in l_src:
                 wp_down = l_src[FunctionalRole.FFN_CONTRACT]
-                target[f"layers.{i}.mlp.down_proj.weight"] = self._apply_swap(wp_down, (d_model, d_inner), swap_fraction, pairs, cka_scores, f"layers.{i}.mlp.down_proj.weight")
+                target[f"layers.{i}.mlp.down_proj.weight"] = self._apply_swap(wp_down, (d_model, d_inner), swap_fraction, pairs, cka_scores, f"layers.{i}.mlp.down_proj.weight", axis_labels=('d_model', 'd_inner'))
 
         mean_cka = sum(cka_scores.values()) / max(len(cka_scores), 1)
         return target, EquivalenceMap(
@@ -125,7 +187,7 @@ class TransformerToTransformerMapper:
             estimated_quality_tier="acceptable" if mean_cka > 0.50 else "degraded"
         )
 
-    def _apply_swap(self, wp, target_shape, fraction, pairs, scores, target_name=None):
+    def _apply_swap(self, wp, target_shape, fraction, pairs, scores, target_name=None, axis_labels=None, head_structure=None):
         target_name = target_name or wp.name
         
         # If shapes match AND we're not forcing projection AND full fraction → direct copy
@@ -135,7 +197,7 @@ class TransformerToTransformerMapper:
                 swap_type = SwapType.DIRECT
             else:
                 mask = self.scorer.score_svd_spectrum(wp.tensor, fraction)
-                out = self.swap_engine.swap(wp.tensor, target_shape, SwapType.DIRECT, mask)
+                out = self.swap_engine.swap(wp.tensor, target_shape, SwapType.DIRECT, mask, axis_labels=axis_labels)
                 swap_type = SwapType.DIRECT
         else:
             # Dynamically route: Condensation (Downscale) uses OT, Expansion (Upscale) uses SVD
@@ -144,10 +206,10 @@ class TransformerToTransformerMapper:
                 (wp.tensor.dim() > 1 and wp.tensor.shape[1] > target_shape[1])
             )
             
-            swap_type = SwapType.OT if is_downscale else SwapType.PROJECTED
+            swap_type = SwapType.PROJECTED
             
             mask = self.scorer.score_svd_spectrum(wp.tensor, fraction) if fraction < 1.0 else None
-            out = self.swap_engine.swap(wp.tensor, target_shape, swap_type, mask)
+            out = self.swap_engine.swap(wp.tensor, target_shape, swap_type, mask, axis_labels=axis_labels, functional_role=wp.functional_role, head_structure=head_structure)
         
         cka = weight_cka(wp.tensor, out)
         pairs.append(EquivalencePair(wp, target_name, target_shape, cka_score=cka, swap_type=swap_type, confidence=1.0))

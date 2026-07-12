@@ -29,7 +29,7 @@ def linear_cka(X: Tensor, Y: Tensor) -> float:
     hsic_xx = torch.linalg.norm(X.T @ X) ** 2
     hsic_yy = torch.linalg.norm(Y.T @ Y) ** 2
 
-    denom = hsic_xx * hsic_yy
+    denom = (hsic_xx * hsic_yy).sqrt()
     if denom <= 1e-12:
         return 0.0
     return float((hsic_xy / denom).clamp(0.0, 1.0).item())
