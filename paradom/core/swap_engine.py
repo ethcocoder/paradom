@@ -172,12 +172,12 @@ class SwapEngine:
         return W_target
 
     def _projected_swap(self, W_src: Tensor, target_shape: tuple, mask: Optional[Tensor], head_structure: Optional[Tuple[int, int, bool]] = None) -> Tensor:
-        """Project source weight to target shape via SVD.
+        """Project source weight to target shape via head-aware truncation.
 
-        When head_structure is provided and rows reduce (kv_heads merge),
-        row truncation is done FIRST to preserve head boundaries, then
-        column SVD compresses d_model. This prevents SVD from mixing
-        information across head boundaries.
+        When head_structure is provided, uses DETERMINISTIC truncation
+        (row-first for Q/K/V, column-first for O) instead of SVD.
+        This avoids GPU-dependent SVD non-determinism and preserves
+        head boundary structure. SVD is only used for non-head weights.
         """
         if mask is not None and mask.shape == W_src.shape:
             W_src = W_src.clone()
@@ -208,17 +208,12 @@ class SwapEngine:
                 if n_diff > 0:
                     result = result[:, :d_in_tgt]
                 if m_diff > 0:
-                    U, S, Vh = torch.linalg.svd(result, full_matrices=False)
-                    k = min(len(S), d_out_tgt)
-                    result = (U[:, :k] * S[:k].unsqueeze(0)) @ Vh[:k, :]
                     result = result[:d_out_tgt, :]
             else:
                 if m_diff > 0:
                     result = result[:d_out_tgt, :]
                 if n_diff > 0:
-                    U, S, Vh = torch.linalg.svd(result, full_matrices=False)
-                    k = min(len(S), d_in_tgt)
-                    result = (U[:, :k] * S[:k].unsqueeze(0)) @ Vh[:k, :d_in_tgt]
+                    result = result[:, :d_in_tgt]
         else:
             if n_diff > 0:
                 U, S, Vh = torch.linalg.svd(result, full_matrices=False)
