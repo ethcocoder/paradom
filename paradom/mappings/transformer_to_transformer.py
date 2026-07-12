@@ -207,18 +207,23 @@ class TransformerToTransformerMapper:
                 
                 target[f"layers.{i}.self_attn.o_proj.weight"] = out
 
-            # FFN — gate_proj, up_proj, down_proj
-            if FunctionalRole.FFN_GATE in l_src:
-                wp_gate = l_src[FunctionalRole.FFN_GATE]
-                target[f"layers.{i}.mlp.gate_proj.weight"] = self._apply_swap(wp_gate, (d_inner, d_model), swap_fraction, pairs, cka_scores, f"layers.{i}.mlp.gate_proj.weight", axis_labels=('d_inner', 'd_model'))
-
-            if FunctionalRole.FFN_EXPAND in l_src:
-                wp_up = l_src[FunctionalRole.FFN_EXPAND]
-                target[f"layers.{i}.mlp.up_proj.weight"] = self._apply_swap(wp_up, (d_inner, d_model), swap_fraction, pairs, cka_scores, f"layers.{i}.mlp.up_proj.weight", axis_labels=('d_inner', 'd_model'))
-
-            if FunctionalRole.FFN_CONTRACT in l_src:
-                wp_down = l_src[FunctionalRole.FFN_CONTRACT]
-                target[f"layers.{i}.mlp.down_proj.weight"] = self._apply_swap(wp_down, (d_model, d_inner), swap_fraction, pairs, cka_scores, f"layers.{i}.mlp.down_proj.weight", axis_labels=('d_model', 'd_inner'))
+            # FFN — gate_proj, up_proj, down_proj (truncation: preserve original weight ordering)
+            for role, t_name, t_shape in [
+                (FunctionalRole.FFN_GATE, "gate_proj", (d_inner, d_model)),
+                (FunctionalRole.FFN_EXPAND, "up_proj", (d_inner, d_model)),
+                (FunctionalRole.FFN_CONTRACT, "down_proj", (d_model, d_inner)),
+            ]:
+                if role in l_src:
+                    wp = l_src[role]
+                    is_downscale = wp.tensor.shape[0] > t_shape[0] or wp.tensor.shape[1] > t_shape[1]
+                    if is_downscale:
+                        out = wp.tensor[:t_shape[0], :t_shape[1]].clone().detach()
+                        cka = weight_cka(wp.tensor, out)
+                        pairs.append(EquivalencePair(wp, f"layers.{i}.mlp.{t_name}.weight", t_shape, cka_score=cka, swap_type=SwapType.PROJECTED, confidence=1.0))
+                        cka_scores[f"layers.{i}.mlp.{t_name}.weight"] = cka
+                    else:
+                        out = self._apply_swap(wp, t_shape, swap_fraction, pairs, cka_scores, f"layers.{i}.mlp.{t_name}.weight", axis_labels=('d_inner', 'd_model') if role != FunctionalRole.FFN_CONTRACT else ('d_model', 'd_inner'))
+                    target[f"layers.{i}.mlp.{t_name}.weight"] = out
 
         mean_cka = sum(cka_scores.values()) / max(len(cka_scores), 1)
         

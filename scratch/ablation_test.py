@@ -278,6 +278,15 @@ def main():
     mapper_ml.set_ml_projector(ml_projector)
     full_swapped_ml, eq_map_ml = mapper_ml.convert(products, TARGET_B, swap_fraction=1.0)
     print(f"  ML projector swap done | CKA: {eq_map_ml.mean_cka:.4f}")
+    
+    # Hybrid: projector+aligner for attention + FFN truncation (already in mapper)
+    print(f"\n  Running hybrid (projector+aligner + FFN truncation)...")
+    mapper_hybrid = TransformerToTransformerMapper(force_projected=False, source_config=SOURCE_CONFIG)
+    mapper_hybrid.set_kv_activations(kv_acts)
+    mapper_hybrid.set_projector(projector)
+    mapper_hybrid.set_aligner(aligner)
+    full_swapped_hybrid, eq_map_hybrid = mapper_hybrid.convert(products, TARGET_B, swap_fraction=1.0)
+    print(f"  Hybrid swap done | CKA: {eq_map_hybrid.mean_cka:.4f}")
 
     # ── Full swap output ──
     print("\n[3/4] Evaluating full swap, projector swap, and ablations...")
@@ -308,6 +317,13 @@ def main():
     _, ml_match = eval_variant(target_model, tokenizer, full_swapped_ml, device, "ml_projector", baseline)
     print(f"\n  [ML PROJECTOR]  \"{ml_output}\"")
     print(f"  Token overlap with baseline: {ml_match:.2%}")
+    
+    # Evaluate hybrid swap
+    load_weights(target_model, full_swapped_hybrid)
+    hybrid_output = generate(target_model, tokenizer, PROMPT, device=device)
+    _, hybrid_match = eval_variant(target_model, tokenizer, full_swapped_hybrid, device, "hybrid", baseline)
+    print(f"\n  [HYBRID]  \"{hybrid_output}\"")
+    print(f"  Token overlap with baseline: {hybrid_match:.2%}")
 
     # ── Ablation categories ──
     categories = [
@@ -320,6 +336,7 @@ def main():
     results.append(("(projector)", proj_output, proj_match))
     results.append(("(proj+align)", both_output, both_match))
     results.append(("(ml_projector)", ml_output, ml_match))
+    results.append(("(hybrid)", hybrid_output, hybrid_match))
 
     t_start = time.time()
     for cat in categories:
@@ -330,9 +347,9 @@ def main():
         # Reload full swap for next ablation
         load_weights(target_model, full_swapped)
 
-    # Also run ablations on the best variant (ML projector or projector+aligner)
-    best_variant_sd = full_swapped_ml if ml_match >= both_match else full_swapped_both
-    best_variant_name = "ml_projector" if ml_match >= both_match else "proj+align"
+    # Also run ablations on the best variant (hybrid or projector+aligner or ml_projector)
+    best_variant_name = "(hybrid)" if hybrid_match >= both_match and hybrid_match >= ml_match else ("(ml_projector)" if ml_match >= both_match else "(proj+align)")
+    best_variant_sd = full_swapped_hybrid if best_variant_name == "(hybrid)" else (full_swapped_ml if best_variant_name == "(ml_projector)" else full_swapped_both)
     print(f"\n  Ablating best variant ({best_variant_name})...")
     for cat in categories:
         variant = make_ablation(best_variant_sd, source_sd, TARGET_B, cat)
