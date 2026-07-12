@@ -515,7 +515,7 @@ class EnsembleProjector:
         pred_idx = int(round(self.model.predict(X)[0]))
         pred_idx = max(0, min(pred_idx, len(candidates) - 1))
 
-        return candidates[pred_idx][0]
+        return candidates[pred_idx][0].to(W.device, dtype=W.dtype)
 
     def _infer_target_shape(self, key, src_shape, src_d, tgt_d,
                             src_heads, tgt_heads, src_kv, tgt_kv,
@@ -568,4 +568,4 @@ class EnsembleProjector:
         if result.shape[1] < d_in:
             result = torch.cat([result, torch.zeros(result.shape[0], d_in - result.shape[1])], dim=1)
 
-        return result.reshape(target_shape).to(W.dtype)
+        return result.reshape(target_shape).to(W.device, dtype=W.dtype)
