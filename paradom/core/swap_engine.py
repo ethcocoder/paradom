@@ -14,6 +14,8 @@ def collect_kv_activations(source_model, tokenizer, prompt, max_length=128):
               is (seq_len, num_kv_heads * head_dim).
     """
     inputs = tokenizer(prompt, return_tensors="pt", max_length=max_length, truncation=True)
+    device = next(source_model.parameters()).device
+    inputs = {k: v.to(device) for k, v in inputs.items()}
     activations = {}
     hooks = []
 

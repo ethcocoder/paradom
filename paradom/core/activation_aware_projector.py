@@ -34,6 +34,8 @@ def collect_qkv_activations(
         {layer_idx: {"Q": Tensor, "K": Tensor, "V": Tensor}}
     """
     inputs = tokenizer(prompt, return_tensors="pt", max_length=max_length, truncation=True)
+    device = next(source_model.parameters()).device
+    inputs = {k: v.to(device) for k, v in inputs.items()}
     activations: Dict[int, Dict[str, Tensor]] = {}
     hooks = []
 
