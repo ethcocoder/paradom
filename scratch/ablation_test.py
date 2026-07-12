@@ -206,9 +206,12 @@ def main():
     print(f"  Device: {device}")
     print(f"  TF32: disabled | Seed: 42")
 
+    target_cfg = TARGET_B
     if args.validate:
-        TARGET_B = SOURCE_CONFIG.copy()
-        print(f"  MODE: Same-size validation ({SOURCE_CONFIG['d_model']}d → {TARGET_B['d_model']}d)")
+        target_cfg = SOURCE_CONFIG.copy()
+        print(f"  MODE: Same-size validation ({SOURCE_CONFIG['d_model']}d → {target_cfg['d_model']}d)")
+    else:
+        print(f"  MODE: Cross-dimension ({SOURCE_CONFIG['d_model']}d → {target_cfg['d_model']}d)")
 
     # ── Load source model ──
     print(f"\n[1/4] Loading {MODEL_ID}...")
@@ -243,16 +246,16 @@ def main():
         torch.cuda.empty_cache()
 
     # ── Full swap (Test B config) ──
-    print(f"\n[2/4] Running full swap ({SOURCE_CONFIG['d_model']}d→{TARGET_B['d_model']}d)...")
+    print(f"\n[2/4] Running full swap ({SOURCE_CONFIG['d_model']}d→{target_cfg['d_model']}d)...")
     mapper = TransformerToTransformerMapper(force_projected=False, source_config=SOURCE_CONFIG)
     mapper.set_kv_activations(kv_acts)
     t0 = time.time()
-    full_swapped, eq_map = mapper.convert(products, TARGET_B, swap_fraction=1.0)
+    full_swapped, eq_map = mapper.convert(products, target_cfg, swap_fraction=1.0)
     print(f"  Swap done in {time.time()-t0:.1f}s | {len(full_swapped)} tensors | CKA: {eq_map.mean_cka:.4f}")
 
     # ── Full swap output ──
     print("\n[3/4] Evaluating full swap and ablations...")
-    target_model = build_target_model(TARGET_B, device=device)
+    target_model = build_target_model(target_cfg, device=device)
     load_weights(target_model, full_swapped)
     full_output = generate(target_model, tokenizer, PROMPT, device=device)
     _, full_match = eval_variant(target_model, tokenizer, full_swapped, device, "full_swap", baseline)
@@ -270,7 +273,7 @@ def main():
 
     t_start = time.time()
     for cat in categories:
-        variant = make_ablation(full_swapped, source_sd, TARGET_B, cat)
+        variant = make_ablation(full_swapped, source_sd, target_cfg, cat)
         out, match = eval_variant(target_model, tokenizer, variant, device, cat, baseline)
         results.append((cat, out, match))
         print(f"  [{cat:20s}] overlap={match:.2%}  \"{out[:80]}...\"")
