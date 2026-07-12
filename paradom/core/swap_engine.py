@@ -150,7 +150,7 @@ class SwapEngine:
     ) -> Tensor:
         if swap_type == SwapType.DIRECT:
             return self._direct_swap(source_weight, target_shape, importance_mask)
-        el        if swap_type == SwapType.PROJECTED:
+        elif swap_type == SwapType.PROJECTED:
             return self._projected_swap(source_weight, target_shape, importance_mask, head_structure=head_structure)
         elif swap_type == SwapType.OT:
             return self._ot_swap(source_weight, target_shape, importance_mask, axis_labels, functional_role)
