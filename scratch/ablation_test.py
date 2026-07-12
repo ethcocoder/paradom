@@ -187,10 +187,20 @@ def main():
     args = parser.parse_args()
     device = "cuda" if args.gpu and torch.cuda.is_available() else "cpu"
 
+    # Pin precision for reproducible results across GPUs
+    torch.backends.cuda.matmul.allow_tf32 = False
+    torch.backends.cudnn.allow_tf32 = False
+    torch.backends.cudnn.deterministic = True
+    torch.backends.cudnn.benchmark = False
+    torch.manual_seed(42)
+    if device == "cuda":
+        torch.cuda.manual_seed_all(42)
+
     print("=" * 70)
     print("  AWFE Ablation Test — Bottleneck Projection Finder")
     print("=" * 70)
     print(f"  Device: {device}")
+    print(f"  TF32: disabled | Seed: 42")
 
     # ── Load source model ──
     print(f"\n[1/4] Loading {MODEL_ID}...")
