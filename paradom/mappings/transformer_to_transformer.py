@@ -87,19 +87,49 @@ class TransformerToTransformerMapper:
             num_heads = target_config.get("num_heads", 32)
             num_kv = target_config.get("num_key_value_heads", 8)
             head_dim = target_config.get("head_dim", d_model // num_heads)
-            for role, t_name, t_shape, axes in [
-                (FunctionalRole.CONTEXT_QUERY, "q_proj", num_heads * head_dim, ('q_heads', 'd_model')),
-                (FunctionalRole.CONTEXT_KEY, "k_proj", num_kv * head_dim, ('k_heads', 'd_model')),
-                (FunctionalRole.CONTEXT_VALUE, "v_proj", num_kv * head_dim, ('v_heads', 'd_model')),
+            for role, t_name, t_shape, axes, tgt_n_heads in [
+                (FunctionalRole.CONTEXT_QUERY, "q_proj", num_heads * head_dim, ('q_heads', 'd_model'), num_heads),
+                (FunctionalRole.CONTEXT_KEY, "k_proj", num_kv * head_dim, ('k_heads', 'd_model'), num_kv),
+                (FunctionalRole.CONTEXT_VALUE, "v_proj", num_kv * head_dim, ('v_heads', 'd_model'), num_kv),
             ]:
                 if role in l_src:
                     wp = l_src[role]
-                    target[f"layers.{i}.self_attn.{t_name}.weight"] = self._apply_swap(wp, (t_shape, d_model), swap_fraction, pairs, cka_scores, f"layers.{i}.self_attn.{t_name}.weight", axis_labels=axes)
+                    src_n_heads = wp.shape[0] // head_dim
+                    use_head_aware = (
+                        src_n_heads > tgt_n_heads
+                        and wp.shape[0] > 0
+                        and wp.shape[0] % head_dim == 0
+                    )
+                    if use_head_aware:
+                        out = self._head_aware_attention_swap(
+                            wp, (t_shape, d_model), swap_fraction, pairs, cka_scores,
+                            f"layers.{i}.self_attn.{t_name}.weight", axes,
+                            src_n_heads, tgt_n_heads, head_dim, head_axis=0
+                        )
+                    else:
+                        out = self._apply_swap(wp, (t_shape, d_model), swap_fraction, pairs, cka_scores,
+                                               f"layers.{i}.self_attn.{t_name}.weight", axes)
+                    target[f"layers.{i}.self_attn.{t_name}.weight"] = out
 
             if FunctionalRole.CONTEXT_OUTPUT in l_src:
                 wp = l_src[FunctionalRole.CONTEXT_OUTPUT]
                 o_dim = num_heads * head_dim
-                target[f"layers.{i}.self_attn.o_proj.weight"] = self._apply_swap(wp, (d_model, o_dim), swap_fraction, pairs, cka_scores, f"layers.{i}.self_attn.o_proj.weight", axis_labels=('d_model', 'o_input'))
+                src_n_heads = wp.shape[1] // head_dim
+                use_head_aware = (
+                    src_n_heads > num_heads
+                    and wp.shape[1] > 0
+                    and wp.shape[1] % head_dim == 0
+                )
+                if use_head_aware:
+                    out = self._head_aware_attention_swap(
+                        wp, (d_model, o_dim), swap_fraction, pairs, cka_scores,
+                        f"layers.{i}.self_attn.o_proj.weight", ('d_model', 'o_input'),
+                        src_n_heads, num_heads, head_dim, head_axis=1
+                    )
+                else:
+                    out = self._apply_swap(wp, (d_model, o_dim), swap_fraction, pairs, cka_scores,
+                                           f"layers.{i}.self_attn.o_proj.weight", ('d_model', 'o_input'))
+                target[f"layers.{i}.self_attn.o_proj.weight"] = out
 
             # FFN — gate_proj, up_proj, down_proj
             if FunctionalRole.FFN_GATE in l_src:
@@ -150,6 +180,66 @@ class TransformerToTransformerMapper:
             out = self.swap_engine.swap(wp.tensor, target_shape, swap_type, mask, axis_labels=axis_labels)
         
         cka = weight_cka(wp.tensor, out)
+        pairs.append(EquivalencePair(wp, target_name, target_shape, cka_score=cka, swap_type=swap_type, confidence=1.0))
+        scores[target_name] = cka
+        return out
+
+    def _head_aware_attention_swap(
+        self, wp, target_shape, fraction, pairs, scores, target_name, axis_labels,
+        src_n_heads, tgt_n_heads, head_dim, head_axis
+    ):
+        """
+        Head-aware swap for attention projections (Q, K, V, O).
+        
+        When head count changes, the head-stacked dimension must be truncated
+        at head boundaries (not via spectral projection, which mixes head
+        information across the continuous space).
+        
+        Steps:
+          1. Reshape weight to separate heads: (n_heads*head_dim, d) or (d, n_heads*head_dim)
+          2. Select tgt_n_heads most important heads (by Frobenius norm of their block)
+          3. Reshape back to target head dimension
+          4. Apply OT for any remaining non-head dimension changes (e.g., d_model reduction)
+        
+        Args:
+            head_axis: 0 if heads stacked along rows (Q, K, V), 1 if along columns (O)
+        """
+        W_src = wp.tensor
+        W_original = W_src.clone()
+        modified = W_src.clone()
+        src_shape = W_src.shape
+
+        if src_n_heads != tgt_n_heads:
+            if head_axis == 0:
+                M = src_shape[1]
+                W_3d = modified.reshape(src_n_heads, head_dim, M)
+                norms = torch.norm(W_3d.reshape(src_n_heads, -1), dim=1)
+                _, keep = torch.topk(norms, tgt_n_heads)
+                keep = torch.sort(keep)[0]
+                modified = W_3d[keep].reshape(tgt_n_heads * head_dim, M)
+            else:
+                M = src_shape[0]
+                W_3d = modified.reshape(M, src_n_heads, head_dim)
+                norms = torch.sqrt(torch.sum(W_3d ** 2, dim=(0, 2)))
+                _, keep = torch.topk(norms, tgt_n_heads)
+                keep = torch.sort(keep)[0]
+                modified = W_3d[:, keep].reshape(M, tgt_n_heads * head_dim)
+
+        modified_shape = tuple(modified.shape)
+
+        if modified_shape == target_shape:
+            out = modified.clone().detach()
+            swap_type = SwapType.DIRECT
+        else:
+            is_downscale = modified.dim() >= 1 and (
+                modified.shape[0] > target_shape[0] or
+                (modified.dim() > 1 and modified.shape[1] > target_shape[1])
+            )
+            swap_type = SwapType.OT if is_downscale else SwapType.PROJECTED
+            mask = self.scorer.score_svd_spectrum(modified, fraction) if fraction < 1.0 else None
+            out = self.swap_engine.swap(modified, target_shape, swap_type, mask, axis_labels=axis_labels)
+
+        cka = weight_cka(W_original, out)
         pairs.append(EquivalencePair(wp, target_name, target_shape, cka_score=cka, swap_type=swap_type, confidence=1.0))
         scores[target_name] = cka
         return out

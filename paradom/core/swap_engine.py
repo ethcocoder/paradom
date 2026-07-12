@@ -125,16 +125,19 @@ class SwapEngine:
         W_2d = W_src.reshape(W_src.shape[0], -1).float()
         result = W_2d
         
-        # Project input dimension (columns) if needed — use ORIGINAL W_2d for basis
+        # Project input dimension (columns) if needed
         if W_src_d_in > d_in_tgt:
             label = axis_labels[1] if axis_labels and len(axis_labels) > 1 else None
             P = self._get_spectral_projector(W_src_d_in, d_in_tgt, 'right', W_2d, label)
             result = result @ P  # (m, n) @ (n, n') → (m, n')
         
-        # Project output dimension (rows) if needed — use ORIGINAL W_2d for basis
+        # Project output dimension (rows) if needed
+        # Use the CURRENT result (possibly column-projected) for the left projector basis,
+        # preventing diagonal collapse when both projectors come from the same SVD.
+        basis = result if W_src_d_in > d_in_tgt else W_2d
         if W_src.shape[0] > d_out_tgt:
             label = axis_labels[0] if axis_labels else None
-            Q = self._get_spectral_projector(W_src.shape[0], d_out_tgt, 'left', W_2d, label)
+            Q = self._get_spectral_projector(W_src.shape[0], d_out_tgt, 'left', basis, label)
             result = Q.T @ result  # (m', m) @ (m, n') → (m', n')
         
         return result.reshape(target_shape).to(W_src.dtype)
@@ -153,7 +156,7 @@ class SwapEngine:
         if not hasattr(self, '_spectral_cache'):
             self._spectral_cache = {}
         
-        cache_key = axis_label if axis_label is not None else (src_dim, tgt_dim, direction)
+        cache_key = (axis_label, direction) if axis_label is not None else (src_dim, tgt_dim, direction)
         
         if cache_key not in self._spectral_cache:
             rank = min(W_2d.shape)
