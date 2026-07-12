@@ -218,6 +218,13 @@ def main():
     print("  Collecting KV activations...")
     kv_acts = collect_kv_activations(model, tokenizer, PROMPT)
     print(f"  Collected from {len(kv_acts)} layers")
+    
+    # ── Calibrate activation-aware projector ──
+    from paradom.core.activation_aware_projector import ActivationAwareProjector
+    print("  Calibrating activation-aware projector...")
+    projector = ActivationAwareProjector(SOURCE_CONFIG, TARGET_B)
+    projector.calibrate(model, tokenizer, PROMPT)
+    print("  Projector calibrated")
 
     # Free source model memory
     del model
@@ -231,15 +238,30 @@ def main():
     t0 = time.time()
     full_swapped, eq_map = mapper.convert(products, TARGET_B, swap_fraction=1.0)
     print(f"  Swap done in {time.time()-t0:.1f}s | {len(full_swapped)} tensors | CKA: {eq_map.mean_cka:.4f}")
+    
+    # Also run with activation-aware projector
+    print(f"\n  Running with activation-aware projector...")
+    mapper_proj = TransformerToTransformerMapper(force_projected=False, source_config=SOURCE_CONFIG)
+    mapper_proj.set_kv_activations(kv_acts)
+    mapper_proj.set_projector(projector)
+    full_swapped_proj, eq_map_proj = mapper_proj.convert(products, TARGET_B, swap_fraction=1.0)
+    print(f"  Projector swap done | CKA: {eq_map_proj.mean_cka:.4f}")
 
     # ── Full swap output ──
-    print("\n[3/4] Evaluating full swap and ablations...")
+    print("\n[3/4] Evaluating full swap, projector swap, and ablations...")
     target_model = build_target_model(TARGET_B, device=device)
     load_weights(target_model, full_swapped)
     full_output = generate(target_model, tokenizer, PROMPT, device=device)
     _, full_match = eval_variant(target_model, tokenizer, full_swapped, device, "full_swap", baseline)
     print(f"\n  [FULL SWAP]  \"{full_output}\"")
     print(f"  Token overlap with baseline: {full_match:.2%}")
+    
+    # Evaluate projector swap
+    load_weights(target_model, full_swapped_proj)
+    proj_output = generate(target_model, tokenizer, PROMPT, device=device)
+    _, proj_match = eval_variant(target_model, tokenizer, full_swapped_proj, device, "projector", baseline)
+    print(f"\n  [PROJECTOR]  \"{proj_output}\"")
+    print(f"  Token overlap with baseline: {proj_match:.2%}")
 
     # ── Ablation categories ──
     categories = [
@@ -249,6 +271,7 @@ def main():
     results = []
     results.append(("(baseline)", baseline, 1.0))
     results.append(("(full_swap)", full_output, full_match))
+    results.append(("(projector)", proj_output, proj_match))
 
     t_start = time.time()
     for cat in categories:

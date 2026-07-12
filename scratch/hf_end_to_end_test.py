@@ -24,6 +24,7 @@ from paradom.core.types import WeightProduct
 from paradom.core.enums import FunctionalRole
 from paradom.core.matcher import FunctionalRoleMatcher
 from paradom.mappings.transformer_to_transformer import TransformerToTransformerMapper
+from paradom.core.activation_aware_projector import ActivationAwareProjector
 
 # ── Configuration ────────────────────────────────────────────
 MODEL_ID     = "HuggingFaceTB/SmolLM-135M"
@@ -105,7 +106,7 @@ def load_swapped_weights(model, swapped_sd):
     return loaded, skipped, mismatched
 
 
-def run_test(test_name, source_products, target_config, tokenizer, force_projected=False, kv_activations=None):
+def run_test(test_name, source_products, target_config, tokenizer, force_projected=False, kv_activations=None, projector=None):
     """Run a single swap test and return the generated text."""
     print(f"\n{'─' * 60}")
     print(f"  {test_name}")
@@ -115,6 +116,8 @@ def run_test(test_name, source_products, target_config, tokenizer, force_project
     mapper = TransformerToTransformerMapper(force_projected=force_projected, source_config=SOURCE_CONFIG)
     if kv_activations:
         mapper.set_kv_activations(kv_activations)
+    if projector:
+        mapper.set_projector(projector)
     
     # Swap
     t0 = time.time()
@@ -174,6 +177,19 @@ def main():
     kv_acts = collect_kv_activations(model, tokenizer, PROMPT)
     print(f"  Collected from {len(kv_acts)} layers")
     
+    # Create activation-aware projector before freeing model
+    from paradom.core.activation_aware_projector import ActivationAwareProjector
+    target_b = {
+        "d_model": 512, "d_inner": 1408,
+        "num_heads": 8, "num_key_value_heads": 2,
+        "head_dim": 64, "num_hidden_layers": 30,
+        "vocab_size": 49152,
+    }
+    print("  Calibrating activation-aware projector...")
+    projector = ActivationAwareProjector(SOURCE_CONFIG, target_b)
+    projector.calibrate(model, tokenizer, PROMPT)
+    print("  Projector calibrated")
+    
     # Free original model memory
     del model
 
@@ -184,15 +200,9 @@ def main():
     )
 
     # ── Test B: Cross-dim DOWNSCALE ──────────────────────────
-    target_b = {
-        "d_model": 512, "d_inner": 1408,
-        "num_heads": 8, "num_key_value_heads": 2,
-        "head_dim": 64, "num_hidden_layers": 30,
-        "vocab_size": 49152,
-    }
     run_test(
         "TEST B: Cross-Dimension DOWNSCALE (576→512 hidden)",
-        products, target_b, tokenizer, kv_activations=kv_acts
+        products, target_b, tokenizer, kv_activations=kv_acts, projector=projector
     )
 
     # ── Test C: Cross-dim UPSCALE ────────────────────────────

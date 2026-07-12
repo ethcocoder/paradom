@@ -4,6 +4,7 @@ from typing import Dict, List, Tuple, Any, Optional
 from paradom.core.enums import SwapType, FunctionalRole
 from paradom.core.types import EquivalencePair, EquivalenceMap, WeightProduct
 from paradom.core.cka import weight_cka
+from paradom.core.activation_aware_projector import ActivationAwareProjector
 
 class TransformerToTransformerMapper:
     """
@@ -15,9 +16,13 @@ class TransformerToTransformerMapper:
     - Pre-computes shared spectral bases across ALL layers of each functional role
     - Uses 'magnetic character' alignment for cross-layer consistent projections
     - Applies residual energy correction during compression
+    
+    Also integrates ActivationAwareProjector for attention weights:
+    - Uses calibration data to merge heads while preserving attention patterns
+    - Falls back to SVD for non-attention weights
     """
 
-    def __init__(self, swap_engine=None, scorer=None, force_projected=False, source_config=None):
+    def __init__(self, swap_engine=None, scorer=None, force_projected=False, source_config=None, projector=None):
         from paradom.core.swap_engine import SwapEngine, MagneticProjector
         from paradom.core.importance import ImportanceScorer
         self.magnetic_projector = MagneticProjector()
@@ -26,9 +31,14 @@ class TransformerToTransformerMapper:
         self.force_projected = force_projected
         self._source_config = source_config
         self._kv_activations = {}
+        self._projector = projector  # Optional[ActivationAwareProjector]
 
     def set_kv_activations(self, kv_activations: Dict[int, Dict[str, Tensor]]):
         self._kv_activations = kv_activations
+
+    def set_projector(self, projector: ActivationAwareProjector):
+        """Set the activation-aware projector for attention weights."""
+        self._projector = projector
 
     def convert(
         self,
@@ -140,12 +150,9 @@ class TransformerToTransformerMapper:
                     is_downscale = wp.tensor.shape[0] > t_shape or (len(wp.tensor.shape) > 1 and wp.tensor.shape[1] > d_model)
                     hs = (src_h, src_head_dim) if is_downscale and (src_h != tgt_h or wp.tensor.shape[0] != t_shape) else None
 
-                    use_pca = False  # Disabled: PCA optimizes variance, not attention quality
-
-                    if use_pca:
-                        act = self._kv_activations[src_i][kv_key]
-                        act_flat = act.reshape(-1, act.shape[-1])
-                        out = self.swap_engine.pca_project(wp.tensor, (t_shape, d_model), act_flat)
+                    # Use activation-aware projector if available and shapes differ
+                    if self._projector is not None and is_downscale:
+                        out = self._projector.project(wp.tensor, (t_shape, d_model), src_i, role)
                         cka = weight_cka(wp.tensor, out)
                         pairs.append(EquivalencePair(wp, f"layers.{i}.self_attn.{t_name}.weight", (t_shape, d_model), cka_score=cka, swap_type=SwapType.PROJECTED, confidence=1.0))
                         cka_scores[f"layers.{i}.self_attn.{t_name}.weight"] = cka
@@ -161,7 +168,17 @@ class TransformerToTransformerMapper:
                 src_o_heads = src_o_dim // src_head_dim
                 is_downscale_o = wp.tensor.shape[0] > d_model or src_o_dim > o_dim
                 hs_o = (src_o_heads, src_head_dim, True) if is_downscale_o and (src_o_heads != num_heads or wp.tensor.shape != (d_model, o_dim)) else None
-                target[f"layers.{i}.self_attn.o_proj.weight"] = self._apply_swap(wp, (d_model, o_dim), swap_fraction, pairs, cka_scores, f"layers.{i}.self_attn.o_proj.weight", axis_labels=('d_model', 'o_input'), head_structure=hs_o)
+                
+                # Use activation-aware projector if available and shapes differ
+                if self._projector is not None and is_downscale_o:
+                    out = self._projector.project(wp.tensor, (d_model, o_dim), src_i, FunctionalRole.CONTEXT_OUTPUT)
+                    cka = weight_cka(wp.tensor, out)
+                    pairs.append(EquivalencePair(wp, f"layers.{i}.self_attn.o_proj.weight", (d_model, o_dim), cka_score=cka, swap_type=SwapType.PROJECTED, confidence=1.0))
+                    cka_scores[f"layers.{i}.self_attn.o_proj.weight"] = cka
+                else:
+                    out = self._apply_swap(wp, (d_model, o_dim), swap_fraction, pairs, cka_scores, f"layers.{i}.self_attn.o_proj.weight", axis_labels=('d_model', 'o_input'), head_structure=hs_o)
+                
+                target[f"layers.{i}.self_attn.o_proj.weight"] = out
 
             # FFN — gate_proj, up_proj, down_proj
             if FunctionalRole.FFN_GATE in l_src:
