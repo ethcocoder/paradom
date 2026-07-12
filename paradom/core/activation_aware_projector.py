@@ -125,12 +125,19 @@ class ActivationAwareProjector:
         num_q = self.src_num_heads
         num_kv = self.src_num_kv
 
+        if Q.dim() == 3:
+            Q = Q.squeeze(0)
+            K = K.squeeze(0)
+            V = V.squeeze(0)
+        T = Q.shape[0]
+
         Q_heads = Q.reshape(T, num_q, d)
         K_heads = K.reshape(T, num_kv, d)
         V_heads = V.reshape(T, num_kv, d)
 
-        attn_weighted_v = torch.zeros(num_q, num_kv, d)
-        attn_flat = torch.zeros(num_q, num_kv, T * T)
+        device = Q.device
+        attn_weighted_v = torch.zeros(num_q, num_kv, d, device=device)
+        attn_flat = torch.zeros(num_q, num_kv, T * T, device=device)
 
         scale = d ** 0.5
         for i in range(num_q):
@@ -143,7 +150,7 @@ class ActivationAwareProjector:
         kv_importance = attn_weighted_v.abs().sum(dim=(0, 2))
         q_importance = attn_flat.abs().sum(dim=(1, 2, 3))
 
-        kv_similarity = torch.zeros(num_kv, num_kv)
+        kv_similarity = torch.zeros(num_kv, num_kv, device=device)
         for h1 in range(num_kv):
             for h2 in range(num_kv):
                 sims = [
@@ -153,7 +160,7 @@ class ActivationAwareProjector:
                 ]
                 kv_similarity[h1, h2] = torch.stack(sims).mean()
 
-        q_similarity = torch.zeros(num_q, num_q)
+        q_similarity = torch.zeros(num_q, num_q, device=device)
         for i1 in range(num_q):
             for i2 in range(num_q):
                 sims = [
