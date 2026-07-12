@@ -24,7 +24,6 @@ from paradom.core.types import WeightProduct
 from paradom.core.enums import FunctionalRole
 from paradom.core.matcher import FunctionalRoleMatcher
 from paradom.mappings.transformer_to_transformer import TransformerToTransformerMapper
-from paradom.core.activation_aware_projector import ActivationAwareProjector
 
 # ── Configuration ────────────────────────────────────────────
 MODEL_ID     = "HuggingFaceTB/SmolLM-135M"
@@ -106,20 +105,14 @@ def load_swapped_weights(model, swapped_sd):
     return loaded, skipped, mismatched
 
 
-def run_test(test_name, source_products, target_config, tokenizer, force_projected=False, kv_activations=None, projector=None, aligner=None):
+def run_test(test_name, source_products, target_config, tokenizer, force_projected=False):
     """Run a single swap test and return the generated text."""
     print(f"\n{'─' * 60}")
     print(f"  {test_name}")
     print(f"{'─' * 60}")
     
     # Build mapper
-    mapper = TransformerToTransformerMapper(force_projected=force_projected, source_config=SOURCE_CONFIG)
-    if kv_activations:
-        mapper.set_kv_activations(kv_activations)
-    if projector:
-        mapper.set_projector(projector)
-    if aligner:
-        mapper.set_aligner(aligner)
+    mapper = TransformerToTransformerMapper(force_projected=force_projected)
     
     # Swap
     t0 = time.time()
@@ -160,44 +153,16 @@ def main():
     baseline = generate(model, tokenizer, PROMPT)
     print(f"\n[BASELINE] \"{baseline}\"")
     
-    # Extract weights (model.model.state_dict() misses lm_head.weight)
+    # Extract weights
     full_sd = {}
     for k, v in model.model.state_dict().items():
         full_sd[k] = v.clone()
-    if hasattr(model, 'lm_head'):
-        full_sd['lm_head.weight'] = model.lm_head.weight.data.clone()
     products = state_dict_to_weight_products(full_sd)
     
     roles = {}
     for wp in products:
         roles[wp.functional_role.value] = roles.get(wp.functional_role.value, 0) + 1
     print(f"  {len(products)} tensors | Roles: {roles}")
-    
-    # Collect KV activations before freeing model
-    from paradom.core.swap_engine import collect_kv_activations
-    print("  Collecting KV activations...")
-    kv_acts = collect_kv_activations(model, tokenizer, PROMPT)
-    print(f"  Collected from {len(kv_acts)} layers")
-    
-    # Create activation-aware projector before freeing model
-    from paradom.core.activation_aware_projector import ActivationAwareProjector
-    target_b = {
-        "d_model": 512, "d_inner": 1408,
-        "num_heads": 8, "num_key_value_heads": 2,
-        "head_dim": 64, "num_hidden_layers": 30,
-        "vocab_size": 49152,
-    }
-    print("  Calibrating activation-aware projector...")
-    projector = ActivationAwareProjector(SOURCE_CONFIG, target_b)
-    projector.calibrate(model, tokenizer, PROMPT)
-    print("  Projector calibrated")
-    
-    # Create layer aligner before freeing model
-    from paradom.core.layer_aligner import LayerAligner
-    print("  Calibrating layer aligner...")
-    aligner = LayerAligner(correction_strength=0.3)
-    aligner.calibrate(model, tokenizer, PROMPT)
-    print("  Aligner calibrated")
     
     # Free original model memory
     del model
@@ -209,9 +174,15 @@ def main():
     )
 
     # ── Test B: Cross-dim DOWNSCALE ──────────────────────────
+    target_b = {
+        "d_model": 512, "d_inner": 1408,
+        "num_heads": 8, "num_key_value_heads": 2,
+        "head_dim": 64, "num_hidden_layers": 30,
+        "vocab_size": 49152,
+    }
     run_test(
         "TEST B: Cross-Dimension DOWNSCALE (576→512 hidden)",
-        products, target_b, tokenizer, kv_activations=kv_acts, projector=projector, aligner=aligner
+        products, target_b, tokenizer
     )
 
     # ── Test C: Cross-dim UPSCALE ────────────────────────────
