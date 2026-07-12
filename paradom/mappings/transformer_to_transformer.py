@@ -196,10 +196,6 @@ class TransformerToTransformerMapper:
 
         mean_cka = sum(cka_scores.values()) / max(len(cka_scores), 1)
         
-        # Apply layer alignment if aligner is set
-        if self._aligner is not None and self._source_config is not None:
-            target = self._aligner.align(target, self._source_config, target_config)
-        
         return target, EquivalenceMap(
             source_model="TransformerSource",
             target_architecture="TransformerTarget",
