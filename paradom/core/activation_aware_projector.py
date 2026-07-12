@@ -202,18 +202,21 @@ class ActivationAwareProjector:
                 W_2d, target_shape,
                 scores["kv_importance"], scores["kv_similarity"],
                 self.src_num_kv, self.tgt_num_kv, is_row=True,
+                src_dtype=W_src.dtype,
             )
         elif role == FunctionalRole.CONTEXT_QUERY:
             return self._project_with_head_merging(
                 W_2d, target_shape,
                 scores["q_importance"], scores["q_similarity"],
                 self.src_num_heads, self.tgt_num_heads, is_row=True,
+                src_dtype=W_src.dtype,
             )
         elif role == FunctionalRole.CONTEXT_OUTPUT:
             return self._project_with_head_merging(
                 W_2d, target_shape,
                 scores["q_importance"], scores["q_similarity"],
                 self.src_num_heads, self.tgt_num_heads, is_row=False,
+                src_dtype=W_src.dtype,
             )
         else:
             return self._svd_fallback(W_src, target_shape)
@@ -224,7 +227,7 @@ class ActivationAwareProjector:
 
     def _project_with_head_merging(
         self, W_2d, target_shape, head_importance, head_similarity,
-        src_heads, tgt_heads, is_row,
+        src_heads, tgt_heads, is_row, src_dtype=None,
     ):
         """Head merging for head dimension, SVD for d_model."""
         d_out_tgt = target_shape[0]
@@ -276,7 +279,7 @@ class ActivationAwareProjector:
             scale = (src_energy / proj_energy).sqrt().clamp(1.0, 2.0)
             W_final = W_final * scale
 
-        return W_final[:d_out_tgt, :d_in_tgt].reshape(target_shape).to(W_src.dtype)
+        return W_final[:d_out_tgt, :d_in_tgt].reshape(target_shape).to(src_dtype or W_2d.dtype)
 
     # ------------------------------------------------------------------
     # Greedy head merging
