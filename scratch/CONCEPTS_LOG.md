@@ -135,6 +135,28 @@ Account for the GQA ratio change (3:1 → 4:1):
 
 ---
 
+### 9. FFN Truncation Breakthrough
+- **Finding**: FFN weights (gate_proj, up_proj, down_proj) should use TRUNCATION, not SVD
+- Ablation showed replacing FFN with source originals (truncated) = 43.75% overlap
+- SVD mixes information across rows; truncation preserves original weight ordering
+- **Result**: Full swap jumped from 18.75% → 43.75% by just truncating FFN
+
+### 10. Projector/Aligner Are Counterproductive
+- ActivationAwareProjector for attention: hurts (20.8% → 16.7%)
+- LayerAligner: hurts (43.75% → 31.25%, -12.5%)
+- ML EnsembleProjector: no improvement (trained on broken CKA)
+- **Lesson**: Simple is better. SVD for attention + truncation for FFN wins.
+
+### 11. Remaining Bottleneck: Attention Projections
+- QKV: -18.8% when replaced with source originals
+- O projection: -20.8%
+- Embeddings: -25.0%
+- Norms: -14.6%
+- Damage is distributed across all attention components
+- Layer_14 and layer_28 ablations give +2.1% each (mid/late layers matter more)
+
+---
+
 ## Key Files
 - `paradom/core/swap_engine.py`: Projection methods (SVD, head-aware, PCA)
 - `paradom/mappings/transformer_to_transformer.py`: Mapper with PCA routing
