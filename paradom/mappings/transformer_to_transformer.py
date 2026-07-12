@@ -4,6 +4,7 @@ from typing import Dict, List, Tuple, Any, Optional
 from paradom.core.enums import SwapType, FunctionalRole
 from paradom.core.types import EquivalencePair, EquivalenceMap, WeightProduct
 from paradom.core.cka import weight_cka
+from paradom.core.subspace import SubspaceProjector, apply_subspace_projectors
 
 class TransformerToTransformerMapper:
     """
@@ -18,6 +19,7 @@ class TransformerToTransformerMapper:
         self.swap_engine = swap_engine or SwapEngine()
         self.scorer      = scorer      or ImportanceScorer()
         self.force_projected = force_projected
+        self.subspace = SubspaceProjector()
 
     def convert(
         self,
@@ -28,6 +30,8 @@ class TransformerToTransformerMapper:
         """
         Maps a list of Transformer WeightProducts to another Transformer's state_dict.
         """
+        self.subspace.compute(source_products, target_config)
+
         target = {}
         pairs = []
         cka_scores = {}
@@ -157,28 +161,29 @@ class TransformerToTransformerMapper:
 
     def _apply_swap(self, wp, target_shape, fraction, pairs, scores, target_name=None, axis_labels=None):
         target_name = target_name or wp.name
-        
-        # If shapes match AND we're not forcing projection AND full fraction → direct copy
-        if not self.force_projected and (tuple(wp.tensor.shape) == tuple(target_shape)):
+
+        W_projected = apply_subspace_projectors(wp, self.subspace)
+        projected_shape = tuple(W_projected.shape)
+
+        if not self.force_projected and projected_shape == target_shape:
             if fraction >= 1.0:
-                out = wp.tensor.clone().detach()
+                out = W_projected.clone().detach()
                 swap_type = SwapType.DIRECT
             else:
-                mask = self.scorer.score_svd_spectrum(wp.tensor, fraction)
-                out = self.swap_engine.swap(wp.tensor, target_shape, SwapType.DIRECT, mask, axis_labels=axis_labels)
+                mask = self.scorer.score_svd_spectrum(W_projected, fraction)
+                out = self.swap_engine.swap(W_projected, target_shape, SwapType.DIRECT, mask, axis_labels=axis_labels)
                 swap_type = SwapType.DIRECT
         else:
-            # Dynamically route: Condensation (Downscale) uses OT, Expansion (Upscale) uses SVD
-            is_downscale = wp.tensor.dim() >= 1 and (
-                wp.tensor.shape[0] > target_shape[0] or 
-                (wp.tensor.dim() > 1 and wp.tensor.shape[1] > target_shape[1])
+            is_downscale = W_projected.dim() >= 1 and (
+                W_projected.shape[0] > target_shape[0] or
+                (W_projected.dim() > 1 and W_projected.shape[1] > target_shape[1])
             )
-            
+
             swap_type = SwapType.OT if is_downscale else SwapType.PROJECTED
-            
-            mask = self.scorer.score_svd_spectrum(wp.tensor, fraction) if fraction < 1.0 else None
-            out = self.swap_engine.swap(wp.tensor, target_shape, swap_type, mask, axis_labels=axis_labels)
-        
+
+            mask = self.scorer.score_svd_spectrum(W_projected, fraction) if fraction < 1.0 else None
+            out = self.swap_engine.swap(W_projected, target_shape, swap_type, mask, axis_labels=axis_labels)
+
         cka = weight_cka(wp.tensor, out)
         pairs.append(EquivalencePair(wp, target_name, target_shape, cka_score=cka, swap_type=swap_type, confidence=1.0))
         scores[target_name] = cka
@@ -188,22 +193,6 @@ class TransformerToTransformerMapper:
         self, wp, target_shape, fraction, pairs, scores, target_name, axis_labels,
         src_n_heads, tgt_n_heads, head_dim, head_axis
     ):
-        """
-        Head-aware swap for attention projections (Q, K, V, O).
-        
-        When head count changes, the head-stacked dimension must be truncated
-        at head boundaries (not via spectral projection, which mixes head
-        information across the continuous space).
-        
-        Steps:
-          1. Reshape weight to separate heads: (n_heads*head_dim, d) or (d, n_heads*head_dim)
-          2. Select tgt_n_heads most important heads (by Frobenius norm of their block)
-          3. Reshape back to target head dimension
-          4. Apply OT for any remaining non-head dimension changes (e.g., d_model reduction)
-        
-        Args:
-            head_axis: 0 if heads stacked along rows (Q, K, V), 1 if along columns (O)
-        """
         W_src = wp.tensor
         W_original = W_src.clone()
         modified = W_src.clone()
@@ -224,6 +213,12 @@ class TransformerToTransformerMapper:
                 _, keep = torch.topk(norms, tgt_n_heads)
                 keep = torch.sort(keep)[0]
                 modified = W_3d[:, keep].reshape(M, tgt_n_heads * head_dim)
+
+        if self.subspace.P_dmodel is not None:
+            if head_axis == 0:
+                modified = modified @ self.subspace.P_dmodel
+            else:
+                modified = self.subspace.P_dmodel.T @ modified
 
         modified_shape = tuple(modified.shape)
 
