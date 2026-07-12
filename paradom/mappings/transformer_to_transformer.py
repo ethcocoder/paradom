@@ -148,14 +148,28 @@ class TransformerToTransformerMapper:
             src_i = source_layer_keys[i % len(source_layer_keys)]
             l_src = layers[src_i]
             
-            # Map Norms
+            # Map Norms (direct truncation — SVD on 1D is lossy)
             if FunctionalRole.NORMALIZATION in l_src: 
                 wp = l_src[FunctionalRole.NORMALIZATION]
-                target[f"layers.{i}.input_layernorm.weight"] = self._apply_swap(wp, (d_model,), swap_fraction, pairs, cka_scores, f"layers.{i}.input_layernorm.weight", axis_labels=('d_model',))
+                if wp.tensor.shape[0] > d_model:
+                    out = wp.tensor[:d_model].clone().detach()
+                    cka = weight_cka(wp.tensor, out)
+                    pairs.append(EquivalencePair(wp, f"layers.{i}.input_layernorm.weight", (d_model,), cka_score=cka, swap_type=SwapType.PROJECTED, confidence=1.0))
+                    cka_scores[f"layers.{i}.input_layernorm.weight"] = cka
+                else:
+                    out = self._apply_swap(wp, (d_model,), swap_fraction, pairs, cka_scores, f"layers.{i}.input_layernorm.weight", axis_labels=('d_model',))
+                target[f"layers.{i}.input_layernorm.weight"] = out
 
             if FunctionalRole.POST_NORMALIZATION in l_src:
                 wp = l_src[FunctionalRole.POST_NORMALIZATION]
-                target[f"layers.{i}.post_attention_layernorm.weight"] = self._apply_swap(wp, (d_model,), swap_fraction, pairs, cka_scores, f"layers.{i}.post_attention_layernorm.weight", axis_labels=('d_model',))
+                if wp.tensor.shape[0] > d_model:
+                    out = wp.tensor[:d_model].clone().detach()
+                    cka = weight_cka(wp.tensor, out)
+                    pairs.append(EquivalencePair(wp, f"layers.{i}.post_attention_layernorm.weight", (d_model,), cka_score=cka, swap_type=SwapType.PROJECTED, confidence=1.0))
+                    cka_scores[f"layers.{i}.post_attention_layernorm.weight"] = cka
+                else:
+                    out = self._apply_swap(wp, (d_model,), swap_fraction, pairs, cka_scores, f"layers.{i}.post_attention_layernorm.weight", axis_labels=('d_model',))
+                target[f"layers.{i}.post_attention_layernorm.weight"] = out
 
             # Map Attention (Q, K, V, O)
             num_heads = target_config.get("num_heads", 32)

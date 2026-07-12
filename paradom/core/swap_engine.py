@@ -153,6 +153,12 @@ class SwapEngine:
         if swap_type == SwapType.DIRECT:
             return self._direct_swap(source_weight, target_shape, importance_mask)
         elif swap_type == SwapType.PROJECTED:
+            if head_structure is not None and len(head_structure) >= 2:
+                src_heads, src_head_dim = head_structure[0], head_structure[1]
+                transpose = len(head_structure) > 2 and head_structure[2]
+                tgt_heads = target_shape[1] // src_head_dim if transpose else target_shape[0] // src_head_dim
+                if src_heads > tgt_heads:
+                    return self._projected_swap_head_aware(source_weight, target_shape, importance_mask, head_structure)
             return self._projected_swap(source_weight, target_shape, importance_mask, head_structure=head_structure)
         elif swap_type == SwapType.OT:
             return self._ot_swap(source_weight, target_shape, importance_mask, axis_labels, functional_role)
@@ -232,12 +238,11 @@ class SwapEngine:
             pad = d_in_tgt - result.shape[1]
             result = torch.cat([result, torch.zeros(result.shape[0], pad)], dim=1)
 
-        if not has_heads:
-            src_energy = W_2d.pow(2).sum()
-            proj_energy = result[:d_out_tgt, :d_in_tgt].pow(2).sum()
-            if proj_energy > 0:
-                scale = (src_energy / proj_energy).sqrt().clamp(1.0, 2.0)
-                result = result * scale
+        src_energy = W_2d.pow(2).sum()
+        proj_energy = result[:d_out_tgt, :d_in_tgt].pow(2).sum()
+        if proj_energy > 0:
+            scale = (src_energy / proj_energy).sqrt().clamp(1.0, 2.0)
+            result = result * scale
 
         W_target = result[:d_out_tgt, :d_in_tgt].reshape(target_shape).to(W_src.dtype)
 

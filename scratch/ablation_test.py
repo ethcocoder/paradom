@@ -187,6 +187,7 @@ def eval_variant(model, tokenizer, variant_sd, device, variant_name, baseline_te
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--gpu", action="store_true")
+    parser.add_argument("--validate", action="store_true", help="Same-size roundtrip validation (identical source/target)")
     args = parser.parse_args()
     device = "cuda" if args.gpu and torch.cuda.is_available() else "cpu"
 
@@ -204,6 +205,10 @@ def main():
     print("=" * 70)
     print(f"  Device: {device}")
     print(f"  TF32: disabled | Seed: 42")
+
+    if args.validate:
+        TARGET_B = SOURCE_CONFIG.copy()
+        print(f"  MODE: Same-size validation ({SOURCE_CONFIG['d_model']}d → {TARGET_B['d_model']}d)")
 
     # ── Load source model ──
     print(f"\n[1/4] Loading {MODEL_ID}...")
