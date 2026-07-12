@@ -34,21 +34,21 @@ from paradom.mappings.transformer_to_transformer import TransformerToTransformer
 from paradom.core.swap_engine import collect_kv_activations
 
 # ── Configuration ────────────────────────────────────────────
-MODEL_ID = "HuggingFaceTB/SmolLM-135M"
+MODEL_ID = "HuggingFaceTB/SmolLM-360M"
 PROMPT = "Once upon a time in a land far away,"
 MAX_NEW_TOK = 50
 
 SOURCE_CONFIG = {
-    "d_model": 576, "d_inner": 1536,
-    "num_heads": 9, "num_key_value_heads": 3,
-    "head_dim": 64, "num_hidden_layers": 30,
+    "d_model": 960, "d_inner": 2560,
+    "num_heads": 15, "num_key_value_heads": 5,
+    "head_dim": 64, "num_hidden_layers": 32,
     "vocab_size": 49152,
 }
 
 TARGET_B = {
-    "d_model": 512, "d_inner": 1408,
-    "num_heads": 8, "num_key_value_heads": 2,
-    "head_dim": 64, "num_hidden_layers": 30,
+    "d_model": 768, "d_inner": 2048,
+    "num_heads": 12, "num_key_value_heads": 4,
+    "head_dim": 64, "num_hidden_layers": 32,
     "vocab_size": 49152,
 }
 
@@ -235,7 +235,7 @@ def main():
         torch.cuda.empty_cache()
 
     # ── Full swap (Test B config) ──
-    print(f"\n[2/4] Running full swap (576d→512d)...")
+    print(f"\n[2/4] Running full swap ({SOURCE_CONFIG['d_model']}d→{TARGET_B['d_model']}d)...")
     mapper = TransformerToTransformerMapper(force_projected=False, source_config=SOURCE_CONFIG)
     mapper.set_kv_activations(kv_acts)
     t0 = time.time()
