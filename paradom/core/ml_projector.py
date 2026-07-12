@@ -385,29 +385,7 @@ class EnsembleProjector:
         from paradom.core.cka import weight_cka
 
         if quality_fn is None:
-            # Use reconstruction quality instead of broken cross-shape CKA
-            # Measures how well projection preserves spectral structure
-            def quality_fn(w_src, w_proj):
-                src_2d = w_src.float().reshape(w_src.shape[0], -1)
-                proj_2d = w_proj.float().reshape(w_proj.shape[0], -1)
-                # SVD energy preservation ratio
-                try:
-                    _, S_src, _ = torch.linalg.svd(src_2d, full_matrices=False)
-                    _, S_proj, _ = torch.linalg.svd(proj_2d, full_matrices=False)
-                    k = min(len(S_src), len(S_proj))
-                    if k == 0:
-                        return 0.0
-                    # Compare top-k singular value distributions
-                    src_energy = S_src[:k].pow(2).sum()
-                    proj_energy = S_proj[:k].pow(2).sum()
-                    if src_energy == 0:
-                        return 0.0
-                    ratio = proj_energy / src_energy
-                    # Penalize if ratio is too far from ideal (size-proportional)
-                    ideal_ratio = proj_2d.numel() / src_2d.numel()
-                    return 1.0 - abs(ratio - ideal_ratio)
-                except Exception:
-                    return 0.0
+            quality_fn = lambda w_src, w_tgt: weight_cka(w_src, w_tgt)
 
         src_d = source_config.get("d_model", 576)
         tgt_d = target_config.get("d_model", 512)
