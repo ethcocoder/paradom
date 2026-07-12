@@ -232,11 +232,12 @@ class SwapEngine:
             pad = d_in_tgt - result.shape[1]
             result = torch.cat([result, torch.zeros(result.shape[0], pad)], dim=1)
 
-        src_energy = W_2d.pow(2).sum()
-        proj_energy = result[:d_out_tgt, :d_in_tgt].pow(2).sum()
-        if proj_energy > 0:
-            scale = (src_energy / proj_energy).sqrt().clamp(1.0, 2.0)
-            result = result * scale
+        if not has_heads:
+            src_energy = W_2d.pow(2).sum()
+            proj_energy = result[:d_out_tgt, :d_in_tgt].pow(2).sum()
+            if proj_energy > 0:
+                scale = (src_energy / proj_energy).sqrt().clamp(1.0, 2.0)
+                result = result * scale
 
         W_target = result[:d_out_tgt, :d_in_tgt].reshape(target_shape).to(W_src.dtype)
 
