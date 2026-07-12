@@ -135,6 +135,8 @@ def generate_candidates(
     Returns list of (candidate, method_name) tuples.
     """
     candidates = []
+    if len(target_shape) == 1:
+        return candidates
     W_2d = W.float().reshape(W.shape[0], -1)
     m_src, n_src = W_2d.shape
     d_out, d_in = target_shape
