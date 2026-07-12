@@ -150,10 +150,8 @@ class SwapEngine:
     ) -> Tensor:
         if swap_type == SwapType.DIRECT:
             return self._direct_swap(source_weight, target_shape, importance_mask)
-        elif swap_type == SwapType.PROJECTED:
-            if head_structure is not None and False:
-                return self._projected_swap_head_aware(source_weight, target_shape, importance_mask, head_structure)
-            return self._projected_swap(source_weight, target_shape, importance_mask)
+        el        if swap_type == SwapType.PROJECTED:
+            return self._projected_swap(source_weight, target_shape, importance_mask, head_structure=head_structure)
         elif swap_type == SwapType.OT:
             return self._ot_swap(source_weight, target_shape, importance_mask, axis_labels, functional_role)
         elif swap_type == SwapType.SKIP:
@@ -171,11 +169,13 @@ class SwapEngine:
         W_target[mask] = W_src[mask]
         return W_target
 
-    def _projected_swap(self, W_src: Tensor, target_shape: tuple, mask: Optional[Tensor]) -> Tensor:
+    def _projected_swap(self, W_src: Tensor, target_shape: tuple, mask: Optional[Tensor], head_structure: Optional[Tuple[int, int, bool]] = None) -> Tensor:
         """Project source weight to target shape via SVD.
 
-        Column reduction and row reduction are done separately, each with a
-        single optimal rank-k truncation.
+        When head_structure is provided and rows reduce (kv_heads merge),
+        row truncation is done FIRST to preserve head boundaries, then
+        column SVD compresses d_model. This prevents SVD from mixing
+        information across head boundaries.
         """
         if mask is not None and mask.shape == W_src.shape:
             W_src = W_src.clone()
@@ -198,16 +198,35 @@ class SwapEngine:
 
         result = W_2d.clone()
 
-        if n_diff > 0:
-            U, S, Vh = torch.linalg.svd(result, full_matrices=False)
-            k = min(len(S), d_in_tgt)
-            result = (U[:, :k] * S[:k].unsqueeze(0)) @ Vh[:k, :d_in_tgt]
+        has_heads = head_structure is not None
+        transpose = has_heads and len(head_structure) > 2 and head_structure[2]
 
-        if m_diff > 0:
-            U, S, Vh = torch.linalg.svd(result, full_matrices=False)
-            k = min(len(S), d_out_tgt)
-            result = (U[:, :k] * S[:k].unsqueeze(0)) @ Vh[:k, :]
-            result = result[:d_out_tgt, :]
+        if has_heads:
+            if transpose:
+                if n_diff > 0:
+                    result = result[:, :d_in_tgt]
+                if m_diff > 0:
+                    U, S, Vh = torch.linalg.svd(result, full_matrices=False)
+                    k = min(len(S), d_out_tgt)
+                    result = (U[:, :k] * S[:k].unsqueeze(0)) @ Vh[:k, :]
+                    result = result[:d_out_tgt, :]
+            else:
+                if m_diff > 0:
+                    result = result[:d_out_tgt, :]
+                if n_diff > 0:
+                    U, S, Vh = torch.linalg.svd(result, full_matrices=False)
+                    k = min(len(S), d_in_tgt)
+                    result = (U[:, :k] * S[:k].unsqueeze(0)) @ Vh[:k, :d_in_tgt]
+        else:
+            if n_diff > 0:
+                U, S, Vh = torch.linalg.svd(result, full_matrices=False)
+                k = min(len(S), d_in_tgt)
+                result = (U[:, :k] * S[:k].unsqueeze(0)) @ Vh[:k, :d_in_tgt]
+            if m_diff > 0:
+                U, S, Vh = torch.linalg.svd(result, full_matrices=False)
+                k = min(len(S), d_out_tgt)
+                result = (U[:, :k] * S[:k].unsqueeze(0)) @ Vh[:k, :]
+                result = result[:d_out_tgt, :]
 
         if result.shape[0] < d_out_tgt:
             pad = d_out_tgt - result.shape[0]
