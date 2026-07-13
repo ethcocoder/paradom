@@ -53,6 +53,17 @@ class FunctionalRoleMatcher:
             "dt_proj":          FunctionalRole.FFN_EXPAND,
             "norm":             FunctionalRole.NORMALIZATION,
             "lm_head":          FunctionalRole.OUTPUT_HEAD,
+        },
+        "gpt2": {
+            "wte":              FunctionalRole.EMBEDDING,
+            "wpe":              FunctionalRole.POSITION_EMBED,
+            "c_attn":           FunctionalRole.FUSED_QKV,
+            "c_proj":           FunctionalRole.CONTEXT_OUTPUT,
+            "ln_1":             FunctionalRole.NORMALIZATION,
+            "ln_2":             FunctionalRole.POST_NORMALIZATION,
+            "ln_f":             FunctionalRole.FINAL_NORMALIZATION,
+            "mlp.c_fc":         FunctionalRole.FFN_EXPAND,
+            "mlp.c_proj":       FunctionalRole.FFN_CONTRACT,
         }
     }
 

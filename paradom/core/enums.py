@@ -18,6 +18,9 @@ class FunctionalRole(Enum):
     FFN_EXPAND        = "ffn_expand"
     FFN_GATE          = "ffn_gate"
     FFN_CONTRACT      = "ffn_contract"
+    # Cross-architecture
+    FUSED_QKV         = "fused_qkv"
+    POSITION_EMBED    = "position_embed"
     # Vision
     SPATIAL_FILTER    = "spatial_filter"
     PATCH_EMBED       = "patch_embed"
