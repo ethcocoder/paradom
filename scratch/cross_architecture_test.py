@@ -103,10 +103,10 @@ def main():
     smolm_baseline = generate(smolm_model, smolm_tokenizer, PROMPT)
     print(f"\n  [SmolLM Baseline] \"{smolm_baseline}\"")
 
-    # Extract weights
+    # Extract weights (move to CPU for mapper)
     full_sd = {}
     for k, v in smolm_model.model.state_dict().items():
-        full_sd[k] = v.clone()
+        full_sd[k] = v.clone().cpu()
     products = state_dict_to_weight_products(full_sd)
     roles = {}
     for wp in products:

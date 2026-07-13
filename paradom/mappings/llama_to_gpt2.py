@@ -211,9 +211,10 @@ class LlamaToGPT2Mapper:
     def _project_dmodel(self, W: Tensor) -> Tensor:
         """Project d_model axis: (out, 576) → (out, 768)."""
         if self.P_dmodel is not None:
-            return W @ self.P_dmodel
+            P = self.P_dmodel.to(W.device)
+            return W @ P
         # Fallback: zero-pad
-        out = torch.zeros(W.shape[0], self.d_model_tgt)
+        out = torch.zeros(W.shape[0], self.d_model_tgt, device=W.device)
         out[:, :W.shape[1]] = W
         return out
 
@@ -221,9 +222,10 @@ class LlamaToGPT2Mapper:
         """Project embedding: (49152, 576) → (50257, 768)."""
         # Project d_model
         if self.P_dmodel is not None:
-            W_proj = W @ self.P_dmodel  # (49152, 768)
+            P = self.P_dmodel.to(W.device)
+            W_proj = W @ P  # (49152, 768)
         else:
-            W_proj = torch.zeros(W.shape[0], self.d_model_tgt)
+            W_proj = torch.zeros(W.shape[0], self.d_model_tgt, device=W.device)
             W_proj[:, :W.shape[1]] = W
 
         # Pad vocab
@@ -237,7 +239,7 @@ class LlamaToGPT2Mapper:
         """Convert RMSNorm gamma → LayerNorm gamma (same shape, just project d_model)."""
         if W.shape[0] == self.d_model_src:
             # Pad to target d_model
-            out = torch.zeros(self.d_model_tgt)
+            out = torch.zeros(self.d_model_tgt, device=W.device)
             out[:W.shape[0]] = W
             return out
         return W
