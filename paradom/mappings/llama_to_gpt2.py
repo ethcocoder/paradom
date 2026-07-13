@@ -14,6 +14,7 @@ Key transformations:
 8. d_model projection: 576 → 768 (PCA or zero-pad)
 """
 
+import math
 import torch
 import torch.nn.functional as F
 from torch import Tensor
@@ -94,8 +95,8 @@ class LlamaToGPT2Mapper:
                          cka_score=weight_cka(wp.tensor, wte[:wp.tensor.shape[0]]),
                          swap_type=SwapType.PROJECTED, confidence=0.8))
 
-        # 2. Position embeddings (random init) — GPT-2 uses learned (1024, 768)
-        wpe = torch.randn(1024, self.d_model_tgt) * 0.02
+        # 2. Position embeddings — use sinusoidal init (better than random)
+        wpe = self._sinusoidal_init(1024, self.d_model_tgt)
         target["transformer.wpe.weight"] = wpe
 
         # 3. Final layer norm
@@ -167,6 +168,16 @@ class LlamaToGPT2Mapper:
             mean_cka=mean_cka,
             estimated_quality_tier="cross_architecture"
         )
+
+    @staticmethod
+    def _sinusoidal_init(max_positions: int, d_model: int) -> Tensor:
+        """Create sinusoidal position embeddings (same as original Transformer)."""
+        pe = torch.zeros(max_positions, d_model)
+        position = torch.arange(0, max_positions).unsqueeze(1).float()
+        div_term = torch.exp(torch.arange(0, d_model, 2).float() * -(math.log(10000.0) / d_model))
+        pe[:, 0::2] = torch.sin(position * div_term)
+        pe[:, 1::2] = torch.cos(position * div_term)
+        return pe
 
     def _extract_source_config(self, source_products):
         """Extract dimensions from source weights."""
