@@ -131,10 +131,20 @@ def collect_calibration_data(model, tokenizer, calibration_texts, max_length=256
     
     hidden_states = []
     
-    # Hook to capture last layer hidden states
+    # Hook to capture last layer hidden states — handle any output format
     def hook_fn(module, input, output):
         if isinstance(output, tuple):
-            hidden_states.append(output[0].detach().cpu())
+            hs = output[0]
+        elif hasattr(output, 'last_hidden_state'):
+            hs = output.last_hidden_state
+        elif hasattr(output, 'hidden_states') and output.hidden_states is not None:
+            hs = output.hidden_states[-1]
+        elif isinstance(output, torch.Tensor):
+            hs = output
+        else:
+            print(f"  [Hook] Unknown output type: {type(output)}, keys={dir(output)[:10] if hasattr(output, '__dir__') else 'N/A'}")
+            return
+        hidden_states.append(hs.detach().cpu())
     
     # Register hook on last layer
     if hasattr(model, 'model') and hasattr(model.model, 'layers'):
@@ -143,15 +153,23 @@ def collect_calibration_data(model, tokenizer, calibration_texts, max_length=256
         
         # Run calibration
         print(f"  [Calibration] Collecting hidden states from {len(calibration_texts)} texts...")
+        print(f"  [Calibration] Layer type: {type(last_layer).__name__}")
         with torch.no_grad():
-            for text in calibration_texts:
+            for i, text in enumerate(calibration_texts):
                 inputs = tokenizer(text, return_tensors="pt", max_length=max_length,
                                    truncation=True, padding=False)
                 input_ids = inputs.input_ids.to(device)
-                hidden_states.clear()
                 model(input_ids)
+                if i == 0:
+                    print(f"  [Calibration] After first text: {len(hidden_states)} hidden states collected")
         
         handle.remove()
+    else:
+        print(f"  [Calibration] WARNING: model.model.layers not found")
+        print(f"  [Calibration] model type: {type(model).__name__}")
+        if hasattr(model, 'model'):
+            print(f"  [Calibration] model.model type: {type(model.model).__name__}")
+            print(f"  [Calibration] model.model attrs: {[a for a in dir(model.model) if not a.startswith('_')][:20]}")
     
     if hidden_states:
         all_hidden = torch.cat(hidden_states, dim=0)  # (n_tokens, d_model)
