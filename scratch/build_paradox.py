@@ -19,7 +19,7 @@ from transformers import AutoModelForCausalLM, AutoTokenizer, LlamaConfig, Llama
 
 # ── Configuration ────────────────────────────────────────────
 MODEL_ID     = "HuggingFaceTB/SmolLM-135M"
-DEVICE       = "cpu"
+DEVICE       = "cuda" if torch.cuda.is_available() else "cpu"
 PARADOX_NAME = "Paradox"
 
 # ── Paradox Persona Training Data ────────────────────────────
@@ -252,6 +252,8 @@ def main():
     print(f"  Building Paradox on {MODEL_ID}")
     print(f"  Training data: {len(PARADOX_TRAINING_DATA)} examples")
     print(f"  Device: {DEVICE}")
+    if DEVICE == "cuda":
+        print(f"  GPU: {torch.cuda.get_device_name(0)}")
 
     # Load base model
     print(f"\n[LOAD] {MODEL_ID}")
