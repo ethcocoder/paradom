@@ -133,16 +133,22 @@ def collect_calibration_data(model, tokenizer, calibration_texts, max_length=256
     
     # Hook to capture last layer hidden states — handle any output format
     def hook_fn(module, input, output):
-        if isinstance(output, tuple):
+        if isinstance(output, tuple) and len(output) > 0 and isinstance(output[0], torch.Tensor):
             hs = output[0]
-        elif hasattr(output, 'last_hidden_state'):
+        elif hasattr(output, 'last_hidden_state') and output.last_hidden_state is not None:
             hs = output.last_hidden_state
         elif hasattr(output, 'hidden_states') and output.hidden_states is not None:
             hs = output.hidden_states[-1]
         elif isinstance(output, torch.Tensor):
             hs = output
         else:
-            print(f"  [Hook] Unknown output type: {type(output)}, keys={dir(output)[:10] if hasattr(output, '__dir__') else 'N/A'}")
+            return
+        # Always take (batch, seq, hidden) → flatten to (batch*seq, hidden)
+        if hs.dim() == 3:
+            hs = hs.reshape(-1, hs.shape[-1])
+        elif hs.dim() == 2:
+            pass  # already (seq, hidden) or (batch, hidden)
+        else:
             return
         hidden_states.append(hs.detach().cpu())
     
@@ -172,10 +178,9 @@ def collect_calibration_data(model, tokenizer, calibration_texts, max_length=256
             print(f"  [Calibration] model.model attrs: {[a for a in dir(model.model) if not a.startswith('_')][:20]}")
     
     if hidden_states:
-        # Take last token's hidden state from each sequence (the "summary" of that sequence)
-        last_tokens = [hs[:, -1, :] for hs in hidden_states]  # list of (d_model,)
-        all_hidden = torch.stack(last_tokens, dim=0)  # (n_sequences, d_model)
-        print(f"  [Calibration] Collected {all_hidden.shape[0]} sequences, d_model={all_hidden.shape[1]}")
+        # Each element is (n_tokens, d_model) — concatenate all tokens
+        all_hidden = torch.cat(hidden_states, dim=0)  # (total_tokens, d_model)
+        print(f"  [Calibration] Collected {all_hidden.shape[0]} tokens, d_model={all_hidden.shape[1]}")
         return all_hidden
     else:
         print("  [Calibration] WARNING: No hidden states collected")
