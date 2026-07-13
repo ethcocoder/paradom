@@ -297,22 +297,23 @@ class LlamaToGPT2Mapper:
         Convert SwiGLU gate+up → GELU c_fc.
         gate: (1536, 576), up: (1536, 576)
         GPT-2 c_fc: (768, 3072)
-        Strategy: concatenate gate+up → project to d_inner_tgt
+        Strategy: concatenate gate+up → project d_model → transpose for Conv1D
         """
         # Concatenate: (1536+1536, 576) = (3072, 576)
         concat = torch.cat([gate, up], dim=0)  # (3072, 576)
 
-        # Project d_model: (3072, 576) → (3072, 768)
-        proj = self._project_dmodel(concat.T).T  # (3072, 768)
+        # Project d_model: (3072, 576) @ (576, 768) = (3072, 768)
+        P = self.P_dmodel.to(concat.device)
+        proj = concat @ P  # (3072, 768)
 
         # Truncate/pad to target d_inner (3072)
         if proj.shape[0] > self.d_inner_tgt:
             proj = proj[:self.d_inner_tgt]
         elif proj.shape[0] < self.d_inner_tgt:
-            pad = torch.zeros(self.d_inner_tgt - proj.shape[0], self.d_model_tgt)
+            pad = torch.zeros(self.d_inner_tgt - proj.shape[0], self.d_model_tgt, device=concat.device)
             proj = torch.cat([proj, pad], dim=0)
 
-        return proj  # (3072, 768)
+        return proj  # (3072, 768) — GPT-2 expects Conv1D layout (in, out)
 
     def _convert_ffn_down(self, down: Tensor) -> Tensor:
         """
@@ -320,14 +321,15 @@ class LlamaToGPT2Mapper:
         down: (576, 1536)
         GPT-2 c_proj: (3072, 768)
         """
-        # Project: (576, 1536) → (768, 3072)
-        proj = self._project_dmodel(down.T).T  # (1536, 768)
+        # Project d_model: (768, 576) @ (576, 1536) = (768, 1536)
+        P = self.P_dmodel.to(down.device)
+        proj = P.T @ down  # (768, 1536)
 
-        # Pad to d_inner_tgt
-        if proj.shape[0] < self.d_inner_tgt:
-            pad = torch.zeros(self.d_inner_tgt - proj.shape[0], self.d_model_tgt)
-            proj = torch.cat([proj, pad], dim=0)
-        elif proj.shape[0] > self.d_inner_tgt:
-            proj = proj[:self.d_inner_tgt]
+        # Pad to d_inner_tgt: (768, 1536) → (768, 3072)
+        if proj.shape[1] < self.d_inner_tgt:
+            pad = torch.zeros(self.d_model_tgt, self.d_inner_tgt - proj.shape[1], device=down.device)
+            proj = torch.cat([proj, pad], dim=1)
+        elif proj.shape[1] > self.d_inner_tgt:
+            proj = proj[:, :self.d_inner_tgt]
 
-        return proj  # (3072, 768)
+        return proj  # (768, 3072) — GPT-2 expects Conv1D layout (in, out)
