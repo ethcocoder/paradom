@@ -94,9 +94,8 @@ class LlamaToGPT2Mapper:
                          cka_score=weight_cka(wp.tensor, wte[:wp.tensor.shape[0]]),
                          swap_type=SwapType.PROJECTED, confidence=0.8))
 
-        # 2. Position embeddings (random init)
-        wpe = torch.randn(self.vocab_tgt, self.d_model_tgt) * 0.02
-        # Register as a dummy weight for the state dict
+        # 2. Position embeddings (random init) — GPT-2 uses learned (1024, 768)
+        wpe = torch.randn(1024, self.d_model_tgt) * 0.02
         target["transformer.wpe.weight"] = wpe
 
         # 3. Final layer norm
@@ -122,15 +121,19 @@ class LlamaToGPT2Mapper:
             # QKV: separate Q/K/V → fused c_attn
             q_w, k_w, v_w = self._extract_qkv(l_src)
             fused_qkv = self._fuse_qkv(q_w, k_w, v_w)
-            # Conv1D layout: transpose to (in, out)
-            target[f"transformer.h.{tgt_idx}.attn.c_attn.weight"] = fused_qkv.T
+            # Conv1D layout: (nx, nf) = (768, 2304) — _fuse_qkv already returns this
+            target[f"transformer.h.{tgt_idx}.attn.c_attn.weight"] = fused_qkv
             target[f"transformer.h.{tgt_idx}.attn.c_attn.bias"] = torch.zeros(3 * self.d_model_tgt)
 
             # Attention output
             if FunctionalRole.CONTEXT_OUTPUT in l_src:
                 wp = l_src[FunctionalRole.CONTEXT_OUTPUT]
-                o_proj = self._project_dmodel(wp.tensor.float())
-                target[f"transformer.h.{tgt_idx}.attn.c_proj.weight"] = o_proj.T
+                # o_proj is (d_model, d_model) = (576, 576)
+                # GPT-2 c_proj Conv1D weight is (nx, nf) = (768, 768)
+                # Project both axes: P.T @ W @ P
+                P = self.P_dmodel.to(wp.tensor.device)
+                o_proj = P.T @ wp.tensor.float() @ P  # (768, 768)
+                target[f"transformer.h.{tgt_idx}.attn.c_proj.weight"] = o_proj
                 target[f"transformer.h.{tgt_idx}.attn.c_proj.bias"] = torch.zeros(self.d_model_tgt)
 
             # Post-attention norm
