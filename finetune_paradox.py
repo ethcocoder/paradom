@@ -88,8 +88,8 @@ def main():
 
     # 5. Custom Trainer for Monitoring
     class MonitorTrainer(Trainer):
-        def training_step(self, model, inputs):
-            loss = super().training_step(model, inputs)
+        def training_step(self, model, inputs, num_items_in_batch=None):
+            loss = super().training_step(model, inputs, num_items_in_batch)
             
             # Custom monitoring for steps 1300-2000
             if 1300 <= self.state.global_step <= 2000:
