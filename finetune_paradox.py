@@ -42,7 +42,7 @@ def main():
     print(f"Loading model {MODEL_ID}...")
     tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
     tokenizer.add_special_tokens({"pad_token": "<pad>"})
-    model = AutoModelForCausalLM.from_pretrained(MODEL_ID, torch_dtype=torch.bfloat16, trust_remote_code=True)
+    model = AutoModelForCausalLM.from_pretrained(MODEL_ID, dtype=torch.bfloat16, trust_remote_code=True)
     model.resize_token_embeddings(len(tokenizer))
     model.config.use_cache = False
     
@@ -76,7 +76,7 @@ def main():
         logging_steps=10,
         max_steps=2100,
         save_steps=500,
-        evaluation_strategy="no",
+        eval_strategy="no",
         fp16=True,
         bf16=False,
         push_to_hub=False,
