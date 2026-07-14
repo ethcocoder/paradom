@@ -42,7 +42,7 @@ def main():
     print(f"Loading model {MODEL_ID}...")
     tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
     tokenizer.add_special_tokens({"pad_token": "<pad>"})
-    model = AutoModelForCausalLM.from_pretrained(MODEL_ID, dtype=torch.bfloat16, trust_remote_code=True)
+    model = AutoModelForCausalLM.from_pretrained(MODEL_ID, dtype=torch.float16, trust_remote_code=True)
     model.resize_token_embeddings(len(tokenizer))
     model.config.use_cache = False
     
