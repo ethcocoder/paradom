@@ -34,10 +34,9 @@ def main():
     print(f"Loading model {MODEL_ID}...")
     tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
     tokenizer.add_special_tokens({"pad_token": "<pad>"})
+    model = AutoModelForCausalLM.from_pretrained(MODEL_ID, torch_dtype=torch.bfloat16, trust_remote_code=True)
     model.resize_token_embeddings(len(tokenizer))
     model.config.use_cache = False
-    
-    model = AutoModelForCausalLM.from_pretrained(MODEL_ID, torch_dtype=torch.bfloat16, trust_remote_code=True)
     
     # 3. Preprocess Dataset
     def tokenize_function(examples):
@@ -104,9 +103,8 @@ def main():
     print("Starting training...")
     try:
         trainer.train()
-    
-    
-    print("Saving model...")
+    finally:
+        print("Saving model...")
     trainer.save_model(OUTPUT_DIR)
     tokenizer.save_pretrained(OUTPUT_DIR)
 
