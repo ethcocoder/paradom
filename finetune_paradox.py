@@ -11,7 +11,7 @@ from transformers import (
 from datasets import Dataset
 
 # ── Configuration ────────────────────────────────────────────
-MODEL_ID = "HuggingFaceTB/SmolLM-135M"
+MODEL_ID = "HuggingFaceTB/SmolLM3-3B-Base"
 DATA_PATH = "adam_alpaca.parquet"
 OUTPUT_DIR = "./adam-finetuned"
 
@@ -63,17 +63,19 @@ def main():
     training_args = TrainingArguments(
         output_dir=OUTPUT_DIR,
         per_device_train_batch_size=1,
-        gradient_accumulation_steps=4,
+        gradient_accumulation_steps=8,
         learning_rate=2e-5,
         logging_steps=10,
-        max_steps=2100, # Run enough to cover the 1300-2000 monitor range
+        max_steps=2100,
         save_steps=500,
         evaluation_strategy="no",
-        fp16=False, bf16=torch.cuda.is_available(),
+        fp16=True,
+        bf16=False,
         push_to_hub=False,
         report_to="none",
         lr_scheduler_type="cosine",
         warmup_steps=100,
+        gradient_checkpointing=True,
     )
 
     # 5. Custom Trainer for Monitoring
