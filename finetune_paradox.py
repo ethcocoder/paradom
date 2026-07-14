@@ -1,6 +1,7 @@
 import os
 import torch
 import pandas as pd
+from huggingface_hub import login
 from transformers import (
     AutoModelForCausalLM,
     AutoTokenizer,
@@ -10,8 +11,15 @@ from transformers import (
 )
 from datasets import Dataset
 
+# ── HuggingFace Auth ────────────────────────────────────────
+HF_TOKEN = os.environ.get("HF_TOKEN", None)
+if HF_TOKEN:
+    login(token=HF_TOKEN)
+else:
+    print("WARNING: No HF_TOKEN set. Set it with: export HF_TOKEN=hf_xxxxx")
+
 # ── Configuration ────────────────────────────────────────────
-MODEL_ID = "HuggingFaceTB/SmolLM-135M"
+MODEL_ID = "HuggingFaceTB/SmolLM3-3B-Base"
 DATA_PATH = "adam_alpaca.parquet"
 OUTPUT_DIR = "./adam-finetuned"
 
