@@ -11,7 +11,7 @@ from transformers import (
 from datasets import Dataset
 
 # ── Configuration ────────────────────────────────────────────
-MODEL_ID = "HuggingFaceTB/SmolLM3-3B-Base"
+MODEL_ID = "HuggingFaceTB/SmolLM2-1.7B"
 DATA_PATH = "adam_alpaca.parquet"
 OUTPUT_DIR = "./adam-finetuned"
 
