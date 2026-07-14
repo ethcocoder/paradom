@@ -11,9 +11,9 @@ from transformers import (
 from datasets import Dataset
 
 # ── Configuration ────────────────────────────────────────────
-MODEL_ID = "HuggingFaceTB/SmolLM-135M"
-DATA_PATH = "paradox_alpaca.parquet"
-OUTPUT_DIR = "./paradox-finetuned"
+MODEL_ID = "meta-llama/Llama-2-7b-hf"
+DATA_PATH = "adam_alpaca.parquet"
+OUTPUT_DIR = "./adam-finetuned"
 
 def format_alpaca(example):
     if example["input"]:
@@ -33,9 +33,11 @@ def main():
     # 2. Load Model & Tokenizer
     print(f"Loading model {MODEL_ID}...")
     tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
-    tokenizer.pad_token = tokenizer.eos_token
+    tokenizer.add_special_tokens({"pad_token": "<pad>"})
+    model.resize_token_embeddings(len(tokenizer))
+    model.config.use_cache = False
     
-    model = AutoModelForCausalLM.from_pretrained(MODEL_ID)
+    model = AutoModelForCausalLM.from_pretrained(MODEL_ID, torch_dtype=torch.bfloat16, trust_remote_code=True)
     
     # 3. Preprocess Dataset
     def tokenize_function(examples):
@@ -68,7 +70,7 @@ def main():
         max_steps=2100, # Run enough to cover the 1300-2000 monitor range
         save_steps=500,
         evaluation_strategy="no",
-        fp16=torch.cuda.is_available(),
+        fp16=False, bf16=torch.cuda.is_available(),
         push_to_hub=False,
         report_to="none",
         lr_scheduler_type="cosine",
@@ -86,12 +88,7 @@ def main():
                     print(f"\n[MONITOR] Step {self.state.global_step}: Monitoring loss to prevent overfitting. Current Loss: {loss.item():.4f}")
             
             # Stop if we reach the target verification point
-            if self.state.global_step > 10:
-                print("\n[VERIFICATION] Training verified. Stopping as requested.")
-                # We'll raise a KeyboardInterrupt or similar to stop, but in a real run 
-                # we'd just let it finish. Since I need to "stop the training", 
-                # I'll just exit here after a few steps.
-                raise KeyboardInterrupt
+
                 
             return loss
 
@@ -107,8 +104,7 @@ def main():
     print("Starting training...")
     try:
         trainer.train()
-    except KeyboardInterrupt:
-        print("Training stopped manually after verification.")
+    
     
     print("Saving model...")
     trainer.save_model(OUTPUT_DIR)
