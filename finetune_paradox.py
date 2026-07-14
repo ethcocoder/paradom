@@ -7,8 +7,10 @@ from transformers import (
     AutoTokenizer,
     TrainingArguments,
     Trainer,
-    DataCollatorForSeq2Seq
+    DataCollatorForSeq2Seq,
+    BitsAndBytesConfig,
 )
+from peft import LoraConfig, get_peft_model, TaskType
 from datasets import Dataset
 
 # ── HuggingFace Auth ────────────────────────────────────────
@@ -22,6 +24,23 @@ else:
 MODEL_ID = "HuggingFaceTB/SmolLM3-3B-Base"
 DATA_PATH = "adam_alpaca.parquet"
 OUTPUT_DIR = "./adam-finetuned"
+
+# 4-bit quantization (fits 3B on T4)
+bnb_config = BitsAndBytesConfig(
+    load_in_4bit=True,
+    bnb_4bit_quant_type="nf4",
+    bnb_4bit_compute_dtype=torch.float16,
+    bnb_4bit_use_double_quant=True,
+)
+
+# LoRA adapter config
+lora_config = LoraConfig(
+    task_type=TaskType.CAUSAL_LM,
+    r=16,
+    lora_alpha=32,
+    lora_dropout=0.05,
+    target_modules=["q_proj", "k_proj", "v_proj", "o_proj"],
+)
 
 def format_alpaca(example):
     if example["input"]:
@@ -42,9 +61,15 @@ def main():
     print(f"Loading model {MODEL_ID}...")
     tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
     tokenizer.add_special_tokens({"pad_token": "<pad>"})
-    model = AutoModelForCausalLM.from_pretrained(MODEL_ID, dtype=torch.float16, trust_remote_code=True)
+    model = AutoModelForCausalLM.from_pretrained(
+        MODEL_ID, quantization_config=bnb_config, trust_remote_code=True
+    )
     model.resize_token_embeddings(len(tokenizer))
     model.config.use_cache = False
+
+    # Apply LoRA
+    model = get_peft_model(model, lora_config)
+    model.print_trainable_parameters()
     
     # 3. Preprocess Dataset
     def tokenize_function(examples):
