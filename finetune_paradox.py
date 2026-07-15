@@ -135,9 +135,17 @@ def main():
     )
 
     # 7. Run Training
+    import glob
+    checkpoints = sorted(glob.glob(os.path.join(OUTPUT_DIR, "checkpoint-*")))
+    resume_ckpt = checkpoints[-1] if checkpoints else None
+    if resume_ckpt:
+        print(f"Resuming from {resume_ckpt}")
+    else:
+        print("Starting fresh training...")
+
     print("Starting training...")
     try:
-        trainer.train()
+        trainer.train(resume_from_checkpoint=resume_ckpt)
     finally:
         print("Saving model...")
     trainer.save_model(OUTPUT_DIR)
