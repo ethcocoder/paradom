@@ -1,0 +1,145 @@
+{
+  "experiment": "experiment_013_independent_seed_replication",
+  "n_independent_seeds": 3,
+  "seeds": [
+    20260821,
+    20260822,
+    20260823
+  ],
+  "split_policy": {
+    "calibration": "WikiText-2 train (256 sequences)",
+    "development": "WikiText-2 validation (16 sequences; diagnostics only)",
+    "final_test": "WikiText-2 test (16 sequences; no fitting or intermediate selection)"
+  },
+  "metrics": {
+    "teacher_test_loss": {
+      "mean": 3.8146097710792053,
+      "sample_std": 0.0,
+      "minimum": 3.8146097710792053,
+      "maximum": 3.8146097710792053
+    },
+    "direct_test_loss": {
+      "mean": 4.057095784667536,
+      "sample_std": 0.010732354848364064,
+      "minimum": 4.0459936831859835,
+      "maximum": 4.067415582372787
+    },
+    "random_test_loss": {
+      "mean": 3.9228839603721672,
+      "sample_std": 0.01426596146890772,
+      "minimum": 3.9127968118545855,
+      "maximum": 3.939206042188279
+    },
+    "direct_teacher_gap": {
+      "mean": 0.24248601358833075,
+      "sample_std": 0.010732354848364064,
+      "minimum": 0.23138391210677822,
+      "maximum": 0.2528058112935816
+    },
+    "random_teacher_gap": {
+      "mean": 0.10827418929296195,
+      "sample_std": 0.01426596146890772,
+      "minimum": 0.09818704077538021,
+      "maximum": 0.12459627110907379
+    },
+    "paired_direct_minus_random_loss": {
+      "mean": 0.1342118242953688,
+      "sample_std": 0.023919552058101395,
+      "minimum": 0.10678764099770444,
+      "maximum": 0.15076655529914973
+    },
+    "direct_layer1_nmse_development": {
+      "mean": 0.22577831925203404,
+      "sample_std": 0.0013757171973332316,
+      "minimum": 0.2242744043469429,
+      "maximum": 0.2269733091816306
+    },
+    "random_layer1_nmse_development": {
+      "mean": 0.14807647373527288,
+      "sample_std": 0.002757458837604463,
+      "minimum": 0.14538124902173877,
+      "maximum": 0.15089221484959126
+    }
+  },
+  "acceptance": {
+    "all_alpha_zero_exact": true,
+    "all_final_losses_finite": true,
+    "all_random_test_losses_below_3_5": false,
+    "random_beats_direct_in_every_seed": true,
+    "generation_requires_human_language_review": true
+  },
+  "per_seed": [
+    {
+      "seed": 20260821,
+      "teacher_test_loss": 3.8146097710792053,
+      "direct_test_loss": 4.057878088443838,
+      "random_test_loss": 3.9127968118545855,
+      "direct_teacher_gap": 0.2432683173646324,
+      "random_teacher_gap": 0.09818704077538021,
+      "direct_minus_random": 0.14508127658925218,
+      "direct_layer1_nmse_dev": 0.2242744043469429,
+      "random_layer1_nmse_dev": 0.15089221484959126,
+      "alpha_zero_loss": 3.8146097710792053,
+      "alpha_zero_abs_error": 0.0,
+      "alpha_zero_preserves_teacher": true,
+      "all_final_losses_finite": true,
+      "random_below_3_5": false
+    },
+    {
+      "seed": 20260822,
+      "teacher_test_loss": 3.8146097710792053,
+      "direct_test_loss": 4.067415582372787,
+      "random_test_loss": 3.916649027073637,
+      "direct_teacher_gap": 0.2528058112935816,
+      "random_teacher_gap": 0.10203925599443187,
+      "direct_minus_random": 0.15076655529914973,
+      "direct_layer1_nmse_dev": 0.22608724422752857,
+      "random_layer1_nmse_dev": 0.14795595733448863,
+      "alpha_zero_loss": 3.8146097710792053,
+      "alpha_zero_abs_error": 0.0,
+      "alpha_zero_preserves_teacher": true,
+      "all_final_losses_finite": true,
+      "random_below_3_5": false
+    },
+    {
+      "seed": 20260823,
+      "teacher_test_loss": 3.8146097710792053,
+      "direct_test_loss": 4.0459936831859835,
+      "random_test_loss": 3.939206042188279,
+      "direct_teacher_gap": 0.23138391210677822,
+      "random_teacher_gap": 0.12459627110907379,
+      "direct_minus_random": 0.10678764099770444,
+      "direct_layer1_nmse_dev": 0.2269733091816306,
+      "random_layer1_nmse_dev": 0.14538124902173877,
+      "alpha_zero_loss": 3.8146097710792053,
+      "alpha_zero_abs_error": 0.0,
+      "alpha_zero_preserves_teacher": true,
+      "all_final_losses_finite": true,
+      "random_below_3_5": false
+    }
+  ],
+  "generations": [
+    {
+      "seed": 20260821,
+      "direct_science": "The purpose of scientific research is to find out the causes of disease and to",
+      "direct_explorer": "Once upon a time, a young explorer discovered a new world.\nThe first time",
+      "random_science": "The purpose of scientific research is to find out the truth about the world.",
+      "random_explorer": "Once upon a time, a young explorer discovered a new land, he was not only"
+    },
+    {
+      "seed": 20260822,
+      "direct_science": "The purpose of scientific research is to find out the causes of disease and to",
+      "direct_explorer": "Once upon a time, a young explorer discovered a new world.\nThe first time",
+      "random_science": "The purpose of scientific research is to find out how the world works.\n",
+      "random_explorer": "Once upon a time, a young explorer discovered a new world.\nThe first time"
+    },
+    {
+      "seed": 20260823,
+      "direct_science": "The purpose of scientific research is to find out the causes of disease and to",
+      "direct_explorer": "Once upon a time, a young explorer discovered a new world.\nThe first time",
+      "random_science": "The purpose of scientific research is to find out the truth about the world.",
+      "random_explorer": "Once upon a time, a young explorer discovered a new world, and he was not"
+    }
+  ],
+  "statistical_note": "The reported standard deviations are sample standard deviations across three independent seeds. The paired difference is descriptive; n=3 is not sufficient for a robust inferential claim."
+}
