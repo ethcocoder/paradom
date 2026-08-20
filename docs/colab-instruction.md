@@ -1,61 +1,79 @@
-# Paradom Phase 1: Google Colab Instructions
+# Google Colab Instructions for Finetuning Llama 7B with Adam Persona
 
-Since the Phase 1 goal involves training small models and running weight swaps, you can use Google Colab for a faster execution with T4 GPUs.
+This guide provides step-by-step instructions to set up and run the Llama 7B finetuning process for the "Adam" AI persona on Google Colab. This process uses the `v3` branch of the `ethcocoder/paradom` repository.
 
-## 1. Setup & Clone
+## 1. Open a New Google Colab Notebook
 
-Run this in a Colab cell to clone the repository and switch to the `v2` branch:
+Go to [Google Colab](https://colab.research.google.com/) and create a new notebook (`File > New notebook`).
+
+## 2. Set up GPU Runtime
+
+Ensure you have a GPU runtime enabled for faster training:
+
+*   Click on `Runtime` in the top menu.
+*   Select `Change runtime type`.
+*   Under `Hardware accelerator`, choose `GPU`.
+*   Click `Save`.
+
+## 3. Clone the Repository and Navigate to the Branch
+
+Run the following commands in a Colab code cell to clone the `paradom` repository and switch to the `v3` branch:
 
 ```bash
-# Clone the repository
 !git clone https://github.com/ethcocoder/paradom.git
 %cd paradom
-
-# Switch to the v2 branch (contains the updated TinyMamba architecture)
-!git checkout v2
-
-# Install dependencies
-!pip install -e .
-!pip install transformers datasets tqdm safetensors
+!git checkout v3
 ```
 
-## 2. Run the Core Experiment
+## 4. Install Dependencies
 
-You can run the full Phase 1 pipeline (Training -> Swap -> Evaluation) with a single command:
+Install all necessary Python libraries. This includes `torch`, `transformers`, `datasets`, `pandas`, `pyarrow`, and `tqdm`.
 
-```python
-# Force retraining with the updated architecture and 10k samples
-# (Path detection is now dynamic, works in /content/paradom)
-!rm -rf checkpoints/*
-!bash scripts/run_phase1_wsl.sh
+```bash
+!pip install torch transformers datasets pandas pyarrow tqdm
 ```
 
-*(Note: `run_phase1_wsl.sh` works in Colab's Linux environment just like in WSL.)*
+## 5. Create the Adam Persona Dataset
 
-## 3. Manual Run (Step-by-Step)
+Execute the `create_dataset.py` script to generate the `adam_alpaca.parquet` file, which contains the training data for the Adam persona.
 
-If you want to run steps individually:
-
-### A. Train the models (Transformer & Mamba)
-```python
-!python scripts/train_poc.py
+```bash
+!python3 create_dataset.py
 ```
 
-### B. Execute Paradom Swap
-```python
-!python scripts/experiment_001.py
+This will output:
+
+```
+Created adam_alpaca.parquet with 30 rows.
 ```
 
-### C. Run Ratio Sweep
-```python
-!python scripts/experiment_002_ratio_sweep.py
+## 6. Run the Finetuning Script
+
+Now, run the `finetune_paradox.py` script. This script is configured to use the `NousResearch/Llama-2-7b-hf` model and the `adam_alpaca.parquet` dataset. It includes a monitoring mechanism to observe loss between steps 1300 and 2000 to help prevent overfitting.
+
+**Important Note**: The script is designed to run for a specified number of steps (`max_steps=2100`). You can stop the training manually at any point if you have verified it's running correctly, as per the original request. The script will save the model checkpoints to `./adam-finetuned`.
+
+```bash
+!python3 finetune_paradox.py
 ```
 
-## 4. Downloading Results
-After running, your results will be in the `research/` and `output/` folders. You can download the final report and checkpoints:
+**Expected Output during Training (example):**
 
-```python
-from google.colab import files
-files.download('research/EXPERIMENT_001_RESULTS.md')
-files.download('research/EXPERIMENT_001_RESULTS.json')
 ```
+Loading data from adam_alpaca.parquet...
+Loading model NousResearch/Llama-2-7b-hf...
+# ... (model and tokenizer loading messages) ...
+Starting training...
+# ... (training logs, including loss monitoring) ...
+
+[MONITOR] Step 1300: Monitoring loss to prevent overfitting. Current Loss: X.XXXX
+# ...
+[MONITOR] Step 2000: Monitoring loss to prevent overfitting. Current Loss: Y.YYYY
+# ...
+```
+
+Once you observe the training process starting and the loss monitoring messages, you can choose to stop the execution of the cell if you only need to verify the setup. The model will be saved in the `./adam-finetuned` directory.
+
+## 7. Accessing the Finetuned Model
+
+After the training (or verification run) is complete, the finetuned model and tokenizer will be saved in the `./adam-finetuned` directory within your Colab environment. You can then download these files or use them directly in Colab for inference.
