@@ -1,0 +1,191 @@
+{
+  "experiment": "experiment_014_causal_control",
+  "n_independent_paired_seeds": 5,
+  "seeds": [
+    20260831,
+    20260832,
+    20260833,
+    20260834,
+    20260835
+  ],
+  "split_policy": {
+    "calibration": "WikiText-2 raw train, 1,024 sequences",
+    "development": "WikiText-2 raw validation, 64 sequences; diagnostics only",
+    "final_test": "WikiText-2 raw test, 128 sequences / 5,894 scoring tokens; no fitting or model selection"
+  },
+  "metrics": {
+    "teacher_test_loss": {
+      "mean": 4.022080637941856,
+      "sample_std": 0.0,
+      "minimum": 4.022080637941856,
+      "maximum": 4.022080637941856
+    },
+    "functional_test_loss": {
+      "mean": 4.134517461532733,
+      "sample_std": 0.003772478497887924,
+      "minimum": 4.129882270132116,
+      "maximum": 4.138879066003878
+    },
+    "ce_only_test_loss": {
+      "mean": 4.092345556097998,
+      "sample_std": 0.03710971873278362,
+      "minimum": 4.042428854485063,
+      "maximum": 4.129602878183521
+    },
+    "paired_ce_only_minus_functional_loss": {
+      "mean": -0.04217190543473439,
+      "sample_std": 0.03547612901472875,
+      "minimum": -0.09327253892456433,
+      "maximum": -0.009276187820357329
+    },
+    "paired_ce_only_minus_functional_loss_bootstrap": {
+      "percentile_95_lower": -0.07133079013623789,
+      "percentile_95_upper": -0.015582012620504848,
+      "resamples": 3125
+    },
+    "functional_teacher_gap": {
+      "mean": 0.11243682359087685,
+      "sample_std": 0.003772478497887924,
+      "minimum": 0.1078016321902604,
+      "maximum": 0.11679842806202245
+    },
+    "ce_only_teacher_gap": {
+      "mean": 0.07026491815614247,
+      "sample_std": 0.03710971873278362,
+      "minimum": 0.02034821654320762,
+      "maximum": 0.10752224024166512
+    },
+    "functional_layer1_nmse_development": {
+      "mean": 0.14891195909585803,
+      "sample_std": 0.0027012260517085772,
+      "minimum": 0.14643108809832484,
+      "maximum": 0.15299154876265675
+    },
+    "ce_only_layer1_nmse_development": {
+      "mean": 1.1650099854916334,
+      "sample_std": 0.05276264239045724,
+      "minimum": 1.1100940871983767,
+      "maximum": 1.2287294641137123
+    }
+  },
+  "acceptance": {
+    "alpha_zero_exact_all_conditions_all_seeds": true,
+    "finite_final_losses_all_conditions_all_seeds": true,
+    "functional_beats_ce_only_in_at_least_4_of_5": false,
+    "functional_mean_paired_advantage_at_least_0_05": false,
+    "functional_teacher_gap_no_worse_than_0_15": true,
+    "functional_beats_ce_only_count": 0,
+    "ce_only_beats_functional_count": 5,
+    "generation_requires_human_review": true
+  },
+  "per_seed": [
+    {
+      "seed": 20260831,
+      "teacher_test_loss": 4.022080637941856,
+      "functional_test_loss": 4.138879066003878,
+      "ce_only_test_loss": 4.129602878183521,
+      "ce_only_minus_functional": -0.009276187820357329,
+      "functional_minus_teacher": 0.11679842806202245,
+      "ce_only_minus_teacher": 0.10752224024166512,
+      "functional_l1_nmse_development": 0.15299154876265675,
+      "ce_only_l1_nmse_development": 1.1100940871983767,
+      "functional_alpha_zero_error": 0.0,
+      "ce_only_alpha_zero_error": 0.0,
+      "finite": true
+    },
+    {
+      "seed": 20260832,
+      "teacher_test_loss": 4.022080637941856,
+      "functional_test_loss": 4.135701393409628,
+      "ce_only_test_loss": 4.042428854485063,
+      "ce_only_minus_functional": -0.09327253892456433,
+      "functional_minus_teacher": 0.11362075546777195,
+      "ce_only_minus_teacher": 0.02034821654320762,
+      "functional_l1_nmse_development": 0.1501478913705796,
+      "ce_only_l1_nmse_development": 1.118907742202282,
+      "functional_alpha_zero_error": 0.0,
+      "ce_only_alpha_zero_error": 0.0,
+      "finite": true
+    },
+    {
+      "seed": 20260833,
+      "teacher_test_loss": 4.022080637941856,
+      "functional_test_loss": 4.129882270132116,
+      "ce_only_test_loss": 4.0669875466948975,
+      "ce_only_minus_functional": -0.06289472343721858,
+      "functional_minus_teacher": 0.1078016321902604,
+      "ce_only_minus_teacher": 0.04490690875304182,
+      "functional_l1_nmse_development": 0.14643108809832484,
+      "ce_only_l1_nmse_development": 1.2287294641137123,
+      "functional_alpha_zero_error": 0.0,
+      "ce_only_alpha_zero_error": 0.0,
+      "finite": true
+    },
+    {
+      "seed": 20260834,
+      "teacher_test_loss": 4.022080637941856,
+      "functional_test_loss": 4.131360278276819,
+      "ce_only_test_loss": 4.099885811755565,
+      "ce_only_minus_functional": -0.03147446652125385,
+      "functional_minus_teacher": 0.10927964033496362,
+      "ce_only_minus_teacher": 0.07780517381370977,
+      "functional_l1_nmse_development": 0.14684518601279706,
+      "ce_only_l1_nmse_development": 1.2085455171763897,
+      "functional_alpha_zero_error": 0.0,
+      "ce_only_alpha_zero_error": 0.0,
+      "finite": true
+    },
+    {
+      "seed": 20260835,
+      "teacher_test_loss": 4.022080637941856,
+      "functional_test_loss": 4.1367642998412215,
+      "ce_only_test_loss": 4.122822689370944,
+      "ce_only_minus_functional": -0.013941610470277865,
+      "functional_minus_teacher": 0.11468366189936585,
+      "ce_only_minus_teacher": 0.10074205142908799,
+      "functional_l1_nmse_development": 0.14814408123493195,
+      "ce_only_l1_nmse_development": 1.1587731167674065,
+      "functional_alpha_zero_error": 0.0,
+      "ce_only_alpha_zero_error": 0.0,
+      "finite": true
+    }
+  ],
+  "generations": [
+    {
+      "seed": 20260831,
+      "functional_science": "The purpose of scientific research is to find out the truth about the world.\nThe scientific method is a method of",
+      "functional_explorer": "Once upon a time, a young explorer discovered a large, flat, flat-topped, flat-bottomed, flat",
+      "ce_only_science": "The purpose of scientific research is to find new and better ways to improve the quality of life.\nThe scientific method",
+      "ce_only_explorer": "Once upon a time, a young explorer discovered a new and unique species of fish, the fish was named the \u201cGiant"
+    },
+    {
+      "seed": 20260832,
+      "functional_science": "The purpose of scientific research is to find out the truth about the world.\nThe scientific method is a systematic approach",
+      "functional_explorer": "Once upon a time, a young explorer discovered a new world, and he was able to make a new discovery.\nThe",
+      "ce_only_science": "The purpose of scientific research is to find new and useful knowledge.\nThe scientific method is a systematic approach to the",
+      "ce_only_explorer": "Once upon a time, a young explorer discovered the island, and the islanders were called the \u201cSirens.\u201d The"
+    },
+    {
+      "seed": 20260833,
+      "functional_science": "The purpose of scientific research is to find out how the world works.\nThe purpose of scientific research is to find",
+      "functional_explorer": "Once upon a time, a young explorer discovered a new world, and he was not only a child. He was a man",
+      "ce_only_science": "The purpose of scientific research is to improve the quality of life for people.\nThe term \u201cscientific research\u201d is",
+      "ce_only_explorer": "Once upon a time, a young explorer discovered a new and beautiful island. The island was named after him. The island was"
+    },
+    {
+      "seed": 20260834,
+      "functional_science": "The purpose of scientific research is to find out the causes of disease and to develop new drugs and treatments.\nThe",
+      "functional_explorer": "Once upon a time, a young explorer discovered a new world, he was able to make a new discovery.\nThe first",
+      "ce_only_science": "The purpose of scientific research is to improve the quality of life.\nThe scientific research is a process of discovery,",
+      "ce_only_explorer": "Once upon a time, a young explorer discovered the island of the same name, and the island was named after him.\n"
+    },
+    {
+      "seed": 20260835,
+      "functional_science": "The purpose of scientific research is to find out the truth about the world.\nThe scientific method is a systematic approach",
+      "functional_explorer": "Once upon a time, a young explorer discovered a new land, he was able to make a new discovery.\nThe first",
+      "ce_only_science": "The purpose of scientific research is to advance our knowledge of the world.\nThe scientific method is a systematic approach to",
+      "ce_only_explorer": "Once upon a time, a young explorer discovered the island of the same name, and named it after the king of the island"
+    }
+  ],
+  "interpretation_guardrail": "Positive CE-only minus functional loss favors functional distillation. This five-seed result is a matched causal test of teacher-derived optimization signals, not an end-to-end architecture-conversion result."
+}
