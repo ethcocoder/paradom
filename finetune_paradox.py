@@ -71,7 +71,7 @@ def main():
         logging_steps=10,
         max_steps=2100, # Covers the 1300-2000 monitor range
         save_steps=500,
-        evaluation_strategy="no",
+        eval_strategy="no",
         fp16=False, 
         bf16=torch.cuda.is_available(),
         push_to_hub=False,
