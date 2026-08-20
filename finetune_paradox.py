@@ -11,7 +11,7 @@ from transformers import (
 from datasets import Dataset
 
 # ── Configuration ────────────────────────────────────────────
-MODEL_ID = "stabilityai/stablelm-3b-4e1t"
+MODEL_ID = "HuggingFaceTB/SmolLM2-135M-Instruct"
 DATA_PATH = "adam_alpaca.parquet"
 OUTPUT_DIR = "./adam-finetuned"
 
