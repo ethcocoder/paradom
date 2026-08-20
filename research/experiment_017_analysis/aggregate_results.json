@@ -1,0 +1,303 @@
+{
+  "experiment": "experiment_017_moment_calibration",
+  "seeds": [
+    20260851,
+    20260852,
+    20260853,
+    20260854,
+    20260855
+  ],
+  "n": 5,
+  "fresh_test": {
+    "eligible_offset": 128,
+    "sequences": 128,
+    "all_conditions_trained_before_test_access": true
+  },
+  "per_seed": [
+    {
+      "seed": 20260851,
+      "teacher_loss": 3.963913360713098,
+      "ce_calibrator_loss": 4.011430055446341,
+      "ce_calibrator_alpha_zero_error": 0.0,
+      "ce_calibrator_l1_value_nmse": 1.0973085975274444,
+      "ce_calibrator_l1_log_var": 1.117956668138504,
+      "ce_calibrator_l1_mean": 4.064040437340736,
+      "ce_calibrator_l1_token_kl": 0.7787682823836803,
+      "ce_calibrator_max_safety_kl": 0.7787682823836803,
+      "value_functional_loss": 4.043205498572396,
+      "value_functional_alpha_zero_error": 0.0,
+      "value_functional_l1_value_nmse": 0.14527066610753536,
+      "value_functional_l1_log_var": 1.293192026205361,
+      "value_functional_l1_mean": 0.1302486530621536,
+      "value_functional_l1_token_kl": 0.23647442332003266,
+      "value_functional_max_safety_kl": 0.23647442332003266,
+      "moment_functional_loss": 4.428430845953186,
+      "moment_functional_alpha_zero_error": 0.0,
+      "moment_functional_l1_value_nmse": 0.3142791911959648,
+      "moment_functional_l1_log_var": 0.19316873501520604,
+      "moment_functional_l1_mean": 0.133235442917794,
+      "moment_functional_l1_token_kl": 0.64554992178455,
+      "moment_functional_max_safety_kl": 0.64554992178455,
+      "ce_minus_value": -0.031775443126055514,
+      "ce_minus_moment": -0.4170007905068456,
+      "value_minus_moment": -0.38522534738079006
+    },
+    {
+      "seed": 20260852,
+      "teacher_loss": 3.963913360713098,
+      "ce_calibrator_loss": 4.004145146134028,
+      "ce_calibrator_alpha_zero_error": 0.0,
+      "ce_calibrator_l1_value_nmse": 1.0940698124468327,
+      "ce_calibrator_l1_log_var": 1.1622868217527866,
+      "ce_calibrator_l1_mean": 4.209096040576696,
+      "ce_calibrator_l1_token_kl": 0.7132457122206688,
+      "ce_calibrator_max_safety_kl": 0.7132457122206688,
+      "value_functional_loss": 4.0552687593119705,
+      "value_functional_alpha_zero_error": 0.0,
+      "value_functional_l1_value_nmse": 0.15025746321771294,
+      "value_functional_l1_log_var": 1.2566900486126542,
+      "value_functional_l1_mean": 0.13298159441910684,
+      "value_functional_l1_token_kl": 0.23506320430897176,
+      "value_functional_max_safety_kl": 0.23506320430897176,
+      "moment_functional_loss": 4.423564473847757,
+      "moment_functional_alpha_zero_error": 0.0,
+      "moment_functional_l1_value_nmse": 0.30038875062018633,
+      "moment_functional_l1_log_var": 0.1940721762366593,
+      "moment_functional_l1_mean": 0.1350320732453838,
+      "moment_functional_l1_token_kl": 0.6008407445624471,
+      "moment_functional_max_safety_kl": 0.6008407445624471,
+      "ce_minus_value": -0.05112361317794267,
+      "ce_minus_moment": -0.4194193277137295,
+      "value_minus_moment": -0.3682957145357868
+    },
+    {
+      "seed": 20260853,
+      "teacher_loss": 3.963913360713098,
+      "ce_calibrator_loss": 3.9939111230125754,
+      "ce_calibrator_alpha_zero_error": 0.0,
+      "ce_calibrator_l1_value_nmse": 1.1091438475996256,
+      "ce_calibrator_l1_log_var": 1.2989788297563791,
+      "ce_calibrator_l1_mean": 4.3367973156273365,
+      "ce_calibrator_l1_token_kl": 0.7456667008809745,
+      "ce_calibrator_max_safety_kl": 0.7456667008809745,
+      "value_functional_loss": 4.048414625597551,
+      "value_functional_alpha_zero_error": 0.0,
+      "value_functional_l1_value_nmse": 0.14853367896284908,
+      "value_functional_l1_log_var": 1.3250916507095098,
+      "value_functional_l1_mean": 0.129815757391043,
+      "value_functional_l1_token_kl": 0.23858427652157843,
+      "value_functional_max_safety_kl": 0.23858427652157843,
+      "moment_functional_loss": 4.439800406004757,
+      "moment_functional_alpha_zero_error": 0.0,
+      "moment_functional_l1_value_nmse": 0.32769766356796026,
+      "moment_functional_l1_log_var": 0.18047964537981898,
+      "moment_functional_l1_mean": 0.14830600237473845,
+      "moment_functional_l1_token_kl": 0.6041453406214714,
+      "moment_functional_max_safety_kl": 0.6041453406214714,
+      "ce_minus_value": -0.05450350258497538,
+      "ce_minus_moment": -0.44588928299218145,
+      "value_minus_moment": -0.39138578040720606
+    },
+    {
+      "seed": 20260854,
+      "teacher_loss": 3.963913360713098,
+      "ce_calibrator_loss": 4.019591296231553,
+      "ce_calibrator_alpha_zero_error": 0.0,
+      "ce_calibrator_l1_value_nmse": 1.1426558485254645,
+      "ce_calibrator_l1_log_var": 1.132269692607224,
+      "ce_calibrator_l1_mean": 3.873185347765684,
+      "ce_calibrator_l1_token_kl": 0.7547778855077922,
+      "ce_calibrator_max_safety_kl": 0.7547778855077922,
+      "value_functional_loss": 4.034866854904846,
+      "value_functional_alpha_zero_error": 0.0,
+      "value_functional_l1_value_nmse": 0.14835193322505802,
+      "value_functional_l1_log_var": 1.3605332868173718,
+      "value_functional_l1_mean": 0.13450931129045784,
+      "value_functional_l1_token_kl": 0.24744925170671195,
+      "value_functional_max_safety_kl": 0.24744925170671195,
+      "moment_functional_loss": 4.38931792227794,
+      "moment_functional_alpha_zero_error": 0.0,
+      "moment_functional_l1_value_nmse": 0.3247308237478137,
+      "moment_functional_l1_log_var": 0.17929675639607012,
+      "moment_functional_l1_mean": 0.14660036307759583,
+      "moment_functional_l1_token_kl": 0.6237742095254362,
+      "moment_functional_max_safety_kl": 0.6237742095254362,
+      "ce_minus_value": -0.015275558673292444,
+      "ce_minus_moment": -0.3697266260463872,
+      "value_minus_moment": -0.35445106737309473
+    },
+    {
+      "seed": 20260855,
+      "teacher_loss": 3.963913360713098,
+      "ce_calibrator_loss": 4.015549642662077,
+      "ce_calibrator_alpha_zero_error": 0.0,
+      "ce_calibrator_l1_value_nmse": 1.0313617633655667,
+      "ce_calibrator_l1_log_var": 1.3055041013285518,
+      "ce_calibrator_l1_mean": 3.3912981338799,
+      "ce_calibrator_l1_token_kl": 0.7401839857921004,
+      "ce_calibrator_max_safety_kl": 0.7401839857921004,
+      "value_functional_loss": 4.033372203050439,
+      "value_functional_alpha_zero_error": 0.0,
+      "value_functional_l1_value_nmse": 0.14701034780591726,
+      "value_functional_l1_log_var": 1.1427547726780176,
+      "value_functional_l1_mean": 0.13323752104770392,
+      "value_functional_l1_token_kl": 0.22383704595267773,
+      "value_functional_max_safety_kl": 0.22383704595267773,
+      "moment_functional_loss": 4.405539399545953,
+      "moment_functional_alpha_zero_error": 0.0,
+      "moment_functional_l1_value_nmse": 0.3068070220761001,
+      "moment_functional_l1_log_var": 0.191570058115758,
+      "moment_functional_l1_mean": 0.14539906603749841,
+      "moment_functional_l1_token_kl": 0.5788393898401409,
+      "moment_functional_max_safety_kl": 0.5788393898401409,
+      "ce_minus_value": -0.017822560388361275,
+      "ce_minus_moment": -0.3899897568838755,
+      "value_minus_moment": -0.3721671964955142
+    }
+  ],
+  "metrics": {
+    "teacher_fresh_test_loss": {
+      "mean": 3.963913360713098,
+      "sample_std": 0.0,
+      "minimum": 3.963913360713098,
+      "maximum": 3.963913360713098
+    },
+    "ce_calibrator_loss": {
+      "mean": 4.008925452697315,
+      "sample_std": 0.010151287758673699,
+      "minimum": 3.9939111230125754,
+      "maximum": 4.019591296231553
+    },
+    "ce_calibrator_l1_value_nmse": {
+      "mean": 1.0949079738929868,
+      "sample_std": 0.040395253474107294,
+      "minimum": 1.0313617633655667,
+      "maximum": 1.1426558485254645
+    },
+    "ce_calibrator_l1_log_var": {
+      "mean": 1.2033992227166892,
+      "sample_std": 0.09166642953892785,
+      "minimum": 1.117956668138504,
+      "maximum": 1.3055041013285518
+    },
+    "ce_calibrator_l1_mean": {
+      "mean": 3.9748834550380705,
+      "sample_std": 0.36901913138030645,
+      "minimum": 3.3912981338799,
+      "maximum": 4.3367973156273365
+    },
+    "ce_calibrator_l1_token_kl": {
+      "mean": 0.7465285133570433,
+      "sample_std": 0.023749712893117978,
+      "minimum": 0.7132457122206688,
+      "maximum": 0.7787682823836803
+    },
+    "ce_calibrator_max_safety_kl": {
+      "mean": 0.7465285133570433,
+      "sample_std": 0.023749712893117978,
+      "minimum": 0.7132457122206688,
+      "maximum": 0.7787682823836803
+    },
+    "value_functional_loss": {
+      "mean": 4.04302558828744,
+      "sample_std": 0.009202202243464852,
+      "minimum": 4.033372203050439,
+      "maximum": 4.0552687593119705
+    },
+    "value_functional_l1_value_nmse": {
+      "mean": 0.14788481786381452,
+      "sample_std": 0.0018619311714549206,
+      "minimum": 0.14527066610753536,
+      "maximum": 0.15025746321771294
+    },
+    "value_functional_l1_log_var": {
+      "mean": 1.2756523570045828,
+      "sample_std": 0.08363311703952193,
+      "minimum": 1.1427547726780176,
+      "maximum": 1.3605332868173718
+    },
+    "value_functional_l1_mean": {
+      "mean": 0.13215856744209303,
+      "sample_std": 0.0020312584032182277,
+      "minimum": 0.129815757391043,
+      "maximum": 0.13450931129045784
+    },
+    "value_functional_l1_token_kl": {
+      "mean": 0.2362816403619945,
+      "sample_std": 0.008461787017626642,
+      "minimum": 0.22383704595267773,
+      "maximum": 0.24744925170671195
+    },
+    "value_functional_max_safety_kl": {
+      "mean": 0.2362816403619945,
+      "sample_std": 0.008461787017626642,
+      "minimum": 0.22383704595267773,
+      "maximum": 0.24744925170671195
+    },
+    "moment_functional_loss": {
+      "mean": 4.417330609525918,
+      "sample_std": 0.019941861413678468,
+      "minimum": 4.38931792227794,
+      "maximum": 4.439800406004757
+    },
+    "moment_functional_l1_value_nmse": {
+      "mean": 0.31478069024160504,
+      "sample_std": 0.011584603662599717,
+      "minimum": 0.30038875062018633,
+      "maximum": 0.32769766356796026
+    },
+    "moment_functional_l1_log_var": {
+      "mean": 0.1877174742287025,
+      "sample_std": 0.007215184329622917,
+      "minimum": 0.17929675639607012,
+      "maximum": 0.1940721762366593
+    },
+    "moment_functional_l1_mean": {
+      "mean": 0.1417145895306021,
+      "sample_std": 0.007025753069029741,
+      "minimum": 0.133235442917794,
+      "maximum": 0.14830600237473845
+    },
+    "moment_functional_l1_token_kl": {
+      "mean": 0.6106299212668092,
+      "sample_std": 0.02520265067939279,
+      "minimum": 0.5788393898401409,
+      "maximum": 0.64554992178455
+    },
+    "moment_functional_max_safety_kl": {
+      "mean": 0.6106299212668092,
+      "sample_std": 0.02520265067939279,
+      "minimum": 0.5788393898401409,
+      "maximum": 0.64554992178455
+    },
+    "ce_minus_value": {
+      "mean": -0.03410013559012546,
+      "sample_std": 0.018240233821889457,
+      "minimum": -0.05450350258497538,
+      "maximum": -0.015275558673292444
+    },
+    "ce_minus_moment": {
+      "mean": -0.40840515682860384,
+      "sample_std": 0.029306195127734764,
+      "minimum": -0.44588928299218145,
+      "maximum": -0.3697266260463872
+    },
+    "value_minus_moment": {
+      "mean": -0.37430502123847836,
+      "sample_std": 0.014541899829475144,
+      "minimum": -0.39138578040720606,
+      "maximum": -0.35445106737309473
+    }
+  },
+  "acceptance": {
+    "alpha_zero_exact_all_conditions_all_seeds": true,
+    "all_complete_two_layer_endpoints": true,
+    "moment_beats_ce_count": 0,
+    "moment_beats_value_count": 0,
+    "moment_beats_ce_mean_by_at_least_0_05": false,
+    "moment_beats_value_mean_by_at_least_0_03": false,
+    "moment_improves_l1_log_variance_over_value_count": 5,
+    "moment_within_0_15_of_teacher": false,
+    "third_layer_permitted": false
+  }
+}
