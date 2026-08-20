@@ -11,7 +11,7 @@ from transformers import (
 from datasets import Dataset
 
 # ── Configuration ────────────────────────────────────────────
-MODEL_ID = "NousResearch/Llama-2-7b-hf"
+MODEL_ID = "openlm-research/open_llama_3b_v2"
 DATA_PATH = "adam_alpaca.parquet"
 OUTPUT_DIR = "./adam-finetuned"
 
@@ -37,7 +37,7 @@ def main():
     
     model = AutoModelForCausalLM.from_pretrained(
         MODEL_ID, 
-        torch_dtype=torch.bfloat16, 
+        torch_dtype=torch.float16 if torch.cuda.is_available() else torch.float32,
         trust_remote_code=True
     )
     model.resize_token_embeddings(len(tokenizer))

@@ -1,6 +1,6 @@
-# Google Colab Instructions for Finetuning Llama 7B with Adam Persona
+# Google Colab Instructions for Finetuning Open Llama 3B with Adam Persona
 
-This guide provides step-by-step instructions to set up and run the Llama 7B finetuning process for the "Adam" AI persona on Google Colab. This process uses the `v3` branch of the `ethcocoder/paradom` repository.
+This guide provides step-by-step instructions to set up and run the Open Llama 3B finetuning process for the "Adam" AI persona on Google Colab. This process uses the `v3` branch of the `ethcocoder/paradom` repository.
 
 ## 1. Open a New Google Colab Notebook
 
@@ -49,7 +49,7 @@ Created adam_alpaca.parquet with 30 rows.
 
 ## 6. Run the Finetuning Script
 
-Now, run the `finetune_paradox.py` script. This script is configured to use the `NousResearch/Llama-2-7b-hf` model and the `adam_alpaca.parquet` dataset. It includes a monitoring mechanism to observe loss between steps 1300 and 2000 to help prevent overfitting.
+Now, run the `finetune_paradox.py` script. This script is configured to use the `openlm-research/open_llama_3b_v2` model and the `adam_alpaca.parquet` dataset. It includes a monitoring mechanism to observe loss between steps 1300 and 2000 to help prevent overfitting.
 
 **Important Note**: The script is designed to run for a specified number of steps (`max_steps=2100`). You can stop the training manually at any point if you have verified it's running correctly, as per the original request. The script will save the model checkpoints to `./adam-finetuned`.
 
@@ -61,7 +61,7 @@ Now, run the `finetune_paradox.py` script. This script is configured to use the 
 
 ```
 Loading data from adam_alpaca.parquet...
-Loading model NousResearch/Llama-2-7b-hf...
+Loading model openlm-research/open_llama_3b_v2...
 # ... (model and tokenizer loading messages) ...
 Starting training...
 # ... (training logs, including loss monitoring) ...
