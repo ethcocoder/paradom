@@ -1,0 +1,998 @@
+{
+  "experiment": "experiment_015_adaptive_interface",
+  "seeds": [
+    20260841,
+    20260842,
+    20260843,
+    20260844,
+    20260845
+  ],
+  "n": 5,
+  "endpoint_rule": "Adaptive final-test metrics are intentionally unavailable when either gate does not reach alpha=1; these are protocol failures, not missing values to be imputed.",
+  "metrics": {
+    "teacher_test_loss": {
+      "mean": 4.022080637941856,
+      "sample_std": 0.0,
+      "minimum": 4.022080637941856,
+      "maximum": 4.022080637941856
+    },
+    "ce_adapter_test_loss": {
+      "mean": 4.064747777549865,
+      "sample_std": 0.007338757737141932,
+      "minimum": 4.053201417175438,
+      "maximum": 4.072610457064056
+    },
+    "value_functional_test_loss": {
+      "mean": 4.135405823882653,
+      "sample_std": 0.006739368511425927,
+      "minimum": 4.127859971868737,
+      "maximum": 4.142625859845967
+    },
+    "paired_ce_minus_value_test_loss": {
+      "mean": -0.07065804633278745,
+      "sample_std": 0.009709152496442301,
+      "minimum": -0.0796190992548862,
+      "maximum": -0.05524951480468143
+    },
+    "value_layer1_tangent_nmse": {
+      "mean": 1.0698561388999224,
+      "sample_std": 0.0067954595709228405,
+      "minimum": 1.0596657488495111,
+      "maximum": 1.0759239438921213
+    },
+    "adaptive_layer1_tangent_nmse": {
+      "mean": 0.991215661726892,
+      "sample_std": 0.0031330679292743526,
+      "minimum": 0.9873303882777691,
+      "maximum": 0.995172324590385
+    }
+  },
+  "acceptance": {
+    "alpha_zero_exact_all_conditions": true,
+    "adaptive_both_layers_alpha_one_count": 0,
+    "adaptive_endpoint_requirement_at_least_4_of_5": false,
+    "adaptive_final_test_losses_available": 0,
+    "ce_beats_value_count": 5,
+    "adaptive_directional_diagnostic_better_than_value_count": 5,
+    "third_layer_permitted": false
+  },
+  "per_seed": [
+    {
+      "seed": 20260841,
+      "teacher_loss": 4.022080637941856,
+      "ce_adapter_test_loss": 4.072610457064056,
+      "value_functional_test_loss": 4.127859971868737,
+      "ce_minus_value_loss": -0.05524951480468143,
+      "adaptive_endpoint_alpha_one": false,
+      "adaptive_layer0_final_alpha": 1.0,
+      "adaptive_layer1_final_alpha": 0.8,
+      "adaptive_layer0_controller": [
+        {
+          "target": 0.1,
+          "candidate": 0.1,
+          "accepted": true,
+          "accepted_alpha": 0.1,
+          "development_loss": 3.5367589580635586,
+          "development_kl": 0.07882637358852662
+        },
+        {
+          "target": 0.2,
+          "candidate": 0.2,
+          "accepted": true,
+          "accepted_alpha": 0.2,
+          "development_loss": 3.5350574089375617,
+          "development_kl": 0.24739182012854144
+        },
+        {
+          "target": 0.3,
+          "candidate": 0.3,
+          "accepted": true,
+          "accepted_alpha": 0.3,
+          "development_loss": 3.535929481789695,
+          "development_kl": 0.4881340004503727
+        },
+        {
+          "target": 0.4,
+          "candidate": 0.4,
+          "accepted": true,
+          "accepted_alpha": 0.4,
+          "development_loss": 3.5395423988856507,
+          "development_kl": 0.8198329948354512
+        },
+        {
+          "target": 0.5,
+          "candidate": 0.5,
+          "accepted": true,
+          "accepted_alpha": 0.5,
+          "development_loss": 3.5456265734183248,
+          "development_kl": 1.2464508570265025
+        },
+        {
+          "target": 0.6,
+          "candidate": 0.6,
+          "accepted": true,
+          "accepted_alpha": 0.6,
+          "development_loss": 3.5515087526470954,
+          "development_kl": 1.6921452833339572
+        },
+        {
+          "target": 0.7,
+          "candidate": 0.7,
+          "accepted": true,
+          "accepted_alpha": 0.7,
+          "development_loss": 3.5548042759114806,
+          "development_kl": 2.215758935082704
+        },
+        {
+          "target": 0.8,
+          "candidate": 0.8,
+          "accepted": true,
+          "accepted_alpha": 0.8,
+          "development_loss": 3.5598692546356494,
+          "development_kl": 2.7502297507598996
+        },
+        {
+          "target": 0.9,
+          "candidate": 0.9,
+          "accepted": true,
+          "accepted_alpha": 0.9,
+          "development_loss": 3.57040635362124,
+          "development_kl": 3.512612466700375
+        },
+        {
+          "target": 1.0,
+          "candidate": 1.0,
+          "accepted": true,
+          "accepted_alpha": 1.0,
+          "development_loss": 3.573210890716175,
+          "development_kl": 4.0452546225860715
+        }
+      ],
+      "adaptive_layer1_controller": [
+        {
+          "target": 0.1,
+          "candidate": 0.1,
+          "accepted": true,
+          "accepted_alpha": 0.1,
+          "development_loss": 3.5739530959516315,
+          "development_kl": 4.1173962242901325
+        },
+        {
+          "target": 0.2,
+          "candidate": 0.2,
+          "accepted": true,
+          "accepted_alpha": 0.2,
+          "development_loss": 3.575067417821661,
+          "development_kl": 4.208688848651946
+        },
+        {
+          "target": 0.3,
+          "candidate": 0.3,
+          "accepted": true,
+          "accepted_alpha": 0.3,
+          "development_loss": 3.576922675110451,
+          "development_kl": 4.375729674473405
+        },
+        {
+          "target": 0.4,
+          "candidate": 0.4,
+          "accepted": true,
+          "accepted_alpha": 0.4,
+          "development_loss": 3.5801977816113415,
+          "development_kl": 4.70070880651474
+        },
+        {
+          "target": 0.5,
+          "candidate": 0.5,
+          "accepted": true,
+          "accepted_alpha": 0.5,
+          "development_loss": 3.5836906590520763,
+          "development_kl": 5.249197838827968
+        },
+        {
+          "target": 0.6,
+          "candidate": 0.6,
+          "accepted": true,
+          "accepted_alpha": 0.6,
+          "development_loss": 3.588356590008637,
+          "development_kl": 5.8743752129375935
+        },
+        {
+          "target": 0.7,
+          "candidate": 0.7,
+          "accepted": true,
+          "accepted_alpha": 0.7,
+          "development_loss": 3.596744314348517,
+          "development_kl": 6.543006516993046
+        },
+        {
+          "target": 0.8,
+          "candidate": 0.8,
+          "accepted": true,
+          "accepted_alpha": 0.8,
+          "development_loss": 3.6086271251904094,
+          "development_kl": 7.450134292244911
+        },
+        {
+          "target": 0.9,
+          "candidate": 0.9,
+          "accepted": false,
+          "accepted_alpha": 0.8,
+          "development_loss": 3.6182183261750653,
+          "development_kl": 8.315422356128693
+        },
+        {
+          "target": 1.0,
+          "candidate": 1.0,
+          "accepted": false,
+          "accepted_alpha": 0.8,
+          "development_loss": 3.6365393385434577,
+          "development_kl": 9.548497308045626
+        }
+      ],
+      "adaptive_final_test_available": false,
+      "ce_alpha_zero_error": 0.0,
+      "value_alpha_zero_error": 0.0,
+      "adaptive_alpha_zero_error": 0.0,
+      "value_layer1_tangent_nmse": 1.0759239438921213,
+      "adaptive_layer1_tangent_nmse": 0.9917119555175304
+    },
+    {
+      "seed": 20260842,
+      "teacher_loss": 4.022080637941856,
+      "ce_adapter_test_loss": 4.068588062670824,
+      "value_functional_test_loss": 4.142137768877778,
+      "ce_minus_value_loss": -0.07354970620695411,
+      "adaptive_endpoint_alpha_one": false,
+      "adaptive_layer0_final_alpha": 1.0,
+      "adaptive_layer1_final_alpha": 0.8,
+      "adaptive_layer0_controller": [
+        {
+          "target": 0.1,
+          "candidate": 0.1,
+          "accepted": true,
+          "accepted_alpha": 0.1,
+          "development_loss": 3.5377270935982095,
+          "development_kl": 0.07754743998521008
+        },
+        {
+          "target": 0.2,
+          "candidate": 0.2,
+          "accepted": true,
+          "accepted_alpha": 0.2,
+          "development_loss": 3.5370521309287217,
+          "development_kl": 0.24519672291353345
+        },
+        {
+          "target": 0.3,
+          "candidate": 0.3,
+          "accepted": true,
+          "accepted_alpha": 0.3,
+          "development_loss": 3.5387192323414465,
+          "development_kl": 0.47449977067299187
+        },
+        {
+          "target": 0.4,
+          "candidate": 0.4,
+          "accepted": true,
+          "accepted_alpha": 0.4,
+          "development_loss": 3.542977641340463,
+          "development_kl": 0.7871995330788195
+        },
+        {
+          "target": 0.5,
+          "candidate": 0.5,
+          "accepted": true,
+          "accepted_alpha": 0.5,
+          "development_loss": 3.5480672739230945,
+          "development_kl": 1.185231157578528
+        },
+        {
+          "target": 0.6,
+          "candidate": 0.6,
+          "accepted": true,
+          "accepted_alpha": 0.6,
+          "development_loss": 3.5535580059193186,
+          "development_kl": 1.5941912750713527
+        },
+        {
+          "target": 0.7,
+          "candidate": 0.7,
+          "accepted": true,
+          "accepted_alpha": 0.7,
+          "development_loss": 3.5580939957987328,
+          "development_kl": 2.0955366231501102
+        },
+        {
+          "target": 0.8,
+          "candidate": 0.8,
+          "accepted": true,
+          "accepted_alpha": 0.8,
+          "development_loss": 3.562384871701919,
+          "development_kl": 2.6322861341759562
+        },
+        {
+          "target": 0.9,
+          "candidate": 0.9,
+          "accepted": true,
+          "accepted_alpha": 0.9,
+          "development_loss": 3.572317414631378,
+          "development_kl": 3.422873076982796
+        },
+        {
+          "target": 1.0,
+          "candidate": 1.0,
+          "accepted": true,
+          "accepted_alpha": 1.0,
+          "development_loss": 3.5791286143180923,
+          "development_kl": 4.081345177255571
+        }
+      ],
+      "adaptive_layer1_controller": [
+        {
+          "target": 0.1,
+          "candidate": 0.1,
+          "accepted": true,
+          "accepted_alpha": 0.1,
+          "development_loss": 3.580762697873122,
+          "development_kl": 4.210533933714032
+        },
+        {
+          "target": 0.2,
+          "candidate": 0.2,
+          "accepted": true,
+          "accepted_alpha": 0.2,
+          "development_loss": 3.581433680559287,
+          "development_kl": 4.339046287350357
+        },
+        {
+          "target": 0.3,
+          "candidate": 0.3,
+          "accepted": true,
+          "accepted_alpha": 0.3,
+          "development_loss": 3.5813563975212173,
+          "development_kl": 4.518875990994275
+        },
+        {
+          "target": 0.4,
+          "candidate": 0.4,
+          "accepted": true,
+          "accepted_alpha": 0.4,
+          "development_loss": 3.5824501006114597,
+          "development_kl": 4.8759280275553465
+        },
+        {
+          "target": 0.5,
+          "candidate": 0.5,
+          "accepted": true,
+          "accepted_alpha": 0.5,
+          "development_loss": 3.5842370265451717,
+          "development_kl": 5.412630759179592
+        },
+        {
+          "target": 0.6,
+          "candidate": 0.6,
+          "accepted": true,
+          "accepted_alpha": 0.6,
+          "development_loss": 3.5854191786649303,
+          "development_kl": 6.026976086199284
+        },
+        {
+          "target": 0.7,
+          "candidate": 0.7,
+          "accepted": true,
+          "accepted_alpha": 0.7,
+          "development_loss": 3.5917919925023307,
+          "development_kl": 6.558596733957529
+        },
+        {
+          "target": 0.8,
+          "candidate": 0.8,
+          "accepted": true,
+          "accepted_alpha": 0.8,
+          "development_loss": 3.6045203910733186,
+          "development_kl": 7.452713541686535
+        },
+        {
+          "target": 0.9,
+          "candidate": 0.9,
+          "accepted": false,
+          "accepted_alpha": 0.8,
+          "development_loss": 3.611041983351255,
+          "development_kl": 8.390186335891485
+        },
+        {
+          "target": 1.0,
+          "candidate": 1.0,
+          "accepted": false,
+          "accepted_alpha": 0.8,
+          "development_loss": 3.6218505187736416,
+          "development_kl": 9.602409448474646
+        }
+      ],
+      "adaptive_final_test_available": false,
+      "ce_alpha_zero_error": 0.0,
+      "value_alpha_zero_error": 0.0,
+      "adaptive_alpha_zero_error": 0.0,
+      "value_layer1_tangent_nmse": 1.0727845281362534,
+      "adaptive_layer1_tangent_nmse": 0.995172324590385
+    },
+    {
+      "seed": 20260843,
+      "teacher_loss": 4.022080637941856,
+      "ce_adapter_test_loss": 4.066332190247929,
+      "value_functional_test_loss": 4.134042490689602,
+      "ce_minus_value_loss": -0.06771030044167325,
+      "adaptive_endpoint_alpha_one": false,
+      "adaptive_layer0_final_alpha": 1.0,
+      "adaptive_layer1_final_alpha": 0.8,
+      "adaptive_layer0_controller": [
+        {
+          "target": 0.1,
+          "candidate": 0.1,
+          "accepted": true,
+          "accepted_alpha": 0.1,
+          "development_loss": 3.5368943693221353,
+          "development_kl": 0.08024643213138916
+        },
+        {
+          "target": 0.2,
+          "candidate": 0.2,
+          "accepted": true,
+          "accepted_alpha": 0.2,
+          "development_loss": 3.5356226190412223,
+          "development_kl": 0.2393458035076037
+        },
+        {
+          "target": 0.3,
+          "candidate": 0.3,
+          "accepted": true,
+          "accepted_alpha": 0.3,
+          "development_loss": 3.5374257613736955,
+          "development_kl": 0.4665148255880922
+        },
+        {
+          "target": 0.4,
+          "candidate": 0.4,
+          "accepted": true,
+          "accepted_alpha": 0.4,
+          "development_loss": 3.541496972106346,
+          "development_kl": 0.7802823327947408
+        },
+        {
+          "target": 0.5,
+          "candidate": 0.5,
+          "accepted": true,
+          "accepted_alpha": 0.5,
+          "development_loss": 3.5468645843547835,
+          "development_kl": 1.188611255493015
+        },
+        {
+          "target": 0.6,
+          "candidate": 0.6,
+          "accepted": true,
+          "accepted_alpha": 0.6,
+          "development_loss": 3.551729837178856,
+          "development_kl": 1.6126227178610861
+        },
+        {
+          "target": 0.7,
+          "candidate": 0.7,
+          "accepted": true,
+          "accepted_alpha": 0.7,
+          "development_loss": 3.5553387034546065,
+          "development_kl": 2.124853396322578
+        },
+        {
+          "target": 0.8,
+          "candidate": 0.8,
+          "accepted": true,
+          "accepted_alpha": 0.8,
+          "development_loss": 3.5586647442971167,
+          "development_kl": 2.672107635065913
+        },
+        {
+          "target": 0.9,
+          "candidate": 0.9,
+          "accepted": true,
+          "accepted_alpha": 0.9,
+          "development_loss": 3.566751162648365,
+          "development_kl": 3.437186051160097
+        },
+        {
+          "target": 1.0,
+          "candidate": 1.0,
+          "accepted": true,
+          "accepted_alpha": 1.0,
+          "development_loss": 3.5724494414611563,
+          "development_kl": 4.139781583100557
+        }
+      ],
+      "adaptive_layer1_controller": [
+        {
+          "target": 0.1,
+          "candidate": 0.1,
+          "accepted": true,
+          "accepted_alpha": 0.1,
+          "development_loss": 3.5734505633704434,
+          "development_kl": 4.2216877695173025
+        },
+        {
+          "target": 0.2,
+          "candidate": 0.2,
+          "accepted": true,
+          "accepted_alpha": 0.2,
+          "development_loss": 3.574006858521347,
+          "development_kl": 4.307310336269438
+        },
+        {
+          "target": 0.3,
+          "candidate": 0.3,
+          "accepted": true,
+          "accepted_alpha": 0.3,
+          "development_loss": 3.575776822957245,
+          "development_kl": 4.511070724576712
+        },
+        {
+          "target": 0.4,
+          "candidate": 0.4,
+          "accepted": true,
+          "accepted_alpha": 0.4,
+          "development_loss": 3.5803420028791466,
+          "development_kl": 4.884224608540535
+        },
+        {
+          "target": 0.5,
+          "candidate": 0.5,
+          "accepted": true,
+          "accepted_alpha": 0.5,
+          "development_loss": 3.5860915413584964,
+          "development_kl": 5.463649936020374
+        },
+        {
+          "target": 0.6,
+          "candidate": 0.6,
+          "accepted": true,
+          "accepted_alpha": 0.6,
+          "development_loss": 3.591649090899398,
+          "development_kl": 5.9869877230376005
+        },
+        {
+          "target": 0.7,
+          "candidate": 0.7,
+          "accepted": true,
+          "accepted_alpha": 0.7,
+          "development_loss": 3.602112585117597,
+          "development_kl": 6.5859514102339745
+        },
+        {
+          "target": 0.8,
+          "candidate": 0.8,
+          "accepted": true,
+          "accepted_alpha": 0.8,
+          "development_loss": 3.6165788721349577,
+          "development_kl": 7.4747965931892395
+        },
+        {
+          "target": 0.9,
+          "candidate": 0.9,
+          "accepted": false,
+          "accepted_alpha": 0.8,
+          "development_loss": 3.6280234571664174,
+          "development_kl": 8.347461797297
+        },
+        {
+          "target": 1.0,
+          "candidate": 1.0,
+          "accepted": false,
+          "accepted_alpha": 0.8,
+          "development_loss": 3.643536721167899,
+          "development_kl": 9.455083705484867
+        }
+      ],
+      "adaptive_final_test_available": false,
+      "ce_alpha_zero_error": 0.0,
+      "value_alpha_zero_error": 0.0,
+      "adaptive_alpha_zero_error": 0.0,
+      "value_layer1_tangent_nmse": 1.0596657488495111,
+      "adaptive_layer1_tangent_nmse": 0.9873303882777691
+    },
+    {
+      "seed": 20260844,
+      "teacher_loss": 4.022080637941856,
+      "ce_adapter_test_loss": 4.0630067605910805,
+      "value_functional_test_loss": 4.142625859845967,
+      "ce_minus_value_loss": -0.0796190992548862,
+      "adaptive_endpoint_alpha_one": false,
+      "adaptive_layer0_final_alpha": 1.0,
+      "adaptive_layer1_final_alpha": 0.8,
+      "adaptive_layer0_controller": [
+        {
+          "target": 0.1,
+          "candidate": 0.1,
+          "accepted": true,
+          "accepted_alpha": 0.1,
+          "development_loss": 3.5368582215236994,
+          "development_kl": 0.08570699661504477
+        },
+        {
+          "target": 0.2,
+          "candidate": 0.2,
+          "accepted": true,
+          "accepted_alpha": 0.2,
+          "development_loss": 3.535826288194407,
+          "development_kl": 0.26555247203214094
+        },
+        {
+          "target": 0.3,
+          "candidate": 0.3,
+          "accepted": true,
+          "accepted_alpha": 0.3,
+          "development_loss": 3.536973276361311,
+          "development_kl": 0.49854049854911864
+        },
+        {
+          "target": 0.4,
+          "candidate": 0.4,
+          "accepted": true,
+          "accepted_alpha": 0.4,
+          "development_loss": 3.540118769733581,
+          "development_kl": 0.805279495427385
+        },
+        {
+          "target": 0.5,
+          "candidate": 0.5,
+          "accepted": true,
+          "accepted_alpha": 0.5,
+          "development_loss": 3.545394661337998,
+          "development_kl": 1.197743619326502
+        },
+        {
+          "target": 0.6,
+          "candidate": 0.6,
+          "accepted": true,
+          "accepted_alpha": 0.6,
+          "development_loss": 3.550869701653104,
+          "development_kl": 1.6344266873784363
+        },
+        {
+          "target": 0.7,
+          "candidate": 0.7,
+          "accepted": true,
+          "accepted_alpha": 0.7,
+          "development_loss": 3.557224105771995,
+          "development_kl": 2.153924252372235
+        },
+        {
+          "target": 0.8,
+          "candidate": 0.8,
+          "accepted": true,
+          "accepted_alpha": 0.8,
+          "development_loss": 3.5628693408782413,
+          "development_kl": 2.6855376791208982
+        },
+        {
+          "target": 0.9,
+          "candidate": 0.9,
+          "accepted": true,
+          "accepted_alpha": 0.9,
+          "development_loss": 3.572596952708584,
+          "development_kl": 3.4754098523408175
+        },
+        {
+          "target": 1.0,
+          "candidate": 1.0,
+          "accepted": true,
+          "accepted_alpha": 1.0,
+          "development_loss": 3.5779474460439142,
+          "development_kl": 4.035911275073886
+        }
+      ],
+      "adaptive_layer1_controller": [
+        {
+          "target": 0.1,
+          "candidate": 0.1,
+          "accepted": true,
+          "accepted_alpha": 0.1,
+          "development_loss": 3.579762696236003,
+          "development_kl": 4.142237695865333
+        },
+        {
+          "target": 0.2,
+          "candidate": 0.2,
+          "accepted": true,
+          "accepted_alpha": 0.2,
+          "development_loss": 3.5800266187161496,
+          "development_kl": 4.231548385694623
+        },
+        {
+          "target": 0.3,
+          "candidate": 0.3,
+          "accepted": true,
+          "accepted_alpha": 0.3,
+          "development_loss": 3.5805599758352833,
+          "development_kl": 4.435695620253682
+        },
+        {
+          "target": 0.4,
+          "candidate": 0.4,
+          "accepted": true,
+          "accepted_alpha": 0.4,
+          "development_loss": 3.583743435152623,
+          "development_kl": 4.835059205070138
+        },
+        {
+          "target": 0.5,
+          "candidate": 0.5,
+          "accepted": true,
+          "accepted_alpha": 0.5,
+          "development_loss": 3.5875504243160705,
+          "development_kl": 5.451390793547034
+        },
+        {
+          "target": 0.6,
+          "candidate": 0.6,
+          "accepted": true,
+          "accepted_alpha": 0.6,
+          "development_loss": 3.591062338512898,
+          "development_kl": 6.060199109837413
+        },
+        {
+          "target": 0.7,
+          "candidate": 0.7,
+          "accepted": true,
+          "accepted_alpha": 0.7,
+          "development_loss": 3.599661993685254,
+          "development_kl": 6.669023554772139
+        },
+        {
+          "target": 0.8,
+          "candidate": 0.8,
+          "accepted": true,
+          "accepted_alpha": 0.8,
+          "development_loss": 3.6136465453052127,
+          "development_kl": 7.597820919007063
+        },
+        {
+          "target": 0.9,
+          "candidate": 0.9,
+          "accepted": false,
+          "accepted_alpha": 0.8,
+          "development_loss": 3.624754642030068,
+          "development_kl": 8.564253859221935
+        },
+        {
+          "target": 1.0,
+          "candidate": 1.0,
+          "accepted": false,
+          "accepted_alpha": 0.8,
+          "development_loss": 3.642391580007099,
+          "development_kl": 9.76801336184144
+        }
+      ],
+      "adaptive_final_test_available": false,
+      "ce_alpha_zero_error": 0.0,
+      "value_alpha_zero_error": 0.0,
+      "adaptive_alpha_zero_error": 0.0,
+      "value_layer1_tangent_nmse": 1.066284168511629,
+      "adaptive_layer1_tangent_nmse": 0.9889185531064868
+    },
+    {
+      "seed": 20260845,
+      "teacher_loss": 4.022080637941856,
+      "ce_adapter_test_loss": 4.053201417175438,
+      "value_functional_test_loss": 4.13036302813118,
+      "ce_minus_value_loss": -0.07716161095574225,
+      "adaptive_endpoint_alpha_one": false,
+      "adaptive_layer0_final_alpha": 1.0,
+      "adaptive_layer1_final_alpha": 0.8,
+      "adaptive_layer0_controller": [
+        {
+          "target": 0.1,
+          "candidate": 0.1,
+          "accepted": true,
+          "accepted_alpha": 0.1,
+          "development_loss": 3.537207533929502,
+          "development_kl": 0.07789594295900315
+        },
+        {
+          "target": 0.2,
+          "candidate": 0.2,
+          "accepted": true,
+          "accepted_alpha": 0.2,
+          "development_loss": 3.535902217460958,
+          "development_kl": 0.24463932996150106
+        },
+        {
+          "target": 0.3,
+          "candidate": 0.3,
+          "accepted": true,
+          "accepted_alpha": 0.3,
+          "development_loss": 3.536673371368786,
+          "development_kl": 0.4785875886445865
+        },
+        {
+          "target": 0.4,
+          "candidate": 0.4,
+          "accepted": true,
+          "accepted_alpha": 0.4,
+          "development_loss": 3.539644766050651,
+          "development_kl": 0.80865792860277
+        },
+        {
+          "target": 0.5,
+          "candidate": 0.5,
+          "accepted": true,
+          "accepted_alpha": 0.5,
+          "development_loss": 3.5430175802238706,
+          "development_kl": 1.2168949625920504
+        },
+        {
+          "target": 0.6,
+          "candidate": 0.6,
+          "accepted": true,
+          "accepted_alpha": 0.6,
+          "development_loss": 3.5469220409367073,
+          "development_kl": 1.6615555346943438
+        },
+        {
+          "target": 0.7,
+          "candidate": 0.7,
+          "accepted": true,
+          "accepted_alpha": 0.7,
+          "development_loss": 3.5529195635977935,
+          "development_kl": 2.222260699607432
+        },
+        {
+          "target": 0.8,
+          "candidate": 0.8,
+          "accepted": true,
+          "accepted_alpha": 0.8,
+          "development_loss": 3.5562438387654343,
+          "development_kl": 2.719058256596327
+        },
+        {
+          "target": 0.9,
+          "candidate": 0.9,
+          "accepted": true,
+          "accepted_alpha": 0.9,
+          "development_loss": 3.5667898736924877,
+          "development_kl": 3.5275491643697023
+        },
+        {
+          "target": 1.0,
+          "candidate": 1.0,
+          "accepted": true,
+          "accepted_alpha": 1.0,
+          "development_loss": 3.5713968237623717,
+          "development_kl": 4.0534676210954785
+        }
+      ],
+      "adaptive_layer1_controller": [
+        {
+          "target": 0.1,
+          "candidate": 0.1,
+          "accepted": true,
+          "accepted_alpha": 0.1,
+          "development_loss": 3.5730404545549184,
+          "development_kl": 4.136784300208092
+        },
+        {
+          "target": 0.2,
+          "candidate": 0.2,
+          "accepted": true,
+          "accepted_alpha": 0.2,
+          "development_loss": 3.5741900426977438,
+          "development_kl": 4.251067280769348
+        },
+        {
+          "target": 0.3,
+          "candidate": 0.3,
+          "accepted": true,
+          "accepted_alpha": 0.3,
+          "development_loss": 3.574921407266693,
+          "development_kl": 4.455806270241737
+        },
+        {
+          "target": 0.4,
+          "candidate": 0.4,
+          "accepted": true,
+          "accepted_alpha": 0.4,
+          "development_loss": 3.5771707589885393,
+          "development_kl": 4.806239113211632
+        },
+        {
+          "target": 0.5,
+          "candidate": 0.5,
+          "accepted": true,
+          "accepted_alpha": 0.5,
+          "development_loss": 3.581311200967025,
+          "development_kl": 5.372705351561308
+        },
+        {
+          "target": 0.6,
+          "candidate": 0.6,
+          "accepted": true,
+          "accepted_alpha": 0.6,
+          "development_loss": 3.5848427159914125,
+          "development_kl": 5.943576468154788
+        },
+        {
+          "target": 0.7,
+          "candidate": 0.7,
+          "accepted": true,
+          "accepted_alpha": 0.7,
+          "development_loss": 3.5935264361773758,
+          "development_kl": 6.621742162853479
+        },
+        {
+          "target": 0.8,
+          "candidate": 0.8,
+          "accepted": true,
+          "accepted_alpha": 0.8,
+          "development_loss": 3.607052906671285,
+          "development_kl": 7.590672072023153
+        },
+        {
+          "target": 0.9,
+          "candidate": 0.9,
+          "accepted": false,
+          "accepted_alpha": 0.8,
+          "development_loss": 3.6188907990593364,
+          "development_kl": 8.534109733998775
+        },
+        {
+          "target": 1.0,
+          "candidate": 1.0,
+          "accepted": false,
+          "accepted_alpha": 0.8,
+          "development_loss": 3.6350242793150094,
+          "development_kl": 9.737751115113497
+        }
+      ],
+      "adaptive_final_test_available": false,
+      "ce_alpha_zero_error": 0.0,
+      "value_alpha_zero_error": 0.0,
+      "adaptive_alpha_zero_error": 0.0,
+      "value_layer1_tangent_nmse": 1.074622305110097,
+      "adaptive_layer1_tangent_nmse": 0.9929450871422887
+    }
+  ],
+  "generations": [
+    {
+      "seed": 20260841,
+      "ce_science": "The purpose of scientific research is to advance our understanding of the world around us.\nScientific research is a broad field",
+      "value_science": "The purpose of scientific research is to find out the truth about the world.\nThe scientific method is a systematic approach",
+      "ce_explorer": "Once upon a time, a young explorer discovered a new and interesting place to explore. The place was a small island in the",
+      "value_explorer": "Once upon a time, a young explorer discovered a new world.\nThe first time, a young explorer discovered a new world"
+    },
+    {
+      "seed": 20260842,
+      "ce_science": "The purpose of scientific research is to provide a better understanding of the world around us.\n\nThe scientific method is",
+      "value_science": "The purpose of scientific research is to find out the truth about the world.\nThe scientific method is a systematic approach",
+      "ce_explorer": "Once upon a time, a young explorer discovered the island of the same name, and named it after the king of the island",
+      "value_explorer": "Once upon a time, a young explorer discovered a new land, and the first of the two islands, the island of the"
+    },
+    {
+      "seed": 20260843,
+      "ce_science": "The purpose of scientific research is to advance our understanding of the world around us.\nThe scientific community is a diverse",
+      "value_science": "The purpose of scientific research is to find out the truth about the world.\nThe scientific method is a systematic approach",
+      "ce_explorer": "Once upon a time, a young explorer discovered the island, and the islanders were called the \"Sailers.\"\n",
+      "value_explorer": "Once upon a time, a young explorer discovered a new world, he was not only a child, but a man. He"
+    },
+    {
+      "seed": 20260844,
+      "ce_science": "The purpose of scientific research is to improve the quality of life.\nThe term \" scientific research\" is used to",
+      "value_science": "The purpose of scientific research is to find out the truth about the world.\nThe scientific method is a systematic approach",
+      "ce_explorer": "Once upon a time, a young explorer discovered a new and beautiful island, the island was named after him. The island was",
+      "value_explorer": "Once upon a time, a young explorer discovered a new world.\nThe first time, he was a young explorer.\n"
+    },
+    {
+      "seed": 20260845,
+      "ce_science": "The purpose of scientific research is to advance our knowledge of the world and to improve the quality of life.\nThe",
+      "value_science": "The purpose of scientific research is to find out the truth about the world.\nThe scientific method is a systematic approach",
+      "ce_explorer": "Once upon a time, a young explorer discovered a new world, and a new species of fish, the white-spotted",
+      "value_explorer": "Once upon a time, a young explorer discovered a new world, he was not only a child, but a man. He"
+    }
+  ]
+}
