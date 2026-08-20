@@ -32,7 +32,7 @@ def main():
     
     # 2. Load Tokenizer & Model
     print(f"Loading model {MODEL_ID}...")
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_ID)
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, use_fast=False)
     tokenizer.add_special_tokens({"pad_token": "<pad>"})
     
     model = AutoModelForCausalLM.from_pretrained(
