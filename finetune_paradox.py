@@ -11,7 +11,7 @@ from transformers import (
 from datasets import Dataset
 
 # ── Configuration ────────────────────────────────────────────
-MODEL_ID = "openlm-research/open_llama_3b_v2"
+MODEL_ID = "stabilityai/stablelm-3b-4e1t"
 DATA_PATH = "adam_alpaca.parquet"
 OUTPUT_DIR = "./adam-finetuned"
 
@@ -32,7 +32,7 @@ def main():
     
     # 2. Load Tokenizer & Model
     print(f"Loading model {MODEL_ID}...")
-    tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, use_fast=False)
+    tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, trust_remote_code=True)
     tokenizer.add_special_tokens({"pad_token": "<pad>"})
     
     model = AutoModelForCausalLM.from_pretrained(
