@@ -1,0 +1,74 @@
+name: Upload completed model artifact to Hugging Face
+
+on:
+  workflow_dispatch:
+    inputs:
+      hf_repo_id:
+        description: 'Hugging Face model repository, for example username/adam-3b'
+        required: true
+        type: string
+      source_run_id:
+        description: 'Completed GitHub Actions run ID containing adam-finetuned-model'
+        required: true
+        default: '32336290713'
+        type: string
+      hf_private:
+        description: 'Create/use a private Hugging Face repository'
+        required: true
+        default: false
+        type: boolean
+
+jobs:
+  upload:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    env:
+      HF_REPO_ID: ${{ inputs.hf_repo_id }}
+      SOURCE_RUN_ID: ${{ inputs.source_run_id }}
+
+    steps:
+      - name: Download completed GitHub artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/model-artifact
+          gh run download "$SOURCE_RUN_ID" \
+            --repo "${{ github.repository }}" \
+            --name adam-finetuned-model \
+            --dir /tmp/model-artifact
+          echo "Downloaded artifact contents:"
+          find /tmp/model-artifact -maxdepth 2 -type f -printf '%p %s bytes\n'
+
+      - name: Install Hugging Face Hub client
+        run: python -m pip install --upgrade huggingface_hub
+
+      - name: Create or update Hugging Face repository
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_PRIVATE: ${{ inputs.hf_private }}
+        run: |
+          test -n "$HF_TOKEN" || { echo 'Missing HF_TOKEN repository secret'; exit 1; }
+          python - <<'PY'
+          import os
+          from huggingface_hub import HfApi
+
+          api = HfApi(token=os.environ["HF_TOKEN"])
+          api.create_repo(
+              repo_id=os.environ["HF_REPO_ID"],
+              repo_type="model",
+              private=os.environ["HF_PRIVATE"].lower() == "true",
+              exist_ok=True,
+          )
+          print("Hugging Face repository is ready:", os.environ["HF_REPO_ID"])
+          PY
+
+      - name: Upload model files to Hugging Face
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          hf upload "$HF_REPO_ID" /tmp/model-artifact \
+            --repo-type model \
+            --commit-message "Upload completed Adam 3B finetuned model from GitHub Actions"
+          echo "Uploaded to https://huggingface.co/$HF_REPO_ID"
