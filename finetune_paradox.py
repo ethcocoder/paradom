@@ -6,6 +6,8 @@ split, and restores the best checkpoint to reduce memorization.
 
 import os
 
+# This project intentionally runs CPU-only in GitHub Actions and Colab.
+
 import pandas as pd
 import torch
 from datasets import Dataset
@@ -25,6 +27,7 @@ DATA_PATH = os.getenv("DATA_PATH", "adam_alpaca.parquet")
 OUTPUT_DIR = os.getenv("OUTPUT_DIR", "./adam-tinyllama-qlora")
 MAX_LENGTH = int(os.getenv("MAX_LENGTH", "512"))
 EPOCHS = float(os.getenv("EPOCHS", "3"))
+CPU_THREADS = int(os.getenv("CPU_THREADS", str(os.cpu_count() or 1)))
 
 
 def conversation(example):
@@ -76,10 +79,9 @@ class EvaluationMonitor(TrainerCallback):
 
 
 def main():
-    use_cuda = torch.cuda.is_available()
-    print(f"Device mode: {'CUDA full-precision LoRA' if use_cuda else 'CPU full-precision LoRA'}")
-    if not use_cuda:
-        print("WARNING: CPU fallback is much slower and needs substantial RAM; use a GPU for the full run.")
+    torch.set_num_threads(CPU_THREADS)
+    torch.set_num_interop_threads(max(1, min(4, CPU_THREADS)))
+    print(f"Device mode: CPU full-precision LoRA using {CPU_THREADS} PyTorch threads")
 
     print(f"Loading reviewed Parquet data from {DATA_PATH}...")
     dataframe = pd.read_parquet(DATA_PATH)
@@ -92,19 +94,13 @@ def main():
     print(f"Train examples: {len(split['train'])}; validation examples: {len(split['test'])}")
 
     print(f"Loading base model {MODEL_ID}...")
-    compute_dtype = (
-        torch.bfloat16 if use_cuda and torch.cuda.is_bf16_supported()
-        else torch.float16 if use_cuda
-        else torch.float32
-    )
+    compute_dtype = torch.float32
     tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, use_fast=True)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "right"
 
-    model_kwargs = {"torch_dtype": compute_dtype}
-    if use_cuda:
-        model_kwargs["device_map"] = {"": 0}
+    model_kwargs = {"torch_dtype": compute_dtype, "device_map": {"": "cpu"}}
     model = AutoModelForCausalLM.from_pretrained(MODEL_ID, **model_kwargs)
     model.config.use_cache = False
     model = get_peft_model(
@@ -127,7 +123,7 @@ def main():
         desc="Formatting response-only chat examples",
     )
 
-    use_bf16 = compute_dtype == torch.bfloat16
+    use_bf16 = False
     training_args = TrainingArguments(
         output_dir=OUTPUT_DIR,
         per_device_train_batch_size=2,
@@ -148,10 +144,11 @@ def main():
         load_best_model_at_end=True,
         metric_for_best_model="eval_loss",
         greater_is_better=False,
-        fp16=not use_bf16,
-        bf16=use_bf16,
+        fp16=False,
+        bf16=False,
         optim="adamw_torch",
-        gradient_checkpointing=use_cuda,
+        no_cuda=True,
+        gradient_checkpointing=True,
         report_to="none",
         remove_unused_columns=False,
     )

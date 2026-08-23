@@ -2,15 +2,9 @@
 
 This guide trains an **Adam** adapter on `TinyLlama/TinyLlama-1.1B-Chat-v1.0`. The base model is approximately 1.1B parameters and is trained with **full-precision LoRA**. The output is a small LoRA adapter, while the base model remains unchanged.
 
-## 1. Create a GPU notebook
+## 1. Create a CPU notebook
 
-Open [Google Colab](https://colab.research.google.com/), create a new notebook, then choose **Runtime → Change runtime type → T4 GPU**. Confirm the GPU before training:
-
-```python
-!nvidia-smi
-```
-
-The script automatically uses CUDA when available and falls back to CPU. A GPU is strongly recommended because full-precision CPU training is slow and memory-intensive.
+Open [Google Colab](https://colab.research.google.com/) and create a new notebook. Keep the runtime on **CPU**; this project intentionally does not check for or use CUDA. The full-precision 1.1B model is memory-intensive, so use a runtime with as much RAM and CPU capacity as available.
 
 ## 2. Clone the `v3` branch
 
@@ -54,11 +48,11 @@ The expected columns are `instruction`, `input`, `output`, `category`, and `qual
 
 ## 5. Run a short smoke test first
 
-Run one epoch to confirm that the device selection, PEFT, tokenizer, chat template, Parquet loader, validation, and response-only labels work:
+Run one epoch to confirm CPU execution, PEFT, tokenizer, chat template, Parquet loading, validation, and response-only labels:
 
 ```python
 %cd /content/paradom
-!EPOCHS=1 OUTPUT_DIR=./adam-smoke-test python finetune_paradox.py
+!CUDA_VISIBLE_DEVICES='' CPU_THREADS=$(nproc) EPOCHS=1 OUTPUT_DIR=./adam-smoke-test python finetune_paradox.py
 ```
 
 You should see a trainable-parameter report and a successful save under `adam-smoke-test`. The base model is loaded in full precision, while only LoRA parameters are updated.
@@ -69,7 +63,7 @@ For the configured run, use a maximum of three epochs. The script evaluates ever
 
 ```python
 %cd /content/paradom
-!EPOCHS=3 OUTPUT_DIR=./adam-tinyllama-qlora python finetune_paradox.py
+!CUDA_VISIBLE_DEVICES='' CPU_THREADS=$(nproc) EPOCHS=3 OUTPUT_DIR=./adam-tinyllama-qlora python finetune_paradox.py
 ```
 
 The script uses `warmup_steps=2`, a held-out validation split, response-only labels, and early stopping to reduce memorization. The output directory contains the LoRA adapter and tokenizer, not the full base model. Keep the runtime connected until the final save completes.
@@ -78,7 +72,7 @@ To stop after confirming that training is operating correctly, interrupt the cel
 
 ```python
 %cd /content/paradom
-!EPOCHS=3 OUTPUT_DIR=./adam-tinyllama-qlora python finetune_paradox.py
+!CUDA_VISIBLE_DEVICES='' CPU_THREADS=$(nproc) EPOCHS=3 OUTPUT_DIR=./adam-tinyllama-qlora python finetune_paradox.py
 ```
 
 ## 7. Test Adam in Colab
@@ -86,6 +80,7 @@ To stop after confirming that training is operating correctly, interrupt the cel
 Create and run this test cell. It loads the base model in full precision and applies the trained LoRA adapter:
 
 ```python
+import os
 import torch
 from transformers import AutoModelForCausalLM, AutoTokenizer
 from peft import PeftModel
@@ -93,18 +88,17 @@ from peft import PeftModel
 BASE_MODEL = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
 ADAPTER = "/content/paradom/adam-tinyllama-qlora"
 
-use_cuda = torch.cuda.is_available()
-dtype = (
-    torch.bfloat16 if use_cuda and torch.cuda.is_bf16_supported()
-    else torch.float16 if use_cuda
-    else torch.float32
-)
+CPU_THREADS = os.cpu_count() or 1
+torch.set_num_threads(CPU_THREADS)
+torch.set_num_interop_threads(max(1, min(4, CPU_THREADS)))
+dtype = torch.float32
 
 tokenizer = AutoTokenizer.from_pretrained(ADAPTER)
-model_kwargs = {"torch_dtype": dtype}
-if use_cuda:
-    model_kwargs["device_map"] = "auto"
-base = AutoModelForCausalLM.from_pretrained(BASE_MODEL, **model_kwargs)
+base = AutoModelForCausalLM.from_pretrained(
+    BASE_MODEL,
+    torch_dtype=dtype,
+    device_map={"": "cpu"},
+)
 model = PeftModel.from_pretrained(base, ADAPTER)
 model.eval()
 
@@ -143,7 +137,7 @@ Merging creates a larger standalone model and requires substantially more memory
 
 ## 10. Common errors
 
-If the script reports that CUDA is unavailable, it will use the CPU fallback; selecting a GPU runtime is recommended. If the model is out of memory, reduce `MAX_LENGTH` to 256 and change `per_device_train_batch_size` from 2 to 1 in `finetune_paradox.py`.
+The workflow and scripts are CPU-only and do not verify CUDA. They use all available CPU threads by default. If the model is out of memory, reduce `MAX_LENGTH` to 256 and change `per_device_train_batch_size` from 2 to 1 in `finetune_paradox.py`. You can cap threads with `CPU_THREADS=4`.
 
 If validation loss stops improving or responses become repetitive, use the best saved checkpoint, reduce epochs or learning rate, and add more varied reviewed examples. Validation loss and early stopping are the primary overfitting controls.
 
