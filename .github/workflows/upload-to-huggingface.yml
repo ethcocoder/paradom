@@ -4,13 +4,13 @@ on:
   workflow_dispatch:
     inputs:
       hf_repo_id:
-        description: 'Hugging Face model repository, for example username/adam-3b'
+        description: 'Hugging Face model repository, for example username/adam'
         required: true
         type: string
       source_run_id:
-        description: 'Completed GitHub Actions run ID containing adam-finetuned-model'
+        description: 'Completed GitHub Actions run ID containing the Adam TinyLlama artifact'
         required: true
-        default: '32336290713'
+        default: '32646837474'
         type: string
       hf_private:
         description: 'Create/use a private Hugging Face repository'
@@ -36,7 +36,7 @@ jobs:
           mkdir -p /tmp/model-artifact
           gh run download "$SOURCE_RUN_ID" \
             --repo "${{ github.repository }}" \
-            --name adam-finetuned-model \
+            --name adam-tinyllama-qlora-reviewed \
             --dir /tmp/model-artifact
           echo "Downloaded artifact contents:"
           find /tmp/model-artifact -maxdepth 2 -type f -printf '%p %s bytes\n'
@@ -70,5 +70,5 @@ jobs:
         run: |
           hf upload "$HF_REPO_ID" /tmp/model-artifact \
             --repo-type model \
-            --commit-message "Upload completed Adam 3B finetuned model from GitHub Actions"
+            --commit-message "Upload completed Adam TinyLlama 1.1B LoRA model from GitHub Actions"
           echo "Uploaded to https://huggingface.co/$HF_REPO_ID"
