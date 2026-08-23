@@ -77,11 +77,10 @@ class EvaluationMonitor(TrainerCallback):
 
 
 def main():
-    if not torch.cuda.is_available():
-        raise RuntimeError(
-            "This 4-bit QLoRA configuration requires a CUDA GPU. "
-            "Select a T4/L4 GPU in Colab."
-        )
+    use_cuda = torch.cuda.is_available()
+    print(f"Device mode: {'CUDA 4-bit QLoRA' if use_cuda else 'CPU LoRA fallback'}")
+    if not use_cuda:
+        print("WARNING: CPU fallback is much slower and needs substantial RAM; use a GPU for the full run.")
 
     print(f"Loading reviewed Parquet data from {DATA_PATH}...")
     dataframe = pd.read_parquet(DATA_PATH)
@@ -93,8 +92,8 @@ def main():
     split = dataset.train_test_split(test_size=0.2, seed=42)
     print(f"Train examples: {len(split['train'])}; validation examples: {len(split['test'])}")
 
-    print(f"Loading 4-bit base model {MODEL_ID}...")
-    compute_dtype = torch.bfloat16 if torch.cuda.is_bf16_supported() else torch.float16
+    print(f"Loading base model {MODEL_ID}...")
+    compute_dtype = torch.bfloat16 if use_cuda and torch.cuda.is_bf16_supported() else torch.float16
     quantization_config = BitsAndBytesConfig(
         load_in_4bit=True,
         bnb_4bit_quant_type="nf4",
@@ -106,14 +105,13 @@ def main():
         tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "right"
 
-    model = AutoModelForCausalLM.from_pretrained(
-        MODEL_ID,
-        quantization_config=quantization_config,
-        device_map={"": 0},
-        torch_dtype=compute_dtype,
-    )
+    model_kwargs = {"torch_dtype": compute_dtype if use_cuda else torch.float32}
+    if use_cuda:
+        model_kwargs.update(quantization_config=quantization_config, device_map={"": 0})
+    model = AutoModelForCausalLM.from_pretrained(MODEL_ID, **model_kwargs)
     model.config.use_cache = False
-    model = prepare_model_for_kbit_training(model)
+    if use_cuda:
+        model = prepare_model_for_kbit_training(model)
     model = get_peft_model(
         model,
         LoraConfig(
@@ -157,8 +155,8 @@ def main():
         greater_is_better=False,
         fp16=not use_bf16,
         bf16=use_bf16,
-        optim="paged_adamw_8bit",
-        gradient_checkpointing=True,
+        optim="paged_adamw_8bit" if use_cuda else "adamw_torch",
+        gradient_checkpointing=use_cuda,
         report_to="none",
         remove_unused_columns=False,
     )
@@ -179,7 +177,7 @@ def main():
         callbacks=[EvaluationMonitor(), EarlyStoppingCallback(early_stopping_patience=3)],
     )
 
-    print("Starting conservative 1.1B response-only QLoRA training...")
+    print("Starting conservative 1.1B response-only training...")
     trainer.train()
     metrics = trainer.evaluate()
     print(f"Final validation loss: {metrics.get('eval_loss')}")
