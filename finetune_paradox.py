@@ -123,7 +123,7 @@ def main():
         gradient_accumulation_steps=4,
         learning_rate=2e-4,
         max_steps=MAX_STEPS,
-        warmup_ratio=0.03,
+        warmup_steps=50,
         lr_scheduler_type="cosine",
         logging_steps=10,
         save_steps=500,

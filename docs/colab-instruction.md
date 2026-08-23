@@ -72,7 +72,7 @@ For the configured run, use 2,100 steps. The callback prints monitoring messages
 !MAX_STEPS=2100 OUTPUT_DIR=./adam-tinyllama-qlora python finetune_paradox.py
 ```
 
-The output directory contains the LoRA adapter and tokenizer. It does **not** contain the full base model. Keep the runtime connected until the final save completes.
+The script uses `warmup_steps=50` for compatibility across Colab Transformers versions. The output directory contains the LoRA adapter and tokenizer. It does **not** contain the full base model. Keep the runtime connected until the final save completes.
 
 To stop after confirming that training is operating correctly, interrupt the cell. A checkpoint is saved every 500 steps, so resume from the most recent checkpoint with:
 
