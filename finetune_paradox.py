@@ -147,7 +147,7 @@ def main():
         fp16=False,
         bf16=False,
         optim="adamw_torch",
-        no_cuda=True,
+        use_cpu=True,
         gradient_checkpointing=True,
         report_to="none",
         remove_unused_columns=False,
