@@ -1,0 +1,60 @@
+name: Deploy Adam chat Space
+
+on:
+  workflow_dispatch:
+    inputs:
+      space_id:
+        description: 'Hugging Face Space ID, for example paradoxquantum/adam-chat'
+        required: true
+        default: 'paradoxquantum/adam-chat'
+        type: string
+      private:
+        description: 'Create or keep the Space private'
+        required: true
+        default: false
+        type: boolean
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    env:
+      SPACE_ID: ${{ inputs.space_id }}
+      SPACE_PRIVATE: ${{ inputs.private }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: v3
+
+      - name: Install Hugging Face Hub
+        run: python -m pip install --upgrade huggingface_hub
+
+      - name: Create or update Gradio Space
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+        run: |
+          test -n "$HF_TOKEN" || { echo 'Missing HF_TOKEN repository secret'; exit 1; }
+          test -d space/adam-chat || { echo 'Missing Space files'; exit 1; }
+          python - <<'PY'
+          import os
+          from huggingface_hub import HfApi
+
+          api = HfApi(token=os.environ["HF_TOKEN"])
+          api.create_repo(
+              repo_id=os.environ["SPACE_ID"],
+              repo_type="space",
+              space_sdk="gradio",
+              private=os.environ["SPACE_PRIVATE"].lower() == "true",
+              exist_ok=True,
+          )
+          api.upload_folder(
+              folder_path="space/adam-chat",
+              repo_id=os.environ["SPACE_ID"],
+              repo_type="space",
+              commit_message="Deploy Adam Gradio chat app",
+          )
+          print("Space deployed:", "https://huggingface.co/spaces/" + os.environ["SPACE_ID"])
+          PY
