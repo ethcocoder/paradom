@@ -1,4 +1,4 @@
-"""Conservative 4-bit QLoRA finetuning for the Adam assistant.
+"""Conservative full-precision LoRA finetuning for the Adam assistant.
 
 This script trains only the assistant response tokens, evaluates on a held-out
 split, and restores the best checkpoint to reduce memorization.
@@ -9,11 +9,10 @@ import os
 import pandas as pd
 import torch
 from datasets import Dataset
-from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
+from peft import LoraConfig, get_peft_model
 from transformers import (
     AutoModelForCausalLM,
     AutoTokenizer,
-    BitsAndBytesConfig,
     DataCollatorForSeq2Seq,
     EarlyStoppingCallback,
     Trainer,
@@ -78,7 +77,7 @@ class EvaluationMonitor(TrainerCallback):
 
 def main():
     use_cuda = torch.cuda.is_available()
-    print(f"Device mode: {'CUDA 4-bit QLoRA' if use_cuda else 'CPU LoRA fallback'}")
+    print(f"Device mode: {'CUDA full-precision LoRA' if use_cuda else 'CPU full-precision LoRA'}")
     if not use_cuda:
         print("WARNING: CPU fallback is much slower and needs substantial RAM; use a GPU for the full run.")
 
@@ -93,25 +92,21 @@ def main():
     print(f"Train examples: {len(split['train'])}; validation examples: {len(split['test'])}")
 
     print(f"Loading base model {MODEL_ID}...")
-    compute_dtype = torch.bfloat16 if use_cuda and torch.cuda.is_bf16_supported() else torch.float16
-    quantization_config = BitsAndBytesConfig(
-        load_in_4bit=True,
-        bnb_4bit_quant_type="nf4",
-        bnb_4bit_use_double_quant=True,
-        bnb_4bit_compute_dtype=compute_dtype,
+    compute_dtype = (
+        torch.bfloat16 if use_cuda and torch.cuda.is_bf16_supported()
+        else torch.float16 if use_cuda
+        else torch.float32
     )
     tokenizer = AutoTokenizer.from_pretrained(MODEL_ID, use_fast=True)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
     tokenizer.padding_side = "right"
 
-    model_kwargs = {"torch_dtype": compute_dtype if use_cuda else torch.float32}
+    model_kwargs = {"torch_dtype": compute_dtype}
     if use_cuda:
-        model_kwargs.update(quantization_config=quantization_config, device_map={"": 0})
+        model_kwargs["device_map"] = {"": 0}
     model = AutoModelForCausalLM.from_pretrained(MODEL_ID, **model_kwargs)
     model.config.use_cache = False
-    if use_cuda:
-        model = prepare_model_for_kbit_training(model)
     model = get_peft_model(
         model,
         LoraConfig(
@@ -155,7 +150,7 @@ def main():
         greater_is_better=False,
         fp16=not use_bf16,
         bf16=use_bf16,
-        optim="paged_adamw_8bit" if use_cuda else "adamw_torch",
+        optim="adamw_torch",
         gradient_checkpointing=use_cuda,
         report_to="none",
         remove_unused_columns=False,

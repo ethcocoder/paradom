@@ -1,6 +1,6 @@
-# Google Colab: Adam 1.1B 4-bit QLoRA Finetuning
+# Google Colab: Adam 1.1B Full-Precision LoRA Finetuning
 
-This guide trains an **Adam** adapter on `TinyLlama/TinyLlama-1.1B-Chat-v1.0`. The base model is approximately 1.1B parameters and is loaded in **4-bit NF4** using QLoRA. The output is a small LoRA adapter, not a 4GB copy of the complete base model.
+This guide trains an **Adam** adapter on `TinyLlama/TinyLlama-1.1B-Chat-v1.0`. The base model is approximately 1.1B parameters and is trained with **full-precision LoRA**. The output is a small LoRA adapter, while the base model remains unchanged.
 
 ## 1. Create a GPU notebook
 
@@ -10,7 +10,7 @@ Open [Google Colab](https://colab.research.google.com/), create a new notebook, 
 !nvidia-smi
 ```
 
-The 4-bit training script intentionally stops with an error if CUDA is unavailable.
+The script automatically uses CUDA when available and falls back to CPU. A GPU is strongly recommended because full-precision CPU training is slow and memory-intensive.
 
 ## 2. Clone the `v3` branch
 
@@ -27,7 +27,7 @@ Run this cell:
 ## 3. Install the training dependencies
 
 ```python
-!pip install -U "transformers>=4.45" "datasets>=2.20" "accelerate>=1.1" peft bitsandbytes pandas pyarrow sentencepiece safetensors
+!pip install -U "transformers>=4.45" "datasets>=2.20" "accelerate>=1.1" peft pandas pyarrow sentencepiece safetensors
 ```
 
 After installation, restart the runtime only if Colab requests it. If you restart, rerun the clone cell and return to `/content/paradom`.
@@ -54,14 +54,14 @@ The expected columns are `instruction`, `input`, `output`, `category`, and `qual
 
 ## 5. Run a short smoke test first
 
-Run one epoch to confirm that CUDA, bitsandbytes, PEFT, the tokenizer, the chat template, the Parquet loader, validation, and response-only labels work:
+Run one epoch to confirm that the device selection, PEFT, tokenizer, chat template, Parquet loader, validation, and response-only labels work:
 
 ```python
 %cd /content/paradom
 !EPOCHS=1 OUTPUT_DIR=./adam-smoke-test python finetune_paradox.py
 ```
 
-You should see a trainable-parameter report and a successful save under `adam-smoke-test`. The model is loaded in 4-bit, while only LoRA parameters are updated.
+You should see a trainable-parameter report and a successful save under `adam-smoke-test`. The base model is loaded in full precision, while only LoRA parameters are updated.
 
 ## 6. Run the actual training
 
@@ -83,31 +83,28 @@ To stop after confirming that training is operating correctly, interrupt the cel
 
 ## 7. Test Adam in Colab
 
-Create and run this test cell. It loads the base model in 4-bit and applies the trained LoRA adapter:
+Create and run this test cell. It loads the base model in full precision and applies the trained LoRA adapter:
 
 ```python
 import torch
-from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+from transformers import AutoModelForCausalLM, AutoTokenizer
 from peft import PeftModel
 
 BASE_MODEL = "TinyLlama/TinyLlama-1.1B-Chat-v1.0"
 ADAPTER = "/content/paradom/adam-tinyllama-qlora"
 
-dtype = torch.bfloat16 if torch.cuda.is_bf16_supported() else torch.float16
-quant_config = BitsAndBytesConfig(
-    load_in_4bit=True,
-    bnb_4bit_quant_type="nf4",
-    bnb_4bit_use_double_quant=True,
-    bnb_4bit_compute_dtype=dtype,
+use_cuda = torch.cuda.is_available()
+dtype = (
+    torch.bfloat16 if use_cuda and torch.cuda.is_bf16_supported()
+    else torch.float16 if use_cuda
+    else torch.float32
 )
 
 tokenizer = AutoTokenizer.from_pretrained(ADAPTER)
-base = AutoModelForCausalLM.from_pretrained(
-    BASE_MODEL,
-    quantization_config=quant_config,
-    device_map="auto",
-    torch_dtype=dtype,
-)
+model_kwargs = {"torch_dtype": dtype}
+if use_cuda:
+    model_kwargs["device_map"] = "auto"
+base = AutoModelForCausalLM.from_pretrained(BASE_MODEL, **model_kwargs)
 model = PeftModel.from_pretrained(base, ADAPTER)
 model.eval()
 
@@ -142,11 +139,11 @@ To run it later, keep the base model ID unchanged and place the downloaded adapt
 
 ## 9. Optional: merge the adapter
 
-Merging creates a larger standalone model and requires substantially more memory. For an 8GB machine, keep the adapter separate and use 4-bit loading instead. The adapter format is the recommended result for this project.
+Merging creates a larger standalone model and requires substantially more memory. For an 8GB machine, keep the adapter separate. Full-precision loading may require more than 8GB once training or generation overhead is included.
 
 ## 10. Common errors
 
-If the script reports that CUDA is unavailable, select a GPU runtime and rerun `!nvidia-smi`. If `bitsandbytes` reports a CUDA problem, restart the Colab runtime and reinstall the packages. If the model is out of memory, reduce `MAX_LENGTH` to 256 and change `per_device_train_batch_size` from 2 to 1 in `finetune_paradox.py`.
+If the script reports that CUDA is unavailable, it will use the CPU fallback; selecting a GPU runtime is recommended. If the model is out of memory, reduce `MAX_LENGTH` to 256 and change `per_device_train_batch_size` from 2 to 1 in `finetune_paradox.py`.
 
 If validation loss stops improving or responses become repetitive, use the best saved checkpoint, reduce epochs or learning rate, and add more varied reviewed examples. Validation loss and early stopping are the primary overfitting controls.
 
@@ -154,7 +151,7 @@ If validation loss stops improving or responses become repetitive, use the best 
 
 | File | Purpose |
 |---|---|
-| `finetune_paradox.py` | TinyLlama 1.1B, 4-bit NF4 QLoRA, response-only labels, validation, and early stopping |
+| `finetune_paradox.py` | TinyLlama 1.1B, full-precision LoRA, response-only labels, validation, and early stopping |
 | `create_dataset.py` | Generates the Adam Alpaca-format Parquet dataset |
 | `docs/colab-instruction.md` | This complete Colab procedure |
 | `.github/workflows/finetune.yml` | Automated workflow dependency updates and artifact upload |
