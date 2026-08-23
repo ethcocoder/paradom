@@ -50,35 +50,35 @@ print(frame.columns.tolist())
 print(frame.head(3).to_string(index=False))
 ```
 
-The expected columns are `instruction`, `output`, and `input`. The current sample dataset contains 35 examples. For serious training, expand and split the data into training and validation sets; a tiny dataset can cause memorization.
+The expected columns are `instruction`, `input`, `output`, `category`, and `quality`. The reviewed builder creates 47 unique examples across 10 categories. The training script creates a deterministic 80/20 validation split; expand the dataset further for production use.
 
 ## 5. Run a short smoke test first
 
-Run 10 steps to confirm that CUDA, bitsandbytes, PEFT, the tokenizer, and the Parquet loader work:
+Run one epoch to confirm that CUDA, bitsandbytes, PEFT, the tokenizer, the chat template, the Parquet loader, validation, and response-only labels work:
 
 ```python
 %cd /content/paradom
-!MAX_STEPS=10 OUTPUT_DIR=./adam-smoke-test python finetune_paradox.py
+!EPOCHS=1 OUTPUT_DIR=./adam-smoke-test python finetune_paradox.py
 ```
 
 You should see a trainable-parameter report and a successful save under `adam-smoke-test`. The model is loaded in 4-bit, while only LoRA parameters are updated.
 
 ## 6. Run the actual training
 
-For the configured run, use 2,100 steps. The callback prints monitoring messages every 100 logged steps from steps 1300 through 2000:
+For the configured run, use a maximum of three epochs. The script evaluates every five steps, keeps the best validation checkpoint, and stops after three evaluations without improvement:
 
 ```python
 %cd /content/paradom
-!MAX_STEPS=2100 OUTPUT_DIR=./adam-tinyllama-qlora python finetune_paradox.py
+!EPOCHS=3 OUTPUT_DIR=./adam-tinyllama-qlora python finetune_paradox.py
 ```
 
-The script uses `warmup_steps=50` for compatibility across Colab Transformers versions. The output directory contains the LoRA adapter and tokenizer. It does **not** contain the full base model. Keep the runtime connected until the final save completes.
+The script uses `warmup_steps=2`, a held-out validation split, response-only labels, and early stopping to reduce memorization. The output directory contains the LoRA adapter and tokenizer, not the full base model. Keep the runtime connected until the final save completes.
 
-To stop after confirming that training is operating correctly, interrupt the cell. A checkpoint is saved every 500 steps, so resume from the most recent checkpoint with:
+To stop after confirming that training is operating correctly, interrupt the cell. Checkpoints are saved every five evaluation steps, and only the two newest are retained. Resume from the most recent checkpoint when needed with:
 
 ```python
 %cd /content/paradom
-!MAX_STEPS=2100 OUTPUT_DIR=./adam-tinyllama-qlora python finetune_paradox.py
+!EPOCHS=3 OUTPUT_DIR=./adam-tinyllama-qlora python finetune_paradox.py
 ```
 
 ## 7. Test Adam in Colab
@@ -126,7 +126,7 @@ for question in questions:
     print(f"Q: {question}\nA: {answer.strip()}\n")
 ```
 
-The expected identity answer should mention **Adam**, but a very small dataset cannot guarantee perfect behavior on every prompt. Evaluate the model on questions that were not included in the training examples.
+The expected identity answer should mention **Adam**. Also test unseen prompts, because low training loss alone does not prove generalization.
 
 ## 8. Download the adapter
 
@@ -148,13 +148,13 @@ Merging creates a larger standalone model and requires substantially more memory
 
 If the script reports that CUDA is unavailable, select a GPU runtime and rerun `!nvidia-smi`. If `bitsandbytes` reports a CUDA problem, restart the Colab runtime and reinstall the packages. If the model is out of memory, reduce `MAX_LENGTH` to 256 and change `per_device_train_batch_size` from 2 to 1 in `finetune_paradox.py`.
 
-If training loss becomes extremely low while responses degrade, stop earlier and add more varied examples. The 1300–2000 monitor is a diagnostic aid; it is not a substitute for validation data or early stopping.
+If validation loss stops improving or responses become repetitive, use the best saved checkpoint, reduce epochs or learning rate, and add more varied reviewed examples. Validation loss and early stopping are the primary overfitting controls.
 
 ## Files changed in `v3`
 
 | File | Purpose |
 |---|---|
-| `finetune_paradox.py` | TinyLlama 1.1B, 4-bit NF4 loading, LoRA training, and 1300–2000 monitoring |
+| `finetune_paradox.py` | TinyLlama 1.1B, 4-bit NF4 QLoRA, response-only labels, validation, and early stopping |
 | `create_dataset.py` | Generates the Adam Alpaca-format Parquet dataset |
 | `docs/colab-instruction.md` | This complete Colab procedure |
 | `.github/workflows/finetune.yml` | Automated workflow dependency updates and artifact upload |
