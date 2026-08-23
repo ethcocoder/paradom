@@ -141,7 +141,7 @@ def main():
         model=model,
         args=training_args,
         train_dataset=tokenized,
-        tokenizer=tokenizer,
+        processing_class=tokenizer,
         data_collator=DataCollatorForLanguageModeling(tokenizer, mlm=False),
         callbacks=[RangeMonitorCallback()],
     )
