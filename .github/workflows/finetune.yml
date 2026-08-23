@@ -10,15 +10,14 @@ on:
         default: '3'
         type: string
       runner_label:
-        description: 'Runner label; the script auto-selects CUDA or CPU full-precision LoRA'
+        description: 'Runner label for a CPU runner'
         required: false
         default: 'ubuntu-latest'
         type: string
 
 jobs:
   finetune:
-    # Use a larger runner with GPU support (requires Team/Enterprise or paid runner minutes)
-    # Adjust runner label based on your organization's configured GPU runner (e.g., ubuntu-22.04-16core or custom GPU runner)
+    # CPU-only training; choose a runner with sufficient RAM and CPU cores.
     runs-on: ${{ inputs.runner_label }}
 
     steps:
@@ -33,26 +32,20 @@ jobs:
           python-version: '3.10'
           cache: 'pip'
 
-      - name: Detect available device
-        run: |
-          if command -v nvidia-smi >/dev/null; then
-            echo 'NVIDIA GPU detected'
-            nvidia-smi
-          else
-            echo 'No NVIDIA GPU detected; training script will use its CPU fallback.'
-          fi
-
       - name: Install Dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
+          pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
           pip install "transformers>=4.45" "datasets>=2.20" "accelerate>=1.1" peft pandas pyarrow sentencepiece safetensors
 
       - name: Generate Dataset
         run: |
           python3 create_dataset.py
 
-      - name: Run Finetuning
+      - name: Configure CPU threads
+        run: echo "CPU_THREADS=$(nproc)" >> "$GITHUB_ENV"
+
+      - name: Run CPU-only Finetuning
         env:
           EPOCHS: ${{ inputs.epochs }}
           OUTPUT_DIR: ./adam-tinyllama-qlora

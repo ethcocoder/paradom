@@ -6,6 +6,8 @@ and tokenizer files. The TinyLlama base model is downloaded separately from Hugg
 
 import os
 
+# Keep inference CPU-only to match the training workflow.
+
 import torch
 from peft import PeftModel
 from transformers import AutoModelForCausalLM, AutoTokenizer
@@ -14,6 +16,7 @@ BASE_MODEL = os.getenv("BASE_MODEL", "TinyLlama/TinyLlama-1.1B-Chat-v1.0")
 ADAPTER_PATH = os.getenv("ADAPTER_PATH", "/content/paradom/adam-tinyllama-qlora")
 MAX_NEW_TOKENS = int(os.getenv("MAX_NEW_TOKENS", "160"))
 MAX_CONTEXT_TOKENS = int(os.getenv("MAX_CONTEXT_TOKENS", "1536"))
+CPU_THREADS = int(os.getenv("CPU_THREADS", str(os.cpu_count() or 1)))
 
 
 def load_adam():
@@ -30,13 +33,10 @@ def load_adam():
             "This folder may not be the completed LoRA output."
         )
 
-    use_cuda = torch.cuda.is_available()
-    compute_dtype = (
-        torch.bfloat16 if use_cuda and torch.cuda.is_bf16_supported()
-        else torch.float16 if use_cuda
-        else torch.float32
-    )
-    print(f"Device mode: {'CUDA' if use_cuda else 'CPU'} full-precision LoRA")
+    torch.set_num_threads(CPU_THREADS)
+    torch.set_num_interop_threads(max(1, min(4, CPU_THREADS)))
+    compute_dtype = torch.float32
+    print(f"Device mode: CPU full-precision LoRA using {CPU_THREADS} PyTorch threads")
 
     print(f"Loading tokenizer from {ADAPTER_PATH}...")
     tokenizer = AutoTokenizer.from_pretrained(ADAPTER_PATH)
@@ -44,12 +44,8 @@ def load_adam():
         tokenizer.pad_token = tokenizer.eos_token
 
     print(f"Loading full-precision base model {BASE_MODEL}...")
-    model_kwargs = {"torch_dtype": compute_dtype}
-    if use_cuda:
-        model_kwargs["device_map"] = "auto"
+    model_kwargs = {"torch_dtype": compute_dtype, "device_map": {"": "cpu"}}
     base = AutoModelForCausalLM.from_pretrained(BASE_MODEL, **model_kwargs)
-    if not use_cuda:
-        base = base.to("cpu")
     print("Applying Adam LoRA adapter...")
     model = PeftModel.from_pretrained(base, ADAPTER_PATH)
     model.eval()
