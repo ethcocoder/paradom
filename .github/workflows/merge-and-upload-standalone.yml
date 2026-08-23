@@ -1,0 +1,105 @@
+name: Merge and upload standalone Adam 1.1B
+
+on:
+  workflow_dispatch:
+    inputs:
+      source_run_id:
+        description: 'Successful fine-tuning run containing adam-tinyllama-qlora-reviewed'
+        required: true
+        default: '32647342221'
+        type: string
+      hf_repo_id:
+        description: 'Hugging Face repository to replace with the standalone model'
+        required: true
+        default: 'paradoxquantum/adam'
+        type: string
+      hf_private:
+        description: 'Create/use a private Hugging Face repository'
+        required: true
+        default: false
+        type: boolean
+
+jobs:
+  merge-and-upload:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      contents: read
+    env:
+      SOURCE_RUN_ID: ${{ inputs.source_run_id }}
+      HF_REPO_ID: ${{ inputs.hf_repo_id }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          ref: v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+          cache: 'pip'
+
+      - name: Install CPU dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cpu
+          pip install "transformers>=4.45" "accelerate>=1.1" peft safetensors sentencepiece huggingface_hub
+
+      - name: Download successful Adam adapter artifact
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p /tmp/adam-artifact
+          gh run download "$SOURCE_RUN_ID" \
+            --repo "${{ github.repository }}" \
+            --name adam-tinyllama-qlora-reviewed \
+            --dir /tmp/adam-artifact
+          find /tmp/adam-artifact -maxdepth 3 -type f -printf '%p %s bytes\n'
+
+      - name: Locate adapter directory
+        run: |
+          if test -f /tmp/adam-artifact/adapter_config.json; then
+            echo "ADAPTER_DIR=/tmp/adam-artifact" >> "$GITHUB_ENV"
+          else
+            adapter_config=$(find /tmp/adam-artifact -name adapter_config.json -type f | sort -V | tail -n 1)
+            test -n "$adapter_config" || { echo 'adapter_config.json not found'; exit 1; }
+            echo "ADAPTER_DIR=$(dirname "$adapter_config")" >> "$GITHUB_ENV"
+          fi
+
+      - name: Merge full-precision standalone model
+        run: |
+          CPU_THREADS=$(nproc)
+          python merge_adam_standalone.py \
+            --adapter "$ADAPTER_DIR" \
+            --output /tmp/adam-standalone \
+            --cpu-threads "$CPU_THREADS"
+          find /tmp/adam-standalone -maxdepth 1 -type f -printf '%f %s bytes\n'
+
+      - name: Replace Hugging Face repository with standalone model
+        env:
+          HF_TOKEN: ${{ secrets.HF_TOKEN }}
+          HF_PRIVATE: ${{ inputs.hf_private }}
+        run: |
+          test -n "$HF_TOKEN" || { echo 'Missing HF_TOKEN repository secret'; exit 1; }
+          python - <<'PY'
+          import os
+          from huggingface_hub import HfApi
+
+          api = HfApi(token=os.environ["HF_TOKEN"])
+          api.create_repo(
+              repo_id=os.environ["HF_REPO_ID"],
+              repo_type="model",
+              private=os.environ["HF_PRIVATE"].lower() == "true",
+              exist_ok=True,
+          )
+          api.upload_folder(
+              repo_id=os.environ["HF_REPO_ID"],
+              repo_type="model",
+              folder_path="/tmp/adam-standalone",
+              delete_patterns=["**"],
+              commit_message="Publish standalone Adam TinyLlama 1.1B model",
+          )
+          print("Published standalone model to https://huggingface.co/" + os.environ["HF_REPO_ID"])
+          PY
