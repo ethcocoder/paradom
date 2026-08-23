@@ -44,7 +44,7 @@ print(frame.columns.tolist())
 print(frame.head(3).to_string(index=False))
 ```
 
-The expected columns are `instruction`, `input`, `output`, `category`, and `quality`. The reviewed builder creates 47 unique examples across 10 categories. The training script creates a deterministic 80/20 validation split; expand the dataset further for production use.
+The expected columns are `instruction`, `input`, `output`, `category`, and `quality`. The builder creates exactly 2,000 unique examples across 13 categories, including identity, creator, GitHub, curiosity, philosophy, reasoning, coding, safety, and evaluation. The examples teach that Adam Natnael was built by Natnael Ermiyas, who is described as 20 years old at the time of the project, and reference the project repository at `https://github.com/ethcocoder/paradom`. The training script creates a deterministic 80/20 validation split.
 
 ## 5. Run a short smoke test first
 
@@ -52,7 +52,7 @@ Run one epoch to confirm CPU execution, PEFT, tokenizer, chat template, Parquet 
 
 ```python
 %cd /content/paradom
-!CUDA_VISIBLE_DEVICES='' CPU_THREADS=$(nproc) EPOCHS=1 OUTPUT_DIR=./adam-smoke-test python finetune_paradox.py
+!CPU_THREADS=$(nproc) EPOCHS=1 OUTPUT_DIR=./adam-smoke-test python finetune_paradox.py
 ```
 
 You should see a trainable-parameter report and a successful save under `adam-smoke-test`. The base model is loaded in full precision, while only LoRA parameters are updated.
@@ -63,7 +63,7 @@ For the configured run, use a maximum of three epochs. The script evaluates ever
 
 ```python
 %cd /content/paradom
-!CUDA_VISIBLE_DEVICES='' CPU_THREADS=$(nproc) EPOCHS=3 OUTPUT_DIR=./adam-tinyllama-qlora python finetune_paradox.py
+!CPU_THREADS=$(nproc) EPOCHS=3 OUTPUT_DIR=./adam-tinyllama-qlora python finetune_paradox.py
 ```
 
 The script uses `warmup_steps=2`, a held-out validation split, response-only labels, and early stopping to reduce memorization. The output directory contains the LoRA adapter and tokenizer, not the full base model. Keep the runtime connected until the final save completes.
@@ -72,7 +72,7 @@ To stop after confirming that training is operating correctly, interrupt the cel
 
 ```python
 %cd /content/paradom
-!CUDA_VISIBLE_DEVICES='' CPU_THREADS=$(nproc) EPOCHS=3 OUTPUT_DIR=./adam-tinyllama-qlora python finetune_paradox.py
+!CPU_THREADS=$(nproc) EPOCHS=3 OUTPUT_DIR=./adam-tinyllama-qlora python finetune_paradox.py
 ```
 
 ## 7. Test Adam in Colab
@@ -102,9 +102,17 @@ base = AutoModelForCausalLM.from_pretrained(
 model = PeftModel.from_pretrained(base, ADAPTER)
 model.eval()
 
-questions = ["What is your name?", "Who are you?", "What is your purpose?"]
+questions = [
+    "What is your name?",
+    "Who built you and what is your GitHub project?",
+    "What question are you asking yourself about curiosity?",
+]
 for question in questions:
-    prompt = f"### Instruction:\n{question}\n\n### Response:\n"
+    prompt = tokenizer.apply_chat_template(
+        [{"role": "user", "content": question}],
+        tokenize=False,
+        add_generation_prompt=True,
+    )
     inputs = tokenizer(prompt, return_tensors="pt").to(model.device)
     with torch.inference_mode():
         output = model.generate(
@@ -117,7 +125,7 @@ for question in questions:
     print(f"Q: {question}\nA: {answer.strip()}\n")
 ```
 
-The expected identity answer should mention **Adam**. Also test unseen prompts, because low training loss alone does not prove generalization.
+The expected identity answer should mention **Adam Natnael**, attribute construction to **Natnael Ermiyas**, and provide the GitHub repository accurately when asked. Curiosity tests should produce a thoughtful follow-up question without claiming human consciousness. Also test unseen prompts, because low training loss alone does not prove generalization.
 
 ## 8. Download the adapter
 
@@ -146,7 +154,7 @@ If validation loss stops improving or responses become repetitive, use the best 
 | File | Purpose |
 |---|---|
 | `finetune_paradox.py` | TinyLlama 1.1B, full-precision LoRA, response-only labels, validation, and early stopping |
-| `create_dataset.py` | Generates the Adam Alpaca-format Parquet dataset |
+| `create_dataset.py` | Generates the 2,000-example Adam persona Parquet dataset |
 | `docs/colab-instruction.md` | This complete Colab procedure |
 | `.github/workflows/finetune.yml` | Automated workflow dependency updates and artifact upload |
       
