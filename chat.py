@@ -8,7 +8,7 @@ import os
 
 import torch
 from peft import PeftModel
-from transformers import AutoModelForCausalLM, AutoTokenizer, BitsAndBytesConfig
+from transformers import AutoModelForCausalLM, AutoTokenizer
 
 BASE_MODEL = os.getenv("BASE_MODEL", "TinyLlama/TinyLlama-1.1B-Chat-v1.0")
 ADAPTER_PATH = os.getenv("ADAPTER_PATH", "/content/paradom/adam-tinyllama-qlora")
@@ -30,32 +30,26 @@ def load_adam():
             "This folder may not be the completed LoRA output."
         )
 
-    if not torch.cuda.is_available():
-        raise RuntimeError(
-            "This script uses 4-bit bitsandbytes loading and requires a CUDA GPU. "
-            "In Colab, select Runtime > Change runtime type > T4 GPU."
-        )
-
-    compute_dtype = torch.bfloat16 if torch.cuda.is_bf16_supported() else torch.float16
-    quant_config = BitsAndBytesConfig(
-        load_in_4bit=True,
-        bnb_4bit_quant_type="nf4",
-        bnb_4bit_use_double_quant=True,
-        bnb_4bit_compute_dtype=compute_dtype,
+    use_cuda = torch.cuda.is_available()
+    compute_dtype = (
+        torch.bfloat16 if use_cuda and torch.cuda.is_bf16_supported()
+        else torch.float16 if use_cuda
+        else torch.float32
     )
+    print(f"Device mode: {'CUDA' if use_cuda else 'CPU'} full-precision LoRA")
 
     print(f"Loading tokenizer from {ADAPTER_PATH}...")
     tokenizer = AutoTokenizer.from_pretrained(ADAPTER_PATH)
     if tokenizer.pad_token is None:
         tokenizer.pad_token = tokenizer.eos_token
 
-    print(f"Loading 4-bit base model {BASE_MODEL}...")
-    base = AutoModelForCausalLM.from_pretrained(
-        BASE_MODEL,
-        quantization_config=quant_config,
-        device_map="auto",
-        torch_dtype=compute_dtype,
-    )
+    print(f"Loading full-precision base model {BASE_MODEL}...")
+    model_kwargs = {"torch_dtype": compute_dtype}
+    if use_cuda:
+        model_kwargs["device_map"] = "auto"
+    base = AutoModelForCausalLM.from_pretrained(BASE_MODEL, **model_kwargs)
+    if not use_cuda:
+        base = base.to("cpu")
     print("Applying Adam LoRA adapter...")
     model = PeftModel.from_pretrained(base, ADAPTER_PATH)
     model.eval()

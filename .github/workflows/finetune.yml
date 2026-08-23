@@ -1,4 +1,4 @@
-name: Finetune Adam 1.1B with 4-bit QLoRA
+name: Finetune Adam 1.1B with Full-Precision LoRA
 
 
 on:
@@ -10,7 +10,7 @@ on:
         default: '3'
         type: string
       runner_label:
-        description: 'Runner label; the script auto-selects CUDA 4-bit QLoRA or CPU LoRA fallback'
+        description: 'Runner label; the script auto-selects CUDA or CPU full-precision LoRA'
         required: false
         default: 'ubuntu-latest'
         type: string
@@ -46,7 +46,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu118
-          pip install "transformers>=4.45" "datasets>=2.20" "accelerate>=1.1" peft bitsandbytes pandas pyarrow sentencepiece safetensors
+          pip install "transformers>=4.45" "datasets>=2.20" "accelerate>=1.1" peft pandas pyarrow sentencepiece safetensors
 
       - name: Generate Dataset
         run: |
