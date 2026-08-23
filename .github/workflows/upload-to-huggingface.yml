@@ -64,11 +64,21 @@ jobs:
           print("Hugging Face repository is ready:", os.environ["HF_REPO_ID"])
           PY
 
-      - name: Upload model files to Hugging Face
+      - name: Replace model files on Hugging Face
         env:
           HF_TOKEN: ${{ secrets.HF_TOKEN }}
         run: |
-          hf upload "$HF_REPO_ID" /tmp/model-artifact \
-            --repo-type model \
-            --commit-message "Upload completed Adam TinyLlama 1.1B LoRA model from GitHub Actions"
-          echo "Uploaded to https://huggingface.co/$HF_REPO_ID"
+          python - <<'PY'
+          import os
+          from huggingface_hub import HfApi
+
+          api = HfApi(token=os.environ["HF_TOKEN"])
+          api.upload_folder(
+              repo_id=os.environ["HF_REPO_ID"],
+              repo_type="model",
+              folder_path="/tmp/model-artifact",
+              delete_patterns=["**"],
+              commit_message="Replace legacy model with Adam TinyLlama 1.1B LoRA model",
+          )
+          print("Replaced model files at https://huggingface.co/" + os.environ["HF_REPO_ID"])
+          PY
