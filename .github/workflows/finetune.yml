@@ -10,7 +10,7 @@ on:
         default: '3'
         type: string
       runner_label:
-        description: 'GPU runner label; use a configured self-hosted GPU runner or ubuntu-latest for a preflight failure'
+        description: 'Runner label; the script auto-selects CUDA 4-bit QLoRA or CPU LoRA fallback'
         required: false
         default: 'ubuntu-latest'
         type: string
@@ -33,10 +33,14 @@ jobs:
           python-version: '3.10'
           cache: 'pip'
 
-      - name: Verify CUDA GPU
+      - name: Detect available device
         run: |
-          command -v nvidia-smi >/dev/null || { echo 'No NVIDIA GPU runner detected. Configure a GPU runner and rerun.'; exit 1; }
-          nvidia-smi
+          if command -v nvidia-smi >/dev/null; then
+            echo 'NVIDIA GPU detected'
+            nvidia-smi
+          else
+            echo 'No NVIDIA GPU detected; training script will use its CPU fallback.'
+          fi
 
       - name: Install Dependencies
         run: |
