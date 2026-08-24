@@ -1,0 +1,366 @@
+{
+  "experiment": "experiment_019_output_sharpening",
+  "seeds": [
+    20260871,
+    20260872,
+    20260873,
+    20260874,
+    20260875
+  ],
+  "rows": [
+    {
+      "seed": 20260871,
+      "teacher_loss": 3.8438310820035726,
+      "teacher_entropy": 3.5692180485088008,
+      "teacher_ece": 0.037211955899085894,
+      "alpha_zero_exact_all": true,
+      "all_alpha_one_endpoints": true,
+      "fresh_test_loaded_after_all_conditions": true,
+      "ce_continuation_loss": 3.9327268726329514,
+      "ce_continuation_entropy": 3.841621614511041,
+      "ce_continuation_ece": 0.021946729831681194,
+      "ce_continuation_zero_loss": 3.8438310820035726,
+      "ce_continuation_dev_ce": 3.6136384289711714,
+      "ce_continuation_dev_entropy": 3.492779277265072,
+      "ce_continuation_dev_ece": 0.021457722441647384,
+      "ce_continuation_endpoint": true,
+      "self_entropy_sharpening_loss": 3.9250975077930845,
+      "self_entropy_sharpening_entropy": 3.8088373742531196,
+      "self_entropy_sharpening_ece": 0.024805735884464383,
+      "self_entropy_sharpening_zero_loss": 3.8438310820035726,
+      "self_entropy_sharpening_dev_ce": 3.5716015603393316,
+      "self_entropy_sharpening_dev_entropy": 3.475039664655924,
+      "self_entropy_sharpening_dev_ece": 0.02376403639260587,
+      "self_entropy_sharpening_endpoint": true,
+      "teacher_temperature_sharpening_loss": 3.912585547329407,
+      "teacher_temperature_sharpening_entropy": 3.809539625810084,
+      "teacher_temperature_sharpening_ece": 0.02423743206500225,
+      "teacher_temperature_sharpening_zero_loss": 3.8438310820035726,
+      "teacher_temperature_sharpening_dev_ce": 3.568634670227766,
+      "teacher_temperature_sharpening_dev_entropy": 3.4870029129087925,
+      "teacher_temperature_sharpening_dev_ece": 0.01908348654334657,
+      "teacher_temperature_sharpening_endpoint": true,
+      "teacher_vs_ce": 0.02014132530354429,
+      "teacher_vs_self": 0.012511960463677418,
+      "self_vs_ce": 0.00762936483986687,
+      "self_entropy_reduction": 0.03278424025792148,
+      "teacher_entropy_reduction": 0.03208198870095691,
+      "teacher_ece_minus_ce": 0.0022907022333210555,
+      "maximum_alpha_zero_loss_deviation": 0.0
+    },
+    {
+      "seed": 20260872,
+      "teacher_loss": 3.8438310820035726,
+      "teacher_entropy": 3.5692180485088008,
+      "teacher_ece": 0.037211955899085894,
+      "alpha_zero_exact_all": true,
+      "all_alpha_one_endpoints": true,
+      "fresh_test_loaded_after_all_conditions": true,
+      "ce_continuation_loss": 3.894909569858093,
+      "ce_continuation_entropy": 3.793932635570339,
+      "ce_continuation_ece": 0.020124844031001864,
+      "ce_continuation_zero_loss": 3.8438310820035726,
+      "ce_continuation_dev_ce": 3.52385993860662,
+      "ce_continuation_dev_entropy": 3.539040330797434,
+      "ce_continuation_dev_ece": 0.02131993090046684,
+      "ce_continuation_endpoint": true,
+      "self_entropy_sharpening_loss": 3.8949130385861985,
+      "self_entropy_sharpening_entropy": 3.768978387409862,
+      "self_entropy_sharpening_ece": 0.023257519140313248,
+      "self_entropy_sharpening_zero_loss": 3.8438310820035726,
+      "self_entropy_sharpening_dev_ce": 3.5333826299756765,
+      "self_entropy_sharpening_dev_entropy": 3.5113418884575367,
+      "self_entropy_sharpening_dev_ece": 0.02057836078223854,
+      "self_entropy_sharpening_endpoint": true,
+      "teacher_temperature_sharpening_loss": 3.894720722334034,
+      "teacher_temperature_sharpening_entropy": 3.7824079277955134,
+      "teacher_temperature_sharpening_ece": 0.021148222516717902,
+      "teacher_temperature_sharpening_zero_loss": 3.8438310820035726,
+      "teacher_temperature_sharpening_dev_ce": 3.5233209133148193,
+      "teacher_temperature_sharpening_dev_entropy": 3.5242012850940228,
+      "teacher_temperature_sharpening_dev_ece": 0.01241314710030831,
+      "teacher_temperature_sharpening_endpoint": true,
+      "teacher_vs_ce": 0.0001888475240590104,
+      "teacher_vs_self": 0.0001923162521646482,
+      "self_vs_ce": -3.4687281056378083e-06,
+      "self_entropy_reduction": 0.024954248160476755,
+      "teacher_entropy_reduction": 0.011524707774825504,
+      "teacher_ece_minus_ce": 0.0010233784857160387,
+      "maximum_alpha_zero_loss_deviation": 0.0
+    },
+    {
+      "seed": 20260873,
+      "teacher_loss": 3.8438310820035726,
+      "teacher_entropy": 3.5692180485088008,
+      "teacher_ece": 0.037211955899085894,
+      "alpha_zero_exact_all": true,
+      "all_alpha_one_endpoints": true,
+      "fresh_test_loaded_after_all_conditions": true,
+      "ce_continuation_loss": 3.9450225158794683,
+      "ce_continuation_entropy": 3.805435574397621,
+      "ce_continuation_ece": 0.028564911364938578,
+      "ce_continuation_zero_loss": 3.8438310820035726,
+      "ce_continuation_dev_ce": 3.677168384194374,
+      "ce_continuation_dev_entropy": 3.5196822732686996,
+      "ce_continuation_dev_ece": 0.029771083063372037,
+      "ce_continuation_endpoint": true,
+      "self_entropy_sharpening_loss": 3.941826865878807,
+      "self_entropy_sharpening_entropy": 3.7700884139679007,
+      "self_entropy_sharpening_ece": 0.028529521922916558,
+      "self_entropy_sharpening_zero_loss": 3.8438310820035726,
+      "self_entropy_sharpening_dev_ce": 3.666612083092332,
+      "self_entropy_sharpening_dev_entropy": 3.4752779938280582,
+      "self_entropy_sharpening_dev_ece": 0.026871829290559503,
+      "self_entropy_sharpening_endpoint": true,
+      "teacher_temperature_sharpening_loss": 3.926934438792582,
+      "teacher_temperature_sharpening_entropy": 3.7663818114098357,
+      "teacher_temperature_sharpening_ece": 0.02697309548202303,
+      "teacher_temperature_sharpening_zero_loss": 3.8438310820035726,
+      "teacher_temperature_sharpening_dev_ce": 3.606435274705291,
+      "teacher_temperature_sharpening_dev_entropy": 3.4865991175174713,
+      "teacher_temperature_sharpening_dev_ece": 0.02267859763798296,
+      "teacher_temperature_sharpening_endpoint": true,
+      "teacher_vs_ce": 0.01808807708688631,
+      "teacher_vs_self": 0.01489242708622518,
+      "self_vs_ce": 0.003195650000661132,
+      "self_entropy_reduction": 0.035347160429720414,
+      "teacher_entropy_reduction": 0.0390537629877854,
+      "teacher_ece_minus_ce": -0.0015918158829155461,
+      "maximum_alpha_zero_loss_deviation": 0.0
+    },
+    {
+      "seed": 20260874,
+      "teacher_loss": 3.8438310820035726,
+      "teacher_entropy": 3.5692180485088008,
+      "teacher_ece": 0.037211955899085894,
+      "alpha_zero_exact_all": true,
+      "all_alpha_one_endpoints": true,
+      "fresh_test_loaded_after_all_conditions": true,
+      "ce_continuation_loss": 3.9001806410839515,
+      "ce_continuation_entropy": 3.7711796897720364,
+      "ce_continuation_ece": 0.023796460515537424,
+      "ce_continuation_zero_loss": 3.8438310820035726,
+      "ce_continuation_dev_ce": 3.561451952904463,
+      "ce_continuation_dev_entropy": 3.533502534031868,
+      "ce_continuation_dev_ece": 0.016201421106332367,
+      "ce_continuation_endpoint": true,
+      "self_entropy_sharpening_loss": 3.8944724249153975,
+      "self_entropy_sharpening_entropy": 3.7408703644263563,
+      "self_entropy_sharpening_ece": 0.026270042391345783,
+      "self_entropy_sharpening_zero_loss": 3.8438310820035726,
+      "self_entropy_sharpening_dev_ce": 3.5506271608173847,
+      "self_entropy_sharpening_dev_entropy": 3.4981981441378593,
+      "self_entropy_sharpening_dev_ece": 0.0172029640479766,
+      "self_entropy_sharpening_endpoint": true,
+      "teacher_temperature_sharpening_loss": 3.889479182416009,
+      "teacher_temperature_sharpening_entropy": 3.7494233223387434,
+      "teacher_temperature_sharpening_ece": 0.023264482707358806,
+      "teacher_temperature_sharpening_zero_loss": 3.8438310820035726,
+      "teacher_temperature_sharpening_dev_ce": 3.5857692398130894,
+      "teacher_temperature_sharpening_dev_entropy": 3.502028901129961,
+      "teacher_temperature_sharpening_dev_ece": 0.018061528015732554,
+      "teacher_temperature_sharpening_endpoint": true,
+      "teacher_vs_ce": 0.010701458667942365,
+      "teacher_vs_self": 0.004993242499388373,
+      "self_vs_ce": 0.005708216168553992,
+      "self_entropy_reduction": 0.030309325345680094,
+      "teacher_entropy_reduction": 0.02175636743329301,
+      "teacher_ece_minus_ce": -0.0005319778081786172,
+      "maximum_alpha_zero_loss_deviation": 0.0
+    },
+    {
+      "seed": 20260875,
+      "teacher_loss": 3.8438310820035726,
+      "teacher_entropy": 3.5692180485088008,
+      "teacher_ece": 0.037211955899085894,
+      "alpha_zero_exact_all": true,
+      "all_alpha_one_endpoints": true,
+      "fresh_test_loaded_after_all_conditions": true,
+      "ce_continuation_loss": 3.907477696091189,
+      "ce_continuation_entropy": 3.7914009287877737,
+      "ce_continuation_ece": 0.02567898525057484,
+      "ce_continuation_zero_loss": 3.8438310820035726,
+      "ce_continuation_dev_ce": 3.586235236376524,
+      "ce_continuation_dev_entropy": 3.4916161596775055,
+      "ce_continuation_dev_ece": 0.01828090621005333,
+      "ce_continuation_endpoint": true,
+      "self_entropy_sharpening_loss": 3.9003175441787126,
+      "self_entropy_sharpening_entropy": 3.752703724456116,
+      "self_entropy_sharpening_ece": 0.029673252913583994,
+      "self_entropy_sharpening_zero_loss": 3.8438310820035726,
+      "self_entropy_sharpening_dev_ce": 3.5308982208371162,
+      "self_entropy_sharpening_dev_entropy": 3.4690888933837414,
+      "self_entropy_sharpening_dev_ece": 0.022430701737599062,
+      "self_entropy_sharpening_endpoint": true,
+      "teacher_temperature_sharpening_loss": 3.8900396434183655,
+      "teacher_temperature_sharpening_entropy": 3.754508586179988,
+      "teacher_temperature_sharpening_ece": 0.024412154204680164,
+      "teacher_temperature_sharpening_zero_loss": 3.8438310820035726,
+      "teacher_temperature_sharpening_dev_ce": 3.6117430329322815,
+      "teacher_temperature_sharpening_dev_entropy": 3.484904397279024,
+      "teacher_temperature_sharpening_dev_ece": 0.021385374112242544,
+      "teacher_temperature_sharpening_endpoint": true,
+      "teacher_vs_ce": 0.01743805267282328,
+      "teacher_vs_self": 0.01027790076034707,
+      "self_vs_ce": 0.007160151912476209,
+      "self_entropy_reduction": 0.0386972043316578,
+      "teacher_entropy_reduction": 0.03689234260778562,
+      "teacher_ece_minus_ce": -0.0012668310458946765,
+      "maximum_alpha_zero_loss_deviation": 0.0
+    }
+  ],
+  "teacher_fresh_loss": {
+    "mean": 3.8438310820035726,
+    "sample_sd": 0.0
+  },
+  "conditions": {
+    "ce_continuation": {
+      "fresh_loss": {
+        "mean": 3.9160634591091306,
+        "sample_sd": 0.02173569980906916
+      },
+      "fresh_entropy": {
+        "mean": 3.800714088607762,
+        "sample_sd": 0.025984234976762454
+      },
+      "fresh_ece": {
+        "mean": 0.02402238619874678,
+        "sample_sd": 0.003276014423877996
+      },
+      "teacher_loss_gap": {
+        "mean": 0.07223237710555797,
+        "sample_sd": 0.02173569980906916
+      },
+      "development_ce": {
+        "mean": 3.5924707882106306,
+        "sample_sd": 0.057728352467838376
+      },
+      "development_entropy": {
+        "mean": 3.5153241150081156,
+        "sample_sd": 0.022261200595494066
+      },
+      "development_ece": {
+        "mean": 0.021406212744374393,
+        "sample_sd": 0.005168136757769939
+      }
+    },
+    "self_entropy_sharpening": {
+      "fresh_loss": {
+        "mean": 3.91132547627044,
+        "sample_sd": 0.021181192364648733
+      },
+      "fresh_entropy": {
+        "mean": 3.7682956529026708,
+        "sample_sd": 0.02570294715296919
+      },
+      "fresh_ece": {
+        "mean": 0.026507214450524792,
+        "sample_sd": 0.0026279900384177136
+      },
+      "teacher_loss_gap": {
+        "mean": 0.06749439426686746,
+        "sample_sd": 0.021181192364648733
+      },
+      "development_ce": {
+        "mean": 3.570624331012368,
+        "sample_sd": 0.056079404570866666
+      },
+      "development_entropy": {
+        "mean": 3.4857893168926237,
+        "sample_sd": 0.018109803894132758
+      },
+      "development_ece": {
+        "mean": 0.022169578450195914,
+        "sample_sd": 0.0036028071261930785
+      }
+    },
+    "teacher_temperature_sharpening": {
+      "fresh_loss": {
+        "mean": 3.9027519068580796,
+        "sample_sd": 0.016460271234229832
+      },
+      "fresh_entropy": {
+        "mean": 3.772452254706833,
+        "sample_sd": 0.024309184324223715
+      },
+      "fresh_ece": {
+        "mean": 0.02400707739515643,
+        "sample_sd": 0.0021058793812485164
+      },
+      "teacher_loss_gap": {
+        "mean": 0.05892082485450691,
+        "sample_sd": 0.016460271234229832
+      },
+      "development_ce": {
+        "mean": 3.5791806261986494,
+        "sample_sd": 0.0356302565864715
+      },
+      "development_entropy": {
+        "mean": 3.4969473227858545,
+        "sample_sd": 0.01673028387987645
+      },
+      "development_ece": {
+        "mean": 0.018724426681922587,
+        "sample_sd": 0.003972301529330994
+      }
+    }
+  },
+  "paired_comparisons": {
+    "teacher_vs_ce": {
+      "wins": 5,
+      "mean": 0.01331155225105105,
+      "sample_sd": 0.008147192201169747
+    },
+    "teacher_vs_self": {
+      "wins": 5,
+      "mean": 0.008573569412360538,
+      "sample_sd": 0.005945750101089578
+    },
+    "self_vs_ce": {
+      "wins": 4,
+      "mean": 0.004737982838690513,
+      "sample_sd": 0.003163403987662889
+    },
+    "self_entropy_reduction": {
+      "wins": 5,
+      "mean": 0.03241843570509131,
+      "sample_sd": 0.005203283077991132
+    },
+    "teacher_entropy_reduction": {
+      "wins": 5,
+      "mean": 0.02826183390092929,
+      "sample_sd": 0.011489097892933913
+    },
+    "teacher_ece_minus_ce": {
+      "mean": -1.5308803590349113e-05,
+      "sample_sd": 0.0016367030535325436
+    },
+    "maximum_teacher_ece_minus_ce": 0.0022907022333210555,
+    "maximum_alpha_zero_loss_deviation": 0.0
+  },
+  "coherent_generation_review": {
+    "manual_reviewed_seeds": [
+      20260871,
+      20260872,
+      20260873,
+      20260874,
+      20260875
+    ],
+    "count": 5
+  },
+  "criteria": {
+    "integrity_and_fresh_test_isolation": true,
+    "all_final_losses_finite": true,
+    "self_sharpens_relative_to_ce": true,
+    "teacher_sharpens_relative_to_ce": true,
+    "teacher_beats_ce_4_of_5": true,
+    "teacher_mean_advantage_over_ce_at_least_0_03": false,
+    "teacher_beats_self_4_of_5": true,
+    "teacher_mean_advantage_over_self_at_least_0_03": false,
+    "alpha_zero_loss_deviation_at_most_1e_5": true,
+    "teacher_ece_not_more_than_0_01_above_ce": true,
+    "teacher_within_0_15_of_frozen_teacher": true,
+    "coherent_generations_at_least_4_of_5": true,
+    "third_layer_or_scaling_authorized": false
+  }
+}
