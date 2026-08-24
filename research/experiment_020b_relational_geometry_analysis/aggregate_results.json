@@ -1,0 +1,383 @@
+{
+  "experiment": "experiment_020b_relational_geometry_endpoint",
+  "seeds": [
+    20260891,
+    20260892,
+    20260893,
+    20260894,
+    20260895
+  ],
+  "rows": [
+    {
+      "seed": 20260891,
+      "teacher_loss": 4.161295624658915,
+      "alpha_zero_exact_all": true,
+      "all_alpha_one_endpoints": true,
+      "fresh_test_loaded_after_all_conditions": true,
+      "conditional_ce_transport_loss": 4.403537051723787,
+      "conditional_ce_transport_entropy": 4.251759834069646,
+      "conditional_ce_transport_ece": 0.015816928350555193,
+      "conditional_ce_transport_alpha_zero_deviation": 0.0,
+      "conditional_ce_transport_endpoint": true,
+      "conditional_ce_transport_finite": true,
+      "conditional_ce_transport_dev_ce": 3.7173522002995014,
+      "conditional_ce_transport_dev_correct_relation": 0.027066780923632905,
+      "conditional_ce_transport_dev_permuted_relation": 0.27626336785033345,
+      "conditional_ce_transport_drift_l1": 0.5266611631959677,
+      "conditional_ce_transport_drift_l2": 0.4956672256812453,
+      "correct_relational_geometry_loss": 4.413279730330164,
+      "correct_relational_geometry_entropy": 4.25055997789654,
+      "correct_relational_geometry_ece": 0.021649980563629337,
+      "correct_relational_geometry_alpha_zero_deviation": 0.0,
+      "correct_relational_geometry_endpoint": true,
+      "correct_relational_geometry_finite": true,
+      "correct_relational_geometry_dev_ce": 3.7361990213394165,
+      "correct_relational_geometry_dev_correct_relation": 0.01998118199117016,
+      "correct_relational_geometry_dev_permuted_relation": 0.2607143144123256,
+      "correct_relational_geometry_drift_l1": 0.5207311995327473,
+      "correct_relational_geometry_drift_l2": 0.5017079296521842,
+      "permuted_relational_control_loss": 4.438250556239519,
+      "permuted_relational_control_entropy": 4.267893786347894,
+      "permuted_relational_control_ece": 0.016481968950118296,
+      "permuted_relational_control_alpha_zero_deviation": 0.0,
+      "permuted_relational_control_endpoint": true,
+      "permuted_relational_control_finite": true,
+      "permuted_relational_control_dev_ce": 3.8007179349660873,
+      "permuted_relational_control_dev_correct_relation": 0.0223134525003843,
+      "permuted_relational_control_dev_permuted_relation": 0.2489116322249174,
+      "permuted_relational_control_drift_l1": 0.4953418388031423,
+      "permuted_relational_control_drift_l2": 0.4730985891073942,
+      "correct_vs_ce": -0.009742678606376565,
+      "correct_vs_permuted": 0.02497082590935573,
+      "permuted_vs_ce": -0.034713504515732296,
+      "correct_ece_minus_ce": 0.005833052213074143
+    },
+    {
+      "seed": 20260892,
+      "teacher_loss": 4.161295624658915,
+      "alpha_zero_exact_all": true,
+      "all_alpha_one_endpoints": true,
+      "fresh_test_loaded_after_all_conditions": true,
+      "conditional_ce_transport_loss": 4.444095689185638,
+      "conditional_ce_transport_entropy": 4.266170312849778,
+      "conditional_ce_transport_ece": 0.021233394383410202,
+      "conditional_ce_transport_alpha_zero_deviation": 0.0,
+      "conditional_ce_transport_endpoint": true,
+      "conditional_ce_transport_finite": true,
+      "conditional_ce_transport_dev_ce": 3.691184539347887,
+      "conditional_ce_transport_dev_correct_relation": 0.025639012732426636,
+      "conditional_ce_transport_dev_permuted_relation": 0.26942956540733576,
+      "conditional_ce_transport_drift_l1": 0.527169281616807,
+      "conditional_ce_transport_drift_l2": 0.511983985081315,
+      "correct_relational_geometry_loss": 4.421947132574982,
+      "correct_relational_geometry_entropy": 4.247018451244397,
+      "correct_relational_geometry_ece": 0.026158615330467233,
+      "correct_relational_geometry_alpha_zero_deviation": 0.0,
+      "correct_relational_geometry_endpoint": true,
+      "correct_relational_geometry_finite": true,
+      "correct_relational_geometry_dev_ce": 3.6704938150942326,
+      "correct_relational_geometry_dev_correct_relation": 0.021836703119333833,
+      "correct_relational_geometry_dev_permuted_relation": 0.259999580681324,
+      "correct_relational_geometry_drift_l1": 0.5280140601098537,
+      "correct_relational_geometry_drift_l2": 0.5133048496209085,
+      "permuted_relational_control_loss": 4.4231874382508005,
+      "permuted_relational_control_entropy": 4.24787524337484,
+      "permuted_relational_control_ece": 0.023173920034988957,
+      "permuted_relational_control_alpha_zero_deviation": 0.0,
+      "permuted_relational_control_endpoint": true,
+      "permuted_relational_control_finite": true,
+      "permuted_relational_control_dev_ce": 3.6613540332764387,
+      "permuted_relational_control_dev_correct_relation": 0.020664667375967838,
+      "permuted_relational_control_dev_permuted_relation": 0.24509383644908667,
+      "permuted_relational_control_drift_l1": 0.49982543010264635,
+      "permuted_relational_control_drift_l2": 0.4976257495582104,
+      "correct_vs_ce": 0.022148556610655845,
+      "correct_vs_permuted": 0.0012403056758181208,
+      "permuted_vs_ce": 0.020908250934837724,
+      "correct_ece_minus_ce": 0.004925220947057031
+    },
+    {
+      "seed": 20260893,
+      "teacher_loss": 4.161295624658915,
+      "alpha_zero_exact_all": true,
+      "all_alpha_one_endpoints": true,
+      "fresh_test_loaded_after_all_conditions": true,
+      "conditional_ce_transport_loss": 4.450574270140401,
+      "conditional_ce_transport_entropy": 4.3356001120819885,
+      "conditional_ce_transport_ece": 0.02025239291160644,
+      "conditional_ce_transport_alpha_zero_deviation": 0.0,
+      "conditional_ce_transport_endpoint": true,
+      "conditional_ce_transport_finite": true,
+      "conditional_ce_transport_dev_ce": 3.6241437420248985,
+      "conditional_ce_transport_dev_correct_relation": 0.025279125868109986,
+      "conditional_ce_transport_dev_permuted_relation": 0.2695528781041503,
+      "conditional_ce_transport_drift_l1": 0.47638277476653457,
+      "conditional_ce_transport_drift_l2": 0.47725290060043335,
+      "correct_relational_geometry_loss": 4.426484456907979,
+      "correct_relational_geometry_entropy": 4.321792703436447,
+      "correct_relational_geometry_ece": 0.020835904501632443,
+      "correct_relational_geometry_alpha_zero_deviation": 0.0,
+      "correct_relational_geometry_endpoint": true,
+      "correct_relational_geometry_finite": true,
+      "correct_relational_geometry_dev_ce": 3.7144092097878456,
+      "correct_relational_geometry_dev_correct_relation": 0.021421875921078026,
+      "correct_relational_geometry_dev_permuted_relation": 0.2690904727205634,
+      "correct_relational_geometry_drift_l1": 0.47368725342676044,
+      "correct_relational_geometry_drift_l2": 0.47234651865437627,
+      "permuted_relational_control_loss": 4.376538034453962,
+      "permuted_relational_control_entropy": 4.228518518685243,
+      "permuted_relational_control_ece": 0.022359635225832265,
+      "permuted_relational_control_alpha_zero_deviation": 0.0,
+      "permuted_relational_control_endpoint": true,
+      "permuted_relational_control_finite": true,
+      "permuted_relational_control_dev_ce": 3.583767920732498,
+      "permuted_relational_control_dev_correct_relation": 0.022438586966018192,
+      "permuted_relational_control_dev_permuted_relation": 0.2542723275255412,
+      "permuted_relational_control_drift_l1": 0.4671833240427077,
+      "permuted_relational_control_drift_l2": 0.49702621111646295,
+      "correct_vs_ce": 0.024089813232421875,
+      "correct_vs_permuted": -0.049946422454016925,
+      "permuted_vs_ce": 0.0740362356864388,
+      "correct_ece_minus_ce": 0.0005835115900260021
+    },
+    {
+      "seed": 20260894,
+      "teacher_loss": 4.161295624658915,
+      "alpha_zero_exact_all": true,
+      "all_alpha_one_endpoints": true,
+      "fresh_test_loaded_after_all_conditions": true,
+      "conditional_ce_transport_loss": 4.378883850780654,
+      "conditional_ce_transport_entropy": 4.276881753812203,
+      "conditional_ce_transport_ece": 0.02252965804437986,
+      "conditional_ce_transport_alpha_zero_deviation": 0.0,
+      "conditional_ce_transport_endpoint": true,
+      "conditional_ce_transport_finite": true,
+      "conditional_ce_transport_dev_ce": 3.662774033844471,
+      "conditional_ce_transport_dev_correct_relation": 0.028434698615456,
+      "conditional_ce_transport_dev_permuted_relation": 0.2844116990454495,
+      "conditional_ce_transport_drift_l1": 0.4513769131153822,
+      "conditional_ce_transport_drift_l2": 0.4590993416495621,
+      "correct_relational_geometry_loss": 4.381010204947734,
+      "correct_relational_geometry_entropy": 4.288364819164153,
+      "correct_relational_geometry_ece": 0.02216711835401993,
+      "correct_relational_geometry_alpha_zero_deviation": 0.0,
+      "correct_relational_geometry_endpoint": true,
+      "correct_relational_geometry_finite": true,
+      "correct_relational_geometry_dev_ce": 3.6361697167158127,
+      "correct_relational_geometry_dev_correct_relation": 0.023053567259921692,
+      "correct_relational_geometry_dev_permuted_relation": 0.2729992941021919,
+      "correct_relational_geometry_drift_l1": 0.4447036786004901,
+      "correct_relational_geometry_drift_l2": 0.4611451276578009,
+      "permuted_relational_control_loss": 4.380766313979083,
+      "permuted_relational_control_entropy": 4.284593948876506,
+      "permuted_relational_control_ece": 0.022113821732079895,
+      "permuted_relational_control_alpha_zero_deviation": 0.0,
+      "permuted_relational_control_endpoint": true,
+      "permuted_relational_control_finite": true,
+      "permuted_relational_control_dev_ce": 3.635797668248415,
+      "permuted_relational_control_dev_correct_relation": 0.019868933231919073,
+      "permuted_relational_control_dev_permuted_relation": 0.2519808253273368,
+      "permuted_relational_control_drift_l1": 0.43301599053665996,
+      "permuted_relational_control_drift_l2": 0.4597229794599116,
+      "correct_vs_ce": -0.00212635416708018,
+      "correct_vs_permuted": -0.00024389096865107263,
+      "permuted_vs_ce": -0.0018824631984291074,
+      "correct_ece_minus_ce": -0.0003625396903599275
+    },
+    {
+      "seed": 20260895,
+      "teacher_loss": 4.161295624658915,
+      "alpha_zero_exact_all": true,
+      "all_alpha_one_endpoints": true,
+      "fresh_test_loaded_after_all_conditions": true,
+      "conditional_ce_transport_loss": 4.378482946665581,
+      "conditional_ce_transport_entropy": 4.211708982098341,
+      "conditional_ce_transport_ece": 0.021561647339627055,
+      "conditional_ce_transport_alpha_zero_deviation": 0.0,
+      "conditional_ce_transport_endpoint": true,
+      "conditional_ce_transport_finite": true,
+      "conditional_ce_transport_dev_ce": 3.702932871878147,
+      "conditional_ce_transport_dev_correct_relation": 0.028921923221787438,
+      "conditional_ce_transport_dev_permuted_relation": 0.2821161651518196,
+      "conditional_ce_transport_drift_l1": 0.47964981477707624,
+      "conditional_ce_transport_drift_l2": 0.47902132011950016,
+      "correct_relational_geometry_loss": 4.376683308577772,
+      "correct_relational_geometry_entropy": 4.208124671074526,
+      "correct_relational_geometry_ece": 0.021535052207168153,
+      "correct_relational_geometry_alpha_zero_deviation": 0.0,
+      "correct_relational_geometry_endpoint": true,
+      "correct_relational_geometry_finite": true,
+      "correct_relational_geometry_dev_ce": 3.7035911455750465,
+      "correct_relational_geometry_dev_correct_relation": 0.023982373444596305,
+      "correct_relational_geometry_dev_permuted_relation": 0.2727173799648881,
+      "correct_relational_geometry_drift_l1": 0.4682551138103008,
+      "correct_relational_geometry_drift_l2": 0.47787162894383073,
+      "permuted_relational_control_loss": 4.3848264725906,
+      "permuted_relational_control_entropy": 4.231625238407584,
+      "permuted_relational_control_ece": 0.019785358013112122,
+      "permuted_relational_control_alpha_zero_deviation": 0.0,
+      "permuted_relational_control_endpoint": true,
+      "permuted_relational_control_finite": true,
+      "permuted_relational_control_dev_ce": 3.7006357684731483,
+      "permuted_relational_control_dev_correct_relation": 0.020307001788751222,
+      "permuted_relational_control_dev_permuted_relation": 0.24964183289557695,
+      "permuted_relational_control_drift_l1": 0.4498405992053449,
+      "permuted_relational_control_drift_l2": 0.4745459109544754,
+      "correct_vs_ce": 0.001799638087808475,
+      "correct_vs_permuted": 0.008143164012827775,
+      "permuted_vs_ce": -0.0063435259250193,
+      "correct_ece_minus_ce": -2.659513245890227e-05
+    }
+  ],
+  "conditions": {
+    "conditional_ce_transport": {
+      "fresh_loss": {
+        "mean": 4.411114761699213,
+        "sample_sd": 0.03466223825644413
+      },
+      "fresh_entropy": {
+        "mean": 4.268424198982391,
+        "sample_sd": 0.04495422789158068
+      },
+      "fresh_ece": {
+        "mean": 0.02027880420591575,
+        "sample_sd": 0.002623561778380887
+      },
+      "teacher_loss_gap": {
+        "mean": 0.24981913704029743,
+        "sample_sd": 0.03466223825644413
+      },
+      "development_ce": {
+        "mean": 3.679677477478981,
+        "sample_sd": 0.03695379805009126
+      },
+      "development_correct_relation_kl": {
+        "mean": 0.02706830827228259,
+        "sample_sd": 0.0016238051529811302
+      },
+      "development_permuted_relation_kl": {
+        "mean": 0.27635473511181774,
+        "sample_sd": 0.006934340741894277
+      },
+      "post_layer_1_drift": {
+        "mean": 0.49224798949435355,
+        "sample_sd": 0.033483679220859805
+      },
+      "post_layer_2_drift": {
+        "mean": 0.4846049546264112,
+        "sample_sd": 0.020048385942349884
+      }
+    },
+    "correct_relational_geometry": {
+      "fresh_loss": {
+        "mean": 4.403880966667726,
+        "sample_sd": 0.02339030369214333
+      },
+      "fresh_entropy": {
+        "mean": 4.263172124563213,
+        "sample_sd": 0.043362638496495805
+      },
+      "fresh_ece": {
+        "mean": 0.02246933419138342,
+        "sample_sd": 0.002116272990439551
+      },
+      "teacher_loss_gap": {
+        "mean": 0.24258534200881154,
+        "sample_sd": 0.02339030369214333
+      },
+      "development_ce": {
+        "mean": 3.692172581702471,
+        "sample_sd": 0.03927298188638507
+      },
+      "development_correct_relation_kl": {
+        "mean": 0.022055140347220004,
+        "sample_sd": 0.001537947140688048
+      },
+      "development_permuted_relation_kl": {
+        "mean": 0.2671042083762586,
+        "sample_sd": 0.006354357886499934
+      },
+      "post_layer_1_drift": {
+        "mean": 0.4870782610960305,
+        "sample_sd": 0.03583816090473834
+      },
+      "post_layer_2_drift": {
+        "mean": 0.48527521090582015,
+        "sample_sd": 0.02156339443740401
+      }
+    },
+    "permuted_relational_control": {
+      "fresh_loss": {
+        "mean": 4.400713763102793,
+        "sample_sd": 0.028057305179361326
+      },
+      "fresh_entropy": {
+        "mean": 4.252101347138414,
+        "sample_sd": 0.023971081971431572
+      },
+      "fresh_ece": {
+        "mean": 0.020782940791226306,
+        "sample_sd": 0.002714199759604228
+      },
+      "teacher_loss_gap": {
+        "mean": 0.23941813844387827,
+        "sample_sd": 0.028057305179361326
+      },
+      "development_ce": {
+        "mean": 3.6764546651393175,
+        "sample_sd": 0.08139093784639374
+      },
+      "development_correct_relation_kl": {
+        "mean": 0.021118528372608126,
+        "sample_sd": 0.0011828410266587902
+      },
+      "development_permuted_relation_kl": {
+        "mean": 0.2499800908844918,
+        "sample_sd": 0.0034481059465797203
+      },
+      "post_layer_1_drift": {
+        "mean": 0.46904143653810026,
+        "sample_sd": 0.02876335739709553
+      },
+      "post_layer_2_drift": {
+        "mean": 0.4804038880392909,
+        "sample_sd": 0.016494524897204262
+      }
+    }
+  },
+  "paired_comparisons": {
+    "correct_vs_ce": {
+      "wins": 3,
+      "mean": 0.00723379503148589,
+      "sample_sd": 0.015098994788054128
+    },
+    "correct_vs_permuted": {
+      "wins": 3,
+      "mean": -0.003167203564933274,
+      "sample_sd": 0.027999733621749498
+    },
+    "permuted_vs_ce": {
+      "wins": 2,
+      "mean": 0.010400998596419164,
+      "sample_sd": 0.0407014332590914
+    },
+    "correct_ece_minus_ce": {
+      "mean": 0.0021905299854676694,
+      "sample_sd": 0.0029480001490614378
+    },
+    "maximum_correct_ece_minus_ce": 0.005833052213074143
+  },
+  "maximum_alpha_zero_loss_deviation": 0.0,
+  "criteria": {
+    "integrity_and_fresh_test_isolation": true,
+    "alpha_zero_deviation_at_most_1e_5": true,
+    "all_fresh_losses_finite": true,
+    "correct_beats_ce_4_of_5": false,
+    "correct_mean_advantage_over_ce_at_least_0_03": false,
+    "correct_beats_permuted_4_of_5": false,
+    "correct_mean_advantage_over_permuted_at_least_0_03": false,
+    "correct_ece_not_more_than_0_01_above_ce": true,
+    "correct_within_0_15_of_teacher": false,
+    "third_layer_or_scaling_authorized": false
+  }
+}
