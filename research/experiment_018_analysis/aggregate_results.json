@@ -1,0 +1,274 @@
+{
+  "experiment": "experiment_018_residual_interface_transport",
+  "seeds": [
+    20260861,
+    20260862,
+    20260863,
+    20260864,
+    20260865
+  ],
+  "rows": [
+    {
+      "seed": 20260861,
+      "teacher_loss": 4.016246311825886,
+      "alpha_zero_exact_all": true,
+      "all_alpha_one_endpoints": true,
+      "fresh_test_loaded_after_all_conditions": true,
+      "unconditional_ce_transport_loss": 4.213966137822537,
+      "unconditional_ce_transport_alpha_zero_loss": 4.016246311825886,
+      "unconditional_ce_transport_dev_ce": 3.7206737883388996,
+      "unconditional_ce_transport_dev_kl": 0.7944154744036496,
+      "unconditional_ce_transport_l1_correction_ratio": 0.3692333251237869,
+      "unconditional_ce_transport_l1_anchor": null,
+      "unconditional_ce_transport_endpoint_alpha_one": true,
+      "conditional_ce_transport_loss": 4.171214539177994,
+      "conditional_ce_transport_alpha_zero_loss": 4.016246311825886,
+      "conditional_ce_transport_dev_ce": 3.680369231849909,
+      "conditional_ce_transport_dev_kl": 0.7433056109584868,
+      "conditional_ce_transport_l1_correction_ratio": 0.28531951596960425,
+      "conditional_ce_transport_l1_anchor": null,
+      "conditional_ce_transport_endpoint_alpha_one": true,
+      "conditional_downstream_anchor_loss": 4.169024726397325,
+      "conditional_downstream_anchor_alpha_zero_loss": 4.016246311825886,
+      "conditional_downstream_anchor_dev_ce": 3.676139272749424,
+      "conditional_downstream_anchor_dev_kl": 0.7382164364680648,
+      "conditional_downstream_anchor_l1_correction_ratio": 0.28531109099276364,
+      "conditional_downstream_anchor_l1_anchor": 0.05880978936329484,
+      "conditional_downstream_anchor_endpoint_alpha_one": true,
+      "conditional_advantage": 0.04275159864454281,
+      "anchor_advantage": 0.002189812780668987,
+      "anchor_vs_unconditional": 0.0449414114252118
+    },
+    {
+      "seed": 20260862,
+      "teacher_loss": 4.016246311825886,
+      "alpha_zero_exact_all": true,
+      "all_alpha_one_endpoints": true,
+      "fresh_test_loaded_after_all_conditions": true,
+      "unconditional_ce_transport_loss": 4.214221600571447,
+      "unconditional_ce_transport_alpha_zero_loss": 4.016246311825886,
+      "unconditional_ce_transport_dev_ce": 3.7496315985918045,
+      "unconditional_ce_transport_dev_kl": 0.8483809642493725,
+      "unconditional_ce_transport_l1_correction_ratio": 0.29818262555636466,
+      "unconditional_ce_transport_l1_anchor": null,
+      "unconditional_ce_transport_endpoint_alpha_one": true,
+      "conditional_ce_transport_loss": 4.15009098966053,
+      "conditional_ce_transport_alpha_zero_loss": 4.016246311825886,
+      "conditional_ce_transport_dev_ce": 3.7075851634144783,
+      "conditional_ce_transport_dev_kl": 0.7880409234203398,
+      "conditional_ce_transport_l1_correction_ratio": 0.3116299763787538,
+      "conditional_ce_transport_l1_anchor": null,
+      "conditional_ce_transport_endpoint_alpha_one": true,
+      "conditional_downstream_anchor_loss": 4.146515875059774,
+      "conditional_downstream_anchor_alpha_zero_loss": 4.016246311825886,
+      "conditional_downstream_anchor_dev_ce": 3.702835876494646,
+      "conditional_downstream_anchor_dev_kl": 0.7798061738722026,
+      "conditional_downstream_anchor_l1_correction_ratio": 0.3123324594926089,
+      "conditional_downstream_anchor_l1_anchor": 0.06206857057986781,
+      "conditional_downstream_anchor_endpoint_alpha_one": true,
+      "conditional_advantage": 0.06413061091091699,
+      "anchor_advantage": 0.003575114600756102,
+      "anchor_vs_unconditional": 0.06770572551167309
+    },
+    {
+      "seed": 20260863,
+      "teacher_loss": 4.016246311825886,
+      "alpha_zero_exact_all": true,
+      "all_alpha_one_endpoints": true,
+      "fresh_test_loaded_after_all_conditions": true,
+      "unconditional_ce_transport_loss": 4.252390140654067,
+      "unconditional_ce_transport_alpha_zero_loss": 4.016246311825886,
+      "unconditional_ce_transport_dev_ce": 3.771559752523899,
+      "unconditional_ce_transport_dev_kl": 0.8492539976723492,
+      "unconditional_ce_transport_l1_correction_ratio": 0.2374511279631406,
+      "unconditional_ce_transport_l1_anchor": null,
+      "unconditional_ce_transport_endpoint_alpha_one": true,
+      "conditional_ce_transport_loss": 4.250775730582518,
+      "conditional_ce_transport_alpha_zero_loss": 4.016246311825886,
+      "conditional_ce_transport_dev_ce": 3.767307810485363,
+      "conditional_ce_transport_dev_kl": 0.82006307085976,
+      "conditional_ce_transport_l1_correction_ratio": 0.13048644876107574,
+      "conditional_ce_transport_l1_anchor": null,
+      "conditional_ce_transport_endpoint_alpha_one": true,
+      "conditional_downstream_anchor_loss": 4.245149802117145,
+      "conditional_downstream_anchor_alpha_zero_loss": 4.016246311825886,
+      "conditional_downstream_anchor_dev_ce": 3.762699108570814,
+      "conditional_downstream_anchor_dev_kl": 0.8148260735906661,
+      "conditional_downstream_anchor_l1_correction_ratio": 0.13049835176207125,
+      "conditional_downstream_anchor_l1_anchor": 0.0608493413310498,
+      "conditional_downstream_anchor_endpoint_alpha_one": true,
+      "conditional_advantage": 0.001614410071549166,
+      "anchor_advantage": 0.005625928465373242,
+      "anchor_vs_unconditional": 0.007240338536922408
+    },
+    {
+      "seed": 20260864,
+      "teacher_loss": 4.016246311825886,
+      "alpha_zero_exact_all": true,
+      "all_alpha_one_endpoints": true,
+      "fresh_test_loaded_after_all_conditions": true,
+      "unconditional_ce_transport_loss": 4.264965822199296,
+      "unconditional_ce_transport_alpha_zero_loss": 4.016246311825886,
+      "unconditional_ce_transport_dev_ce": 3.7767066210508347,
+      "unconditional_ce_transport_dev_kl": 0.8652513492852449,
+      "unconditional_ce_transport_l1_correction_ratio": 0.23937389650382102,
+      "unconditional_ce_transport_l1_anchor": null,
+      "unconditional_ce_transport_endpoint_alpha_one": true,
+      "conditional_ce_transport_loss": 4.229961510493001,
+      "conditional_ce_transport_alpha_zero_loss": 4.016246311825886,
+      "conditional_ce_transport_dev_ce": 3.7366898432374,
+      "conditional_ce_transport_dev_kl": 0.8010216951370239,
+      "conditional_ce_transport_l1_correction_ratio": 0.18508690292946994,
+      "conditional_ce_transport_l1_anchor": null,
+      "conditional_ce_transport_endpoint_alpha_one": true,
+      "conditional_downstream_anchor_loss": 4.222781027864808,
+      "conditional_downstream_anchor_alpha_zero_loss": 4.016246311825886,
+      "conditional_downstream_anchor_dev_ce": 3.732700951397419,
+      "conditional_downstream_anchor_dev_kl": 0.7938805944286287,
+      "conditional_downstream_anchor_l1_correction_ratio": 0.18803198938257992,
+      "conditional_downstream_anchor_l1_anchor": 0.0630679996102117,
+      "conditional_downstream_anchor_endpoint_alpha_one": true,
+      "conditional_advantage": 0.035004311706295255,
+      "anchor_advantage": 0.007180482628193374,
+      "anchor_vs_unconditional": 0.04218479433448863
+    },
+    {
+      "seed": 20260865,
+      "teacher_loss": 4.016246311825886,
+      "alpha_zero_exact_all": true,
+      "all_alpha_one_endpoints": true,
+      "fresh_test_loaded_after_all_conditions": true,
+      "unconditional_ce_transport_loss": 4.190192452548481,
+      "unconditional_ce_transport_alpha_zero_loss": 4.016246311825886,
+      "unconditional_ce_transport_dev_ce": 3.718366213142872,
+      "unconditional_ce_transport_dev_kl": 0.8250892912037671,
+      "unconditional_ce_transport_l1_correction_ratio": 0.17105344752781093,
+      "unconditional_ce_transport_l1_anchor": null,
+      "unconditional_ce_transport_endpoint_alpha_one": true,
+      "conditional_ce_transport_loss": 4.194365372865829,
+      "conditional_ce_transport_alpha_zero_loss": 4.016246311825886,
+      "conditional_ce_transport_dev_ce": 3.702908456325531,
+      "conditional_ce_transport_dev_kl": 0.8178868046961725,
+      "conditional_ce_transport_l1_correction_ratio": 0.17669874988496304,
+      "conditional_ce_transport_l1_anchor": null,
+      "conditional_ce_transport_endpoint_alpha_one": true,
+      "conditional_downstream_anchor_loss": 4.1960004783944385,
+      "conditional_downstream_anchor_alpha_zero_loss": 4.016246311825886,
+      "conditional_downstream_anchor_dev_ce": 3.699846912175417,
+      "conditional_downstream_anchor_dev_kl": 0.8153149639256299,
+      "conditional_downstream_anchor_l1_correction_ratio": 0.18496192060410976,
+      "conditional_downstream_anchor_l1_anchor": 0.06151435989886522,
+      "conditional_downstream_anchor_endpoint_alpha_one": true,
+      "conditional_advantage": -0.004172920317348172,
+      "anchor_advantage": -0.0016351055286092375,
+      "anchor_vs_unconditional": -0.00580802584595741
+    }
+  ],
+  "summaries": {
+    "teacher": {
+      "mean": 4.016246311825886,
+      "sample_sd": 0.0
+    },
+    "unconditional_ce_transport": {
+      "fresh_test_loss": {
+        "mean": 4.227147230759166,
+        "sample_sd": 0.03071611595657989
+      },
+      "teacher_gap": {
+        "mean": 0.21090091893327986,
+        "sample_sd": 0.03071611595657989
+      },
+      "development_l1_ce": {
+        "mean": 3.7473875947296618,
+        "sample_sd": 0.027408037649901358
+      },
+      "development_l1_token_kl": {
+        "mean": 0.8364782153628767,
+        "sample_sd": 0.027530760300496337
+      },
+      "development_l1_correction_ratio": {
+        "mean": 0.2630588845349848,
+        "sample_sd": 0.07447889854053004
+      },
+      "development_l1_anchor": null
+    },
+    "conditional_ce_transport": {
+      "fresh_test_loss": {
+        "mean": 4.199281628555974,
+        "sample_sd": 0.041305410451581336
+      },
+      "teacher_gap": {
+        "mean": 0.18303531673008866,
+        "sample_sd": 0.041305410451581336
+      },
+      "development_l1_ce": {
+        "mean": 3.718972101062536,
+        "sample_sd": 0.033645741691436915
+      },
+      "development_l1_token_kl": {
+        "mean": 0.7940636210143566,
+        "sample_sd": 0.031243314243364434
+      },
+      "development_l1_correction_ratio": {
+        "mean": 0.21784431878477334,
+        "sample_sd": 0.07704877577572326
+      },
+      "development_l1_anchor": null
+    },
+    "conditional_downstream_anchor": {
+      "fresh_test_loss": {
+        "mean": 4.195894381966698,
+        "sample_sd": 0.039715282741890595
+      },
+      "teacher_gap": {
+        "mean": 0.17964807014081216,
+        "sample_sd": 0.039715282741890595
+      },
+      "development_l1_ce": {
+        "mean": 3.714844424277544,
+        "sample_sd": 0.033452001859058104
+      },
+      "development_l1_token_kl": {
+        "mean": 0.7884088484570384,
+        "sample_sd": 0.0318002872181644
+      },
+      "development_l1_correction_ratio": {
+        "mean": 0.2202271624468267,
+        "sample_sd": 0.07591233334680736
+      },
+      "development_l1_anchor": {
+        "mean": 0.06126201215665787,
+        "sample_sd": 0.0015936985594866373
+      }
+    }
+  },
+  "paired_comparisons": {
+    "conditional_minus_unconditional": {
+      "wins": 4,
+      "mean": 0.02786560220319121,
+      "sample_sd": 0.02873715771272692
+    },
+    "anchor_minus_conditional": {
+      "wins": 4,
+      "mean": 0.0033872465892764935,
+      "sample_sd": 0.003394609664639911
+    },
+    "anchor_minus_unconditional": {
+      "wins": 4,
+      "mean": 0.0312528487924677,
+      "sample_sd": 0.029940797747920748
+    }
+  },
+  "criteria": {
+    "alpha_zero_exact_all": true,
+    "all_alpha_one_endpoints": true,
+    "all_fresh_test_losses_finite": true,
+    "fresh_test_loaded_after_all_conditions": true,
+    "conditional_transport_beats_unconditional_in_at_least_4_of_5": true,
+    "conditional_transport_mean_advantage_at_least_0_05": false,
+    "downstream_anchor_beats_conditional_in_at_least_4_of_5": true,
+    "downstream_anchor_mean_advantage_at_least_0_03": false,
+    "downstream_anchor_within_0_15_of_teacher": false,
+    "third_layer_authorized": false
+  }
+}
