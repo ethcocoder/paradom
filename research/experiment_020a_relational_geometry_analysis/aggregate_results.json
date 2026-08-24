@@ -1,0 +1,312 @@
+{
+  "experiment": "experiment_020a_relational_geometry_pilot",
+  "scope": "development_only_no_test_access",
+  "seeds": [
+    20260881,
+    20260882,
+    20260883,
+    20260884,
+    20260885
+  ],
+  "test_split_requested_by_all_seeds": true,
+  "control": {
+    "development_ce": {
+      "mean": 3.6850868932902814,
+      "sample_sd": 0.03913931989543147
+    },
+    "post_block_relation_kl": {
+      "mean": 0.027753657786524853,
+      "sample_sd": 0.002622070075663965
+    },
+    "post_layer_1_relative_drift": {
+      "mean": 0.5064436446875333,
+      "sample_sd": 0.032658953572831495
+    },
+    "post_layer_2_relative_drift": {
+      "mean": 0.5018096919171512,
+      "sample_sd": 0.01617724932524991
+    },
+    "maximum_alpha_zero_loss_deviation": 0.0
+  },
+  "candidates": {
+    "relational_geometry_lambda_005": {
+      "coefficient": 0.05,
+      "development_ce_delta_vs_control": {
+        "mean": 0.0004584085196256638,
+        "sample_sd": 0.0077017425711617795
+      },
+      "relation_kl_delta_vs_control": {
+        "mean": -0.0018345193821005523,
+        "sample_sd": 0.0004510634713610869
+      },
+      "maximum_alpha_zero_loss_deviation": 0.0,
+      "all_endpoint_metrics_finite": true,
+      "all_endpoints_alpha_one": true,
+      "eligible_under_locked_rule": true,
+      "development_ce_by_condition": {
+        "mean": 3.685545301809907,
+        "sample_sd": 0.0366257401770228
+      },
+      "relation_kl_by_condition": {
+        "mean": 0.0259191384044243,
+        "sample_sd": 0.002646126696603128
+      },
+      "post_layer_2_drift_by_condition": {
+        "mean": 0.5013847539201379,
+        "sample_sd": 0.017878805985265166
+      }
+    },
+    "relational_geometry_lambda_010": {
+      "coefficient": 0.1,
+      "development_ce_delta_vs_control": {
+        "mean": 0.0007098495960235595,
+        "sample_sd": 0.009628672329658043
+      },
+      "relation_kl_delta_vs_control": {
+        "mean": -0.0035250718414317817,
+        "sample_sd": 0.0006418963431046959
+      },
+      "maximum_alpha_zero_loss_deviation": 0.0,
+      "all_endpoint_metrics_finite": true,
+      "all_endpoints_alpha_one": true,
+      "eligible_under_locked_rule": true,
+      "development_ce_by_condition": {
+        "mean": 3.6857967428863048,
+        "sample_sd": 0.03509102388897623
+      },
+      "relation_kl_by_condition": {
+        "mean": 0.024228585945093074,
+        "sample_sd": 0.0025296099123825765
+      },
+      "post_layer_2_drift_by_condition": {
+        "mean": 0.5001504573971033,
+        "sample_sd": 0.017307743007465123
+      }
+    },
+    "relational_geometry_lambda_020": {
+      "coefficient": 0.2,
+      "development_ce_delta_vs_control": {
+        "mean": -0.00191677063703537,
+        "sample_sd": 0.01865396799772674
+      },
+      "relation_kl_delta_vs_control": {
+        "mean": -0.006008098859456368,
+        "sample_sd": 0.0008201243457226041
+      },
+      "maximum_alpha_zero_loss_deviation": 0.0,
+      "all_endpoint_metrics_finite": true,
+      "all_endpoints_alpha_one": true,
+      "eligible_under_locked_rule": true,
+      "development_ce_by_condition": {
+        "mean": 3.683170122653246,
+        "sample_sd": 0.03176191571887954
+      },
+      "relation_kl_by_condition": {
+        "mean": 0.021745558927068486,
+        "sample_sd": 0.002278092605241045
+      },
+      "post_layer_2_drift_by_condition": {
+        "mean": 0.4981470425613225,
+        "sample_sd": 0.016521216279890883
+      }
+    }
+  },
+  "locked_selection": {
+    "selected_coefficient": 0.2,
+    "selected_condition": "relational_geometry_lambda_020",
+    "endpoint_experiment_authorized": true,
+    "selection_rule": "largest coefficient satisfying all finite endpoints, all alpha-one endpoints, max alpha-zero loss deviation <=1e-5, mean development CE increase <=0.020, and mean relation KL lower than CE control"
+  },
+  "rows": [
+    {
+      "seed": 20260881,
+      "test_split_requested": false,
+      "conditional_ce_transport_ce": 3.6784241646528244,
+      "conditional_ce_transport_relation": 0.030399489231058396,
+      "conditional_ce_transport_drift_l1": 0.5449797580949962,
+      "conditional_ce_transport_drift_l2": 0.4968473706394434,
+      "conditional_ce_transport_alpha_zero_deviation": 0.0,
+      "conditional_ce_transport_endpoint": true,
+      "conditional_ce_transport_finite": true,
+      "relational_geometry_lambda_005_ce": 3.6794473491609097,
+      "relational_geometry_lambda_005_relation": 0.028247861439012922,
+      "relational_geometry_lambda_005_drift_l1": 0.5406848494894803,
+      "relational_geometry_lambda_005_drift_l2": 0.49563259445130825,
+      "relational_geometry_lambda_005_alpha_zero_deviation": 0.0,
+      "relational_geometry_lambda_005_endpoint": true,
+      "relational_geometry_lambda_005_finite": true,
+      "relational_geometry_lambda_005_ce_delta": 0.0010231845080852509,
+      "relational_geometry_lambda_005_relation_delta": -0.002151627792045474,
+      "relational_geometry_lambda_010_ce": 3.6778366155922413,
+      "relational_geometry_lambda_010_relation": 0.02623973079607822,
+      "relational_geometry_lambda_010_drift_l1": 0.5365735292434692,
+      "relational_geometry_lambda_010_drift_l2": 0.4942825832404196,
+      "relational_geometry_lambda_010_alpha_zero_deviation": 0.0,
+      "relational_geometry_lambda_010_endpoint": true,
+      "relational_geometry_lambda_010_finite": true,
+      "relational_geometry_lambda_010_ce_delta": -0.0005875490605831146,
+      "relational_geometry_lambda_010_relation_delta": -0.004159758434980176,
+      "relational_geometry_lambda_020_ce": 3.6714325286448,
+      "relational_geometry_lambda_020_relation": 0.02309228309604805,
+      "relational_geometry_lambda_020_drift_l1": 0.5295541239902377,
+      "relational_geometry_lambda_020_drift_l2": 0.49280706979334354,
+      "relational_geometry_lambda_020_alpha_zero_deviation": 0.0,
+      "relational_geometry_lambda_020_endpoint": true,
+      "relational_geometry_lambda_020_finite": true,
+      "relational_geometry_lambda_020_ce_delta": -0.006991636008024216,
+      "relational_geometry_lambda_020_relation_delta": -0.007307206135010347
+    },
+    {
+      "seed": 20260882,
+      "test_split_requested": false,
+      "conditional_ce_transport_ce": 3.6514111384749413,
+      "conditional_ce_transport_relation": 0.027945593261392787,
+      "conditional_ce_transport_drift_l1": 0.5372654981911182,
+      "conditional_ce_transport_drift_l2": 0.49871151987463236,
+      "conditional_ce_transport_alpha_zero_deviation": 0.0,
+      "conditional_ce_transport_endpoint": true,
+      "conditional_ce_transport_finite": true,
+      "relational_geometry_lambda_005_ce": 3.664015658199787,
+      "relational_geometry_lambda_005_relation": 0.025791441701585427,
+      "relational_geometry_lambda_005_drift_l1": 0.5348789156414568,
+      "relational_geometry_lambda_005_drift_l2": 0.49711610423401,
+      "relational_geometry_lambda_005_alpha_zero_deviation": 0.0,
+      "relational_geometry_lambda_005_endpoint": true,
+      "relational_geometry_lambda_005_finite": true,
+      "relational_geometry_lambda_005_ce_delta": 0.012604519724845886,
+      "relational_geometry_lambda_005_relation_delta": -0.00215415155980736,
+      "relational_geometry_lambda_010_ce": 3.6660266034305096,
+      "relational_geometry_lambda_010_relation": 0.024197716498747468,
+      "relational_geometry_lambda_010_drift_l1": 0.5325913480482996,
+      "relational_geometry_lambda_010_drift_l2": 0.49464268423616886,
+      "relational_geometry_lambda_010_alpha_zero_deviation": 0.0,
+      "relational_geometry_lambda_010_endpoint": true,
+      "relational_geometry_lambda_010_finite": true,
+      "relational_geometry_lambda_010_ce_delta": 0.014615464955568314,
+      "relational_geometry_lambda_010_relation_delta": -0.003747876762645319,
+      "relational_geometry_lambda_020_ce": 3.667741507291794,
+      "relational_geometry_lambda_020_relation": 0.021865993476239964,
+      "relational_geometry_lambda_020_drift_l1": 0.5281082997098565,
+      "relational_geometry_lambda_020_drift_l2": 0.49085472896695137,
+      "relational_geometry_lambda_020_alpha_zero_deviation": 0.0,
+      "relational_geometry_lambda_020_endpoint": true,
+      "relational_geometry_lambda_020_finite": true,
+      "relational_geometry_lambda_020_ce_delta": 0.01633036881685257,
+      "relational_geometry_lambda_020_relation_delta": -0.006079599785152823
+    },
+    {
+      "seed": 20260883,
+      "test_split_requested": false,
+      "conditional_ce_transport_ce": 3.7360390312969685,
+      "conditional_ce_transport_relation": 0.029803798999637365,
+      "conditional_ce_transport_drift_l1": 0.4782393593341112,
+      "conditional_ce_transport_drift_l2": 0.5299803162924945,
+      "conditional_ce_transport_alpha_zero_deviation": 0.0,
+      "conditional_ce_transport_endpoint": true,
+      "conditional_ce_transport_finite": true,
+      "relational_geometry_lambda_005_ce": 3.729542177170515,
+      "relational_geometry_lambda_005_relation": 0.02865473652491346,
+      "relational_geometry_lambda_005_drift_l1": 0.4835644098930061,
+      "relational_geometry_lambda_005_drift_l2": 0.532547936309129,
+      "relational_geometry_lambda_005_alpha_zero_deviation": 0.0,
+      "relational_geometry_lambda_005_endpoint": true,
+      "relational_geometry_lambda_005_finite": true,
+      "relational_geometry_lambda_005_ce_delta": -0.0064968541264534,
+      "relational_geometry_lambda_005_relation_delta": -0.0011490624747239053,
+      "relational_geometry_lambda_010_ce": 3.7248264886438847,
+      "relational_geometry_lambda_010_relation": 0.027077495760750026,
+      "relational_geometry_lambda_010_drift_l1": 0.48174601700156927,
+      "relational_geometry_lambda_010_drift_l2": 0.530322149861604,
+      "relational_geometry_lambda_010_alpha_zero_deviation": 0.0,
+      "relational_geometry_lambda_010_endpoint": true,
+      "relational_geometry_lambda_010_finite": true,
+      "relational_geometry_lambda_010_ce_delta": -0.011212542653083801,
+      "relational_geometry_lambda_010_relation_delta": -0.00272630323888734,
+      "relational_geometry_lambda_020_ce": 3.7051525451242924,
+      "relational_geometry_lambda_020_relation": 0.024502940475940704,
+      "relational_geometry_lambda_020_drift_l1": 0.47796063823625445,
+      "relational_geometry_lambda_020_drift_l2": 0.5255877142772079,
+      "relational_geometry_lambda_020_alpha_zero_deviation": 0.0,
+      "relational_geometry_lambda_020_endpoint": true,
+      "relational_geometry_lambda_020_finite": true,
+      "relational_geometry_lambda_020_ce_delta": -0.030886486172676086,
+      "relational_geometry_lambda_020_relation_delta": -0.005300858523696661
+    },
+    {
+      "seed": 20260884,
+      "test_split_requested": false,
+      "conditional_ce_transport_ce": 3.7136670239269733,
+      "conditional_ce_transport_relation": 0.02384088774851989,
+      "conditional_ce_transport_drift_l1": 0.47614271426573396,
+      "conditional_ce_transport_drift_l2": 0.4946526875719428,
+      "conditional_ce_transport_alpha_zero_deviation": 0.0,
+      "conditional_ce_transport_endpoint": true,
+      "conditional_ce_transport_finite": true,
+      "relational_geometry_lambda_005_ce": 3.714746268466115,
+      "relational_geometry_lambda_005_relation": 0.022246654058108106,
+      "relational_geometry_lambda_005_drift_l1": 0.4737962242215872,
+      "relational_geometry_lambda_005_drift_l2": 0.4948542476631701,
+      "relational_geometry_lambda_005_alpha_zero_deviation": 0.0,
+      "relational_geometry_lambda_005_endpoint": true,
+      "relational_geometry_lambda_005_finite": true,
+      "relational_geometry_lambda_005_ce_delta": 0.001079244539141655,
+      "relational_geometry_lambda_005_relation_delta": -0.0015942336904117838,
+      "relational_geometry_lambda_010_ce": 3.7181215845048428,
+      "relational_geometry_lambda_010_relation": 0.020872386565315537,
+      "relational_geometry_lambda_010_drift_l1": 0.47167449025437236,
+      "relational_geometry_lambda_010_drift_l2": 0.49557362124323845,
+      "relational_geometry_lambda_010_alpha_zero_deviation": 0.0,
+      "relational_geometry_lambda_010_endpoint": true,
+      "relational_geometry_lambda_010_finite": true,
+      "relational_geometry_lambda_010_ce_delta": 0.004454560577869415,
+      "relational_geometry_lambda_010_relation_delta": -0.002968501183204353,
+      "relational_geometry_lambda_020_ce": 3.7255288437008858,
+      "relational_geometry_lambda_020_relation": 0.018536901552579366,
+      "relational_geometry_lambda_020_drift_l1": 0.46801531640812755,
+      "relational_geometry_lambda_020_drift_l2": 0.49932989245280623,
+      "relational_geometry_lambda_020_alpha_zero_deviation": 0.0,
+      "relational_geometry_lambda_020_endpoint": true,
+      "relational_geometry_lambda_020_finite": true,
+      "relational_geometry_lambda_020_ce_delta": 0.01186181977391243,
+      "relational_geometry_lambda_020_relation_delta": -0.005303986195940524
+    },
+    {
+      "seed": 20260885,
+      "test_split_requested": false,
+      "conditional_ce_transport_ce": 3.645893108099699,
+      "conditional_ce_transport_relation": 0.026778519692015834,
+      "conditional_ce_transport_drift_l1": 0.49559089355170727,
+      "conditional_ce_transport_drift_l2": 0.48885656520724297,
+      "conditional_ce_transport_alpha_zero_deviation": 0.0,
+      "conditional_ce_transport_endpoint": true,
+      "conditional_ce_transport_finite": true,
+      "relational_geometry_lambda_005_ce": 3.639975056052208,
+      "relational_geometry_lambda_005_relation": 0.024654998298501596,
+      "relational_geometry_lambda_005_drift_l1": 0.4916902780532837,
+      "relational_geometry_lambda_005_drift_l2": 0.4867728869430721,
+      "relational_geometry_lambda_005_alpha_zero_deviation": 0.0,
+      "relational_geometry_lambda_005_endpoint": true,
+      "relational_geometry_lambda_005_finite": true,
+      "relational_geometry_lambda_005_ce_delta": -0.005918052047491074,
+      "relational_geometry_lambda_005_relation_delta": -0.0021235213935142383,
+      "relational_geometry_lambda_010_ce": 3.642172422260046,
+      "relational_geometry_lambda_010_relation": 0.022755600104574114,
+      "relational_geometry_lambda_010_drift_l1": 0.4882631222717464,
+      "relational_geometry_lambda_010_drift_l2": 0.48593124840408564,
+      "relational_geometry_lambda_010_alpha_zero_deviation": 0.0,
+      "relational_geometry_lambda_010_endpoint": true,
+      "relational_geometry_lambda_010_finite": true,
+      "relational_geometry_lambda_010_ce_delta": -0.003720685839653015,
+      "relational_geometry_lambda_010_relation_delta": -0.00402291958744172,
+      "relational_geometry_lambda_020_ce": 3.6459951885044575,
+      "relational_geometry_lambda_020_relation": 0.02072967603453435,
+      "relational_geometry_lambda_020_drift_l1": 0.4830163214355707,
+      "relational_geometry_lambda_020_drift_l2": 0.48215580731630325,
+      "relational_geometry_lambda_020_alpha_zero_deviation": 0.0,
+      "relational_geometry_lambda_020_endpoint": true,
+      "relational_geometry_lambda_020_finite": true,
+      "relational_geometry_lambda_020_ce_delta": 0.00010208040475845337,
+      "relational_geometry_lambda_020_relation_delta": -0.006048843657481484
+    }
+  ]
+}
