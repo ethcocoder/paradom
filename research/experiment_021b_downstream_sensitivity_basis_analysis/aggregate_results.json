@@ -1,0 +1,373 @@
+{
+  "experiment": "experiment_021b_downstream_sensitivity_basis_endpoint",
+  "seeds": [
+    20260911,
+    20260912,
+    20260913,
+    20260914,
+    20260915
+  ],
+  "rows": [
+    {
+      "seed": 20260911,
+      "teacher_loss": 3.918438197383554,
+      "alpha_zero_exact_all": true,
+      "all_alpha_one_endpoints": true,
+      "fresh_test_loaded_after_all_conditions": true,
+      "unit_conditional_ce_transport_loss": 4.081998047910363,
+      "unit_conditional_ce_transport_entropy": 3.951481348562449,
+      "unit_conditional_ce_transport_ece": 0.017342510482225643,
+      "unit_conditional_ce_transport_alpha_zero": 0.0,
+      "unit_conditional_ce_transport_endpoint": true,
+      "unit_conditional_ce_transport_finite": true,
+      "unit_conditional_ce_transport_dev_ce": 3.678971294313669,
+      "unit_conditional_ce_transport_weighted": 0.923256775495247,
+      "unit_conditional_ce_transport_unweighted": 1.0020428578136489,
+      "unit_conditional_ce_transport_drift_l1": 0.46714781504124403,
+      "unit_conditional_ce_transport_drift_l2": 0.5023940512910485,
+      "correct_sensitivity_basis_loss": 4.063835841118989,
+      "correct_sensitivity_basis_entropy": 3.903243553410211,
+      "correct_sensitivity_basis_ece": 0.015044597123784281,
+      "correct_sensitivity_basis_alpha_zero": 0.0,
+      "correct_sensitivity_basis_endpoint": true,
+      "correct_sensitivity_basis_finite": true,
+      "correct_sensitivity_basis_dev_ce": 3.663579113781452,
+      "correct_sensitivity_basis_weighted": 0.9288824271352496,
+      "correct_sensitivity_basis_unweighted": 0.9737778441194678,
+      "correct_sensitivity_basis_drift_l1": 0.4757446553558111,
+      "correct_sensitivity_basis_drift_l2": 0.4869132679887116,
+      "permuted_sensitivity_basis_loss": 4.075467095264541,
+      "permuted_sensitivity_basis_entropy": 3.932713212284579,
+      "permuted_sensitivity_basis_ece": 0.01825236853408894,
+      "permuted_sensitivity_basis_alpha_zero": 0.0,
+      "permuted_sensitivity_basis_endpoint": true,
+      "permuted_sensitivity_basis_finite": true,
+      "permuted_sensitivity_basis_dev_ce": 3.694258116185665,
+      "permuted_sensitivity_basis_weighted": 0.9833985137956915,
+      "permuted_sensitivity_basis_unweighted": 1.0382498711260268,
+      "permuted_sensitivity_basis_drift_l1": 0.4547041077166796,
+      "permuted_sensitivity_basis_drift_l2": 0.4847644898109138,
+      "correct_vs_unit": 0.01816220679137448,
+      "correct_vs_permuted": 0.011631254145552106,
+      "correct_ece_minus_unit": -0.002297913358441362
+    },
+    {
+      "seed": 20260912,
+      "teacher_loss": 3.918438197383554,
+      "alpha_zero_exact_all": true,
+      "all_alpha_one_endpoints": true,
+      "fresh_test_loaded_after_all_conditions": true,
+      "unit_conditional_ce_transport_loss": 4.0545910869543285,
+      "unit_conditional_ce_transport_entropy": 3.9046309640594163,
+      "unit_conditional_ce_transport_ece": 0.016250487699163697,
+      "unit_conditional_ce_transport_alpha_zero": 0.0,
+      "unit_conditional_ce_transport_endpoint": true,
+      "unit_conditional_ce_transport_finite": true,
+      "unit_conditional_ce_transport_dev_ce": 3.682938426733017,
+      "unit_conditional_ce_transport_weighted": 0.9738220155268209,
+      "unit_conditional_ce_transport_unweighted": 1.0495229180523893,
+      "unit_conditional_ce_transport_drift_l1": 0.4774545640684664,
+      "unit_conditional_ce_transport_drift_l2": 0.49881391366943717,
+      "correct_sensitivity_basis_loss": 4.074872133192858,
+      "correct_sensitivity_basis_entropy": 3.914412682033202,
+      "correct_sensitivity_basis_ece": 0.019841625129470533,
+      "correct_sensitivity_basis_alpha_zero": 0.0,
+      "correct_sensitivity_basis_endpoint": true,
+      "correct_sensitivity_basis_finite": true,
+      "correct_sensitivity_basis_dev_ce": 3.7121298499405384,
+      "correct_sensitivity_basis_weighted": 1.0693651660258183,
+      "correct_sensitivity_basis_unweighted": 1.0993981775827706,
+      "correct_sensitivity_basis_drift_l1": 0.5237036189064384,
+      "correct_sensitivity_basis_drift_l2": 0.5408510756678879,
+      "permuted_sensitivity_basis_loss": 4.042918750172219,
+      "permuted_sensitivity_basis_entropy": 3.91242443414034,
+      "permuted_sensitivity_basis_ece": 0.01905544330533325,
+      "permuted_sensitivity_basis_alpha_zero": 0.0,
+      "permuted_sensitivity_basis_endpoint": true,
+      "permuted_sensitivity_basis_finite": true,
+      "permuted_sensitivity_basis_dev_ce": 3.6334779150784016,
+      "permuted_sensitivity_basis_weighted": 1.0044066059199395,
+      "permuted_sensitivity_basis_unweighted": 1.0878904370911187,
+      "permuted_sensitivity_basis_drift_l1": 0.46248507872223854,
+      "permuted_sensitivity_basis_drift_l2": 0.5022674817591906,
+      "correct_vs_unit": -0.02028104623852922,
+      "correct_vs_permuted": -0.03195338302063888,
+      "correct_ece_minus_unit": 0.0035911374303068365
+    },
+    {
+      "seed": 20260913,
+      "teacher_loss": 3.918438197383554,
+      "alpha_zero_exact_all": true,
+      "all_alpha_one_endpoints": true,
+      "fresh_test_loaded_after_all_conditions": true,
+      "unit_conditional_ce_transport_loss": 4.073852430144372,
+      "unit_conditional_ce_transport_entropy": 3.936158035119428,
+      "unit_conditional_ce_transport_ece": 0.018342836919376118,
+      "unit_conditional_ce_transport_alpha_zero": 0.0,
+      "unit_conditional_ce_transport_endpoint": true,
+      "unit_conditional_ce_transport_finite": true,
+      "unit_conditional_ce_transport_dev_ce": 3.689553175121546,
+      "unit_conditional_ce_transport_weighted": 1.0115779690968338,
+      "unit_conditional_ce_transport_unweighted": 1.0611466993868817,
+      "unit_conditional_ce_transport_drift_l1": 0.5064570964314044,
+      "unit_conditional_ce_transport_drift_l2": 0.4986346666701138,
+      "correct_sensitivity_basis_loss": 4.05603206994592,
+      "correct_sensitivity_basis_entropy": 3.9329714546037033,
+      "correct_sensitivity_basis_ece": 0.01765776533905016,
+      "correct_sensitivity_basis_alpha_zero": 0.0,
+      "correct_sensitivity_basis_endpoint": true,
+      "correct_sensitivity_basis_finite": true,
+      "correct_sensitivity_basis_dev_ce": 3.673390045762062,
+      "correct_sensitivity_basis_weighted": 0.9528368962201057,
+      "correct_sensitivity_basis_unweighted": 1.0009578118188074,
+      "correct_sensitivity_basis_drift_l1": 0.5078604458831251,
+      "correct_sensitivity_basis_drift_l2": 0.49630445567891,
+      "permuted_sensitivity_basis_loss": 4.115141394797451,
+      "permuted_sensitivity_basis_entropy": 3.9967472241715294,
+      "permuted_sensitivity_basis_ece": 0.01810395782679691,
+      "permuted_sensitivity_basis_alpha_zero": 0.0,
+      "permuted_sensitivity_basis_endpoint": true,
+      "permuted_sensitivity_basis_finite": true,
+      "permuted_sensitivity_basis_dev_ce": 3.682272285223007,
+      "permuted_sensitivity_basis_weighted": 1.0946369593730196,
+      "permuted_sensitivity_basis_unweighted": 1.1508408815425355,
+      "permuted_sensitivity_basis_drift_l1": 0.5107815926894546,
+      "permuted_sensitivity_basis_drift_l2": 0.49943886743858457,
+      "correct_vs_unit": 0.0178203601984519,
+      "correct_vs_permuted": 0.059109324851530864,
+      "correct_ece_minus_unit": -0.0006850715803259598
+    },
+    {
+      "seed": 20260914,
+      "teacher_loss": 3.918438197383554,
+      "alpha_zero_exact_all": true,
+      "all_alpha_one_endpoints": true,
+      "fresh_test_loaded_after_all_conditions": true,
+      "unit_conditional_ce_transport_loss": 4.045058293033455,
+      "unit_conditional_ce_transport_entropy": 3.9337373617554734,
+      "unit_conditional_ce_transport_ece": 0.017968897292231542,
+      "unit_conditional_ce_transport_alpha_zero": 0.0,
+      "unit_conditional_ce_transport_endpoint": true,
+      "unit_conditional_ce_transport_finite": true,
+      "unit_conditional_ce_transport_dev_ce": 3.646605595946312,
+      "unit_conditional_ce_transport_weighted": 1.075314464935218,
+      "unit_conditional_ce_transport_unweighted": 1.173371751589002,
+      "unit_conditional_ce_transport_drift_l1": 0.5245461813174188,
+      "unit_conditional_ce_transport_drift_l2": 0.4897668045014143,
+      "correct_sensitivity_basis_loss": 4.079042068855611,
+      "correct_sensitivity_basis_entropy": 3.9009475797705093,
+      "correct_sensitivity_basis_ece": 0.02089080190388339,
+      "correct_sensitivity_basis_alpha_zero": 0.0,
+      "correct_sensitivity_basis_endpoint": true,
+      "correct_sensitivity_basis_finite": true,
+      "correct_sensitivity_basis_dev_ce": 3.7205862551927567,
+      "correct_sensitivity_basis_weighted": 1.0768971511279233,
+      "correct_sensitivity_basis_unweighted": 1.117421771035879,
+      "correct_sensitivity_basis_drift_l1": 0.5275727626867592,
+      "correct_sensitivity_basis_drift_l2": 0.5376235898584127,
+      "permuted_sensitivity_basis_loss": 4.03849951116519,
+      "permuted_sensitivity_basis_entropy": 3.919673618551145,
+      "permuted_sensitivity_basis_ece": 0.025366094912069787,
+      "permuted_sensitivity_basis_alpha_zero": 0.0,
+      "permuted_sensitivity_basis_endpoint": true,
+      "permuted_sensitivity_basis_finite": true,
+      "permuted_sensitivity_basis_dev_ce": 3.7066556848585606,
+      "permuted_sensitivity_basis_weighted": 1.1047074898524443,
+      "permuted_sensitivity_basis_unweighted": 1.1961600056383759,
+      "permuted_sensitivity_basis_drift_l1": 0.5040623932145536,
+      "permuted_sensitivity_basis_drift_l2": 0.4836102812550962,
+      "correct_vs_unit": -0.03398377582215595,
+      "correct_vs_permuted": -0.040542557690421255,
+      "correct_ece_minus_unit": 0.0029219046116518467
+    },
+    {
+      "seed": 20260915,
+      "teacher_loss": 3.918438197383554,
+      "alpha_zero_exact_all": true,
+      "all_alpha_one_endpoints": true,
+      "fresh_test_loaded_after_all_conditions": true,
+      "unit_conditional_ce_transport_loss": 4.036709473763371,
+      "unit_conditional_ce_transport_entropy": 3.909652727900394,
+      "unit_conditional_ce_transport_ece": 0.017754155659918607,
+      "unit_conditional_ce_transport_alpha_zero": 0.0,
+      "unit_conditional_ce_transport_endpoint": true,
+      "unit_conditional_ce_transport_finite": true,
+      "unit_conditional_ce_transport_dev_ce": 3.6167985051870346,
+      "unit_conditional_ce_transport_weighted": 1.010622888978105,
+      "unit_conditional_ce_transport_unweighted": 1.080110486902413,
+      "unit_conditional_ce_transport_drift_l1": 0.47556206677109003,
+      "unit_conditional_ce_transport_drift_l2": 0.491026412229985,
+      "correct_sensitivity_basis_loss": 4.030624237163058,
+      "correct_sensitivity_basis_entropy": 3.86744012598788,
+      "correct_sensitivity_basis_ece": 0.01848939462295219,
+      "correct_sensitivity_basis_alpha_zero": 0.0,
+      "correct_sensitivity_basis_endpoint": true,
+      "correct_sensitivity_basis_finite": true,
+      "correct_sensitivity_basis_dev_ce": 3.597227845340967,
+      "correct_sensitivity_basis_weighted": 0.8778269446920604,
+      "correct_sensitivity_basis_unweighted": 0.950980746129062,
+      "correct_sensitivity_basis_drift_l1": 0.522951025981456,
+      "correct_sensitivity_basis_drift_l2": 0.5093118022195995,
+      "permuted_sensitivity_basis_loss": 4.034405087800005,
+      "permuted_sensitivity_basis_entropy": 3.921389032939876,
+      "permuted_sensitivity_basis_ece": 0.019592367336473078,
+      "permuted_sensitivity_basis_alpha_zero": 0.0,
+      "permuted_sensitivity_basis_endpoint": true,
+      "permuted_sensitivity_basis_finite": true,
+      "permuted_sensitivity_basis_dev_ce": 3.592850960791111,
+      "permuted_sensitivity_basis_weighted": 0.9570752939180238,
+      "permuted_sensitivity_basis_unweighted": 1.0320742058102041,
+      "permuted_sensitivity_basis_drift_l1": 0.4637787723913789,
+      "permuted_sensitivity_basis_drift_l2": 0.5050171576440334,
+      "correct_vs_unit": 0.006085236600313237,
+      "correct_vs_permuted": 0.0037808506369474415,
+      "correct_ece_minus_unit": 0.0007352389630335826
+    }
+  ],
+  "conditions": {
+    "unit_conditional_ce_transport": {
+      "fresh_loss": {
+        "mean": 4.058441866361178,
+        "sample_sd": 0.01909597202539085
+      },
+      "fresh_entropy": {
+        "mean": 3.927132087479432,
+        "sample_sd": 0.019556408545580967
+      },
+      "fresh_ece": {
+        "mean": 0.01753177761058312,
+        "sample_sd": 0.000802475653567186
+      },
+      "teacher_gap": {
+        "mean": 0.14000366897762398,
+        "sample_sd": 0.01909597202539085
+      },
+      "development_ce": {
+        "mean": 3.6629733994603155,
+        "sample_sd": 0.030663680800589236
+      },
+      "weighted_discrepancy": {
+        "mean": 0.998918822806445,
+        "sample_sd": 0.055875147482964585
+      },
+      "unweighted_mse": {
+        "mean": 1.0732389427488669,
+        "sample_sd": 0.06295107666335298
+      },
+      "post_layer_1_drift": {
+        "mean": 0.49023354472592473,
+        "sample_sd": 0.024249052491269383
+      },
+      "post_layer_2_drift": {
+        "mean": 0.4961271696723998,
+        "sample_sd": 0.005460126173357942
+      }
+    },
+    "correct_sensitivity_basis": {
+      "fresh_loss": {
+        "mean": 4.060881270055287,
+        "sample_sd": 0.019191737386911396
+      },
+      "fresh_entropy": {
+        "mean": 3.903803079161101,
+        "sample_sd": 0.02394832514173877
+      },
+      "fresh_ece": {
+        "mean": 0.01838483682382811,
+        "sample_sd": 0.002241587589243211
+      },
+      "teacher_gap": {
+        "mean": 0.1424430726717331,
+        "sample_sd": 0.019191737386911396
+      },
+      "development_ce": {
+        "mean": 3.6733826220035555,
+        "sample_sd": 0.049054025054430815
+      },
+      "weighted_discrepancy": {
+        "mean": 0.9811617170402315,
+        "sample_sd": 0.08825901732489085
+      },
+      "unweighted_mse": {
+        "mean": 1.0285072701371973,
+        "sample_sd": 0.07532588180560733
+      },
+      "post_layer_1_drift": {
+        "mean": 0.511566501762718,
+        "sample_sd": 0.02138958229605364
+      },
+      "post_layer_2_drift": {
+        "mean": 0.5142008382827044,
+        "sample_sd": 0.024226303476496958
+      }
+    },
+    "permuted_sensitivity_basis": {
+      "fresh_loss": {
+        "mean": 4.061286367839881,
+        "sample_sd": 0.03420771254912283
+      },
+      "fresh_entropy": {
+        "mean": 3.9365895044174937,
+        "sample_sd": 0.03440613693801507
+      },
+      "fresh_ece": {
+        "mean": 0.020074046382952394,
+        "sample_sd": 0.0030197311002894177
+      },
+      "teacher_gap": {
+        "mean": 0.14284817045632714,
+        "sample_sd": 0.03420771254912283
+      },
+      "development_ce": {
+        "mean": 3.661902992427349,
+        "sample_sd": 0.04754138643760688
+      },
+      "weighted_discrepancy": {
+        "mean": 1.0288449725718238,
+        "sample_sd": 0.06689022389216062
+      },
+      "unweighted_mse": {
+        "mean": 1.1010430802416522,
+        "sample_sd": 0.07141382093921479
+      },
+      "post_layer_1_drift": {
+        "mean": 0.47916238894686103,
+        "sample_sd": 0.02613799969984217
+      },
+      "post_layer_2_drift": {
+        "mean": 0.4950196555815637,
+        "sample_sd": 0.010091490384630739
+      }
+    }
+  },
+  "paired_comparisons": {
+    "correct_vs_unit": {
+      "wins": 3,
+      "mean": -0.00243940369410911,
+      "sample_sd": 0.023563348135201178
+    },
+    "correct_vs_permuted": {
+      "wins": 3,
+      "mean": 0.0004050977845940551,
+      "sample_sd": 0.039709540221496226
+    },
+    "correct_ece_minus_unit": {
+      "mean": 0.0008530592132449888,
+      "sample_sd": 0.0024538515492113916
+    },
+    "maximum_correct_ece_minus_unit": 0.0035911374303068365
+  },
+  "maximum_alpha_zero_loss_deviation": 0.0,
+  "criteria": {
+    "integrity_and_final_slice_isolation": true,
+    "alpha_zero_deviation_at_most_1e_5": true,
+    "all_fresh_losses_finite": true,
+    "correct_beats_unit_4_of_5": false,
+    "correct_mean_advantage_over_unit_at_least_0_03": false,
+    "correct_beats_permuted_4_of_5": false,
+    "correct_mean_advantage_over_permuted_at_least_0_03": false,
+    "correct_ece_not_more_than_0_01_above_unit": true,
+    "correct_within_0_15_of_teacher": false,
+    "third_layer_or_scaling_authorized": false
+  }
+}
